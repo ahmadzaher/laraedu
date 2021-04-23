@@ -1,0 +1,91 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.bi{
+    vertical-align: -.125em;
+    pointer-events: none;
+    fill: currentColor;
+    margin-right: 20px;
+}
+
+.link-dark {
+    color: #fff;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    padding: 0;
+}
+
+#sidebarMenu{
+    width: 250px;
+    position: fixed;
+    margin-top: 0;
+    z-index: 891;
+    top: 0; left: 0; bottom: 0; height: 100%;
+    overflow-x: hidden;
+    transition: 0.5s;
+
+}
+
+#main-content{
+    margin-left: 250px;
+}
+#sidebarMenu li{
+     transition: 0.3s;
+    width: 100%;
+ }
+#main-content{
+    transition: 0.5s;
+}
+.sidebar-toggle{
+    display: block;
+}
+#collapse_me_plz{
+    position: absolute;
+}
+@media (min-width: 1200px){
+    #sidebarMenu {
+        flex: 0 0 16.6666666667%;
+        max-width: 16.6666666667%;
+        width: 250px;
+    }
+    .sidebar-toggle{
+        display: none;
+    }
+}
+@media (max-width: 1200px){ // small
+    #sidebarMenu {
+        width: 0;
+    }
+    #main-content{
+        margin-left: 0;
+    }
+    .sidebar-toggle{
+        display: block;
+    }
+}
+@media (min-width: 1200px){ // large
+    #sidebarMenu {
+        width: 250px;
+    }
+    #main-content{
+        margin-left: 250px;
+    }
+    .sidebar-toggle{
+        display: none;
+    }
+}
+.closebtn{
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    padding: 0;
+}
