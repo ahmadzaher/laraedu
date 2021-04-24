@@ -1,8 +1,8 @@
 <nav id="sidebarMenu" class="text-white bg-dark">
     <div class="d-flex flex-column p-3 text-white bg-dark">
-        <a href="javascript:void(0)" id="hide_nav" class="closebtn nav-link link-dark" onclick="closeNav()">×</a>
-
-        <br>
+        <div class="mb-5">
+        <a href="javascript:void(0)" id="hide_nav" class="closebtn nav-link link-dark mb-5" onclick="closeNav()">×</a>
+        </div>
         <ul class="nav nav-pills flex-column mb-auto">
             @guest
                 <li class="">

@@ -11060,3 +11060,8 @@ a.text-dark:focus {
   text-transform: none;
 }
 
+.register-btn {
+  background-color: #fff !important;
+  color: #eee;
+}
+

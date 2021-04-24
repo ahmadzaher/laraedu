@@ -9,7 +9,6 @@
                 <th>No</th>
                 <th>Name</th>
                 <th>Slug</th>
-                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -29,12 +28,6 @@
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'name', name: 'name'},
                     {data: 'slug', name: 'slug'},
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: true,
-                        searchable: true
-                    },
                 ]
             });
 
