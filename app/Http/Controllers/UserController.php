@@ -131,8 +131,8 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,id,'.$id],
-            'username' => ['required', 'string', 'max:255', 'unique:users,id,'.$id, 'min:8'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$id],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$id, 'min:8'],
         ]);
 
         $user = User::find($id);
