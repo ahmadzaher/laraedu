@@ -13,7 +13,9 @@
     fill: currentColor;
     margin-right: 20px;
 }
-
+.bi-facebook{
+    margin-right: 4px;
+}
 .link-dark {
     color: #fff;
 }
@@ -88,4 +90,16 @@
     font-size: 36px;
     margin-left: 50px;
     padding: 0;
+}
+.facebook-btn{
+    background-color: #3454dc;
+    border-color: #3454dc;
+    color: #fff;
+}
+.facebook-btn:hover, .facebook-btn:focus{
+    background-color: #2143d3;
+    color: #fff;
+}
+.google-btn{
+    text-transform:none;
 }

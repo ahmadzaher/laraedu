@@ -1,12 +1,16 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Permissions\HasPermissionsTrait;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,8 +57,30 @@ Route::delete('role/delete/{id}', [RoleController::class, 'destroy'])->name('rol
 Route::get('permission', [PermissionController::class, 'index'])->name('permissions');
 Route::get('permission/list', [PermissionController::class, 'getPermissions'])->name('permission.list');
 
-//
+// Facebook login
 
+Route::get('facebook/redirect', [LoginController::class, 'facebook'])->name('facebook.login');
+Route::get('facebook/callback', [LoginController::class, 'facebookCallback']);
+
+// Google login
+
+Route::get('google/redirect', [LoginController::class, 'google'])->name('google.login');
+Route::get('google/callback', [LoginController::class, 'googleCallback']);
+
+
+/*
+ *  If you already have a valid access token for a user, you can retrieve their details using Socialite's userFromToken method:
+ * $user = Socialite::driver('facebook')->userFromToken($token);
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * The stateless method may be used to disable session state verification. This is useful when adding social authentication to an API:
+ * return Socialite::driver('google')->stateless()->user();
+ * */
 Route::group(['middleware' => 'role:developer'], function() {
 
     Route::get('/admin', function() {
