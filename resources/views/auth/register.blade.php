@@ -36,6 +36,13 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="number" class="col-md-4 col-form-label text-md-right">{{ __('Phone Number') }}</label>
+                            <div class="col-md-6">
+                                <input name="number" type="text" class="form-control" id="number" value="{{ old('number') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
                             <div class="col-md-6">
