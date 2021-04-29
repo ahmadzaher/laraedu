@@ -76,8 +76,8 @@ class RoleController extends Controller
         }
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:roles'],
+            'slug' => ['required', 'string', 'max:255', 'unique:roles'],
         ]);
         $role = new Role([
             'name' => $request->name,
@@ -122,8 +122,8 @@ class RoleController extends Controller
         }])->where('id', $user->id)->first();
         $roles = $user_info->roles;
         $permissions = [];
-        foreach($roles as $role){
-            foreach ($role->permissions as $permission){
+        foreach($roles as $r){
+            foreach ($r->permissions as $permission){
                 $perms = $permission->toArray();
                 unset($perms['pivot']);
                 $permissions[] = ($perms);
@@ -141,8 +141,8 @@ class RoleController extends Controller
             return redirect('/role')->with('warning', 'You don\'t have permission to update role');
         }
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:roles,name,'.$id],
+            'slug' => ['required', 'string', 'max:255', 'unique:roles,slug,'.$id],
         ]);
 
         $role = Role::find($id);
