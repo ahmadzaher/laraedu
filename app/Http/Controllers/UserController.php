@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Role;
+use App\Rules\Nospaces;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -66,7 +67,7 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8'],
+            'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8', new Nospaces],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
         $user = new User([
@@ -132,7 +133,7 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$id],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$id, 'min:8'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$id, 'min:8', new Nospaces],
         ]);
 
         $user = User::find($id);

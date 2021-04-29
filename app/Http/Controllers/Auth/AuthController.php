@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
+use App\Rules\Nospaces;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -19,7 +20,7 @@ class AuthController extends Controller
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255', 'min:4'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8'],
+            'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8', new Nospaces],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
@@ -65,30 +66,26 @@ class AuthController extends Controller
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_URL, $graph_url);
         $contents = curl_exec($c);
-        $err  = curl_getinfo($c,CURLINFO_HTTP_CODE);
+        $err = curl_getinfo($c, CURLINFO_HTTP_CODE);
         curl_close($c);
         if ($contents)
-            $response =  $contents;
+            $response = $contents;
         $decoded_response = json_decode($response);
 
-        if(isset($decoded_response->error)){
+        if (isset($decoded_response->error)) {
             return response()->json(['error' => 'Unauthorised'], 401);
         }
         $user = Socialite::driver('facebook')->stateless()->userFromToken($token);
         $user = User::firstOrCreate([
             'email' => $user->email
         ], [
-            'username' =>$user->email,
+            'username' => $user->email,
             'name' => $user->name != null ? $user->name : $user->nickname,
             'password' => Hash::make(Str::random(24))
         ]);
-        $data = [
-            'email' => $user->email,
-            'password' => $user->password
-        ];
         // return $user->password;
-            $token = $user->createToken('Laravel8PassportAuth')->accessToken;
-            return response()->json(['token' => $token], 200);
+        $token = $user->createToken('Laravel8PassportAuth')->accessToken;
+        return response()->json(['token' => $token], 200);
 
     }
 
@@ -96,8 +93,29 @@ class AuthController extends Controller
     {
 
         $user = auth()->user();
+        $user->phone_number = $user->number;
+        unset($user->number);
 
         return response()->json(['user' => $user], 200);
 
+    }
+
+    public function edit_profile(Request $request)
+    {
+        $user = auth()->user();
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$user->id, 'min:8', new Nospaces],
+        ]);
+
+        $user->name =  $request->name;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->number = $request->phone_number;
+        $user->save();
+        $user->phone_number = $user->number;
+        unset($user->number);
+        return response()->json(['user' => $user], 200);
     }
 }
