@@ -10957,6 +10957,10 @@ a.text-dark:focus {
   color: #fff;
 }
 
+.link-dark:hover {
+  color: #6f92b0;
+}
+
 .dataTables_wrapper .dataTables_paginate .paginate_button {
   padding: 0;
 }
@@ -11063,5 +11067,14 @@ a.text-dark:focus {
 .register-btn {
   background-color: #fff !important;
   color: #eee;
+}
+
+.sidebarCollapse li,
+.sidebarCollapse {
+  list-style-type: none;
+}
+
+.nav-link.active {
+  background-color: #20496b;
 }
 

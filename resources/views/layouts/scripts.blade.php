@@ -4,7 +4,11 @@
 <script src = "{{ asset('plugins/bootstrap/js/bootstrap.min.js') }}" defer ></script>
 <script src = "{{ asset('plugins/bootstrap/js/dataTables.bootstrap4.min.js') }}" defer ></script>
 <script>
+
     $(function () {
+        $('#navbarDropdown').on('click', function (){
+            $('#navbarDropdown').dropdown();
+        })
         $('#show_nav').on('click', function (e){
             $('#sidebarMenu').css('width', '250px');
             $('#main-content').css('margin-left', '250px');

@@ -15,6 +15,7 @@
                     @endif
 
                     {{ __('You are logged in!') }}
+                    {{ strpos($_SERVER['REQUEST_URI'], 'profile')  }}
                 </div>
             </div>
         </div>
