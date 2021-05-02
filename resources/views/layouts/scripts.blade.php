@@ -12,7 +12,6 @@
             if(screenWidth > 600)
                 $('#main-content').css('margin-left', '250px');
             $('.sidebar-toggle').css('display', 'none');
-            console.log(screenWidth)
         });
         $('#hide_nav').on('click', function (e){
             $('#sidebarMenu').css('width', 0);
