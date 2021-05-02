@@ -16,5 +16,5 @@ Route::post('facebook', [AuthController::class, 'facebook']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('user', [AuthController::class, 'userInfo']);
-	Route::put('user', [AuthController::class, 'edit_profile']);
+	Route::post('user', [AuthController::class, 'edit_profile']);
 });

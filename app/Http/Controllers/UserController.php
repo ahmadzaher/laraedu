@@ -46,6 +46,10 @@ class UserController extends Controller
                 })
                     ->rawColumns(['action']);
             }
+            $datatable->addColumn('avatar', function ($row){
+                $avatar = $row->getFirstMediaUrl('avatars', 'thumb') != null ? $row->getFirstMediaUrl('avatars', 'thumb') : url('/storage/avatar.jpg');
+                return '<img src="'.$avatar.'" alt="avatar" class="avatar rounded img-responsive mr-1" />';
+            })->rawColumns(['avatar']);
             return $datatable->make(true);
         }
     }
@@ -69,6 +73,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8', new Nospaces],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         $user = new User([
             'name' => $request->name,
@@ -78,7 +83,10 @@ class UserController extends Controller
             'number' => $request->number,
         ]);
         $user->save();
-
+        if (isset($request->avatar)) {
+            $user->clearMediaCollection('avatars');
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+        }
 
         $roles = $request->roles;
         $user->roles()->attach($roles);
@@ -134,8 +142,9 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$id],
             'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$id, 'min:8', new Nospaces],
+            'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'password' => ['string', 'min:8', 'confirmed', 'nullable'],
         ]);
-
         $user = User::find($id);
 
         if(!$request->user()->can('edit-user')){
@@ -145,7 +154,13 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->number = $request->number;
+        if(isset($request->password))
+            $user->password = Hash::make($request->password);
         $user->save();
+        if (isset($request->avatar)) {
+            $user->clearMediaCollection('avatars');
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+        }
 
         if($id != $request->user()->id){
             $roles = $request->roles;

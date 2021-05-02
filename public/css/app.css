@@ -11078,3 +11078,7 @@ a.text-dark:focus {
   background-color: #20496b;
 }
 
+.form-control {
+  height: auto;
+}
+

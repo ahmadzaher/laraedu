@@ -9,8 +9,10 @@
             <li class="sidebarCollapse mb-2">
                 <a href="#foodSubmenu" data-toggle="collapse" aria-expanded="false" class="arrow-toggle {{ Request::is('profile') ? 'active' : '' }} nav-link link-dark">
                     @auth
-                        <img src="http://placehold.it/30x30" class="avatar rounded img-responsive">
+                        <div class="form-group d-flex justify-content-around align-items-center">
+                        <img src="{{ Auth::user()->getFirstMediaUrl('avatars', 'thumb') ? Auth::user()->getFirstMediaUrl('avatars', 'thumb') : url('/storage/avatar.jpg')  }}" alt="avatar" class="avatar rounded img-responsive mr-1">
                         {{ Auth::user()->name }}
+                        </div>
                     @endauth
                 </a>
                 <ul class="collapse lisst-unstyled {{ Request::is('profile') ? 'show' : '' }} p-0 m-1" id="foodSubmenu">

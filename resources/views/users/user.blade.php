@@ -12,6 +12,7 @@
             <thead>
             <tr>
                 <th>No</th>
+                <th>Avatar</th>
                 <th>Name</th>
                 <th>Username</th>
                 <th>Phone number</th>
@@ -36,6 +37,7 @@
                 ajax: "{{ route('user.list') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'avatar', name: 'avatar'},
                     {data: 'name', name: 'name'},
                     {data: 'username', name: 'username'},
                     {data: 'number', name: 'number'},

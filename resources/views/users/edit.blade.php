@@ -8,7 +8,7 @@
                     <div class="card-header">{{ __('Edit User') }}</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('user.edit', $user->id) }}">
+                        <form method="POST" action="{{ route('user.edit', $user->id) }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-group row">
@@ -61,7 +61,20 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="avatar" class="col-md-4 col-form-label text-md-right">{{ __('Avatar (optional)') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="avatar" type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar">
+                                    @error('avatar')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
                             @role('superadmin')
+                            <hr />
                             <div class="form-group row">
                                 <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Roles:') }}</label>
                                 <div class="d-flex justify-content-center">
@@ -82,6 +95,29 @@
                                 </div>
                             </div>
                             @endrole
+
+                            <hr>
+                            <div class="form-group row">
+                                <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password">
+
+                                    @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password">
+                                </div>
+                            </div>
 
 {{--                            <div class="form-group row">--}}
 {{--                                <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>--}}
