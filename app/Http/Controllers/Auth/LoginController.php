@@ -99,15 +99,17 @@ class LoginController extends Controller
     public function googleCallback()
     {
         $user = Socialite::driver('google')->user();
-        $user = User::firstOrCreate([
+        $user_from_facebook = User::firstOrCreate([
             'email' => $user->email
         ], [
             'username' =>$user->email,
             'name' => $user->name != null ? $user->name : $user->nickname,
             'password' => Hash::make(Str::random(24))
         ]);
+        $avatar = $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') ? $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') : $user->avatar != null ? $user->avatar : url('/images/avatar.jpg');
+        $user_from_facebook->addMediaFromUrl($avatar)->toMediaCollection('avatars');
 
-        Auth::login($user, true);
+        Auth::login($user_from_facebook, true);
         return redirect('/home');
     }
 }
