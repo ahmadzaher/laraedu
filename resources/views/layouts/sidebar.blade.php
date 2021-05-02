@@ -10,7 +10,7 @@
                 <a href="#foodSubmenu" data-toggle="collapse" aria-expanded="false" class="arrow-toggle {{ Request::is('profile') ? 'active' : '' }} nav-link link-dark">
                     @auth
                         <div class="form-group d-flex justify-content-around align-items-center">
-                        <img src="{{ Auth::user()->getFirstMediaUrl('avatars', 'thumb') ? Auth::user()->getFirstMediaUrl('avatars', 'thumb') : url('/storage/avatar.jpg')  }}" alt="avatar" class="avatar rounded img-responsive mr-1">
+                        <img src="{{ Auth::user()->getFirstMediaUrl('avatars', 'thumb') ? Auth::user()->getFirstMediaUrl('avatars', 'thumb') : url('/images/avatar.png')  }}" alt="avatar" class="avatar rounded img-responsive mr-1">
                         {{ Auth::user()->name }}
                         </div>
                     @endauth

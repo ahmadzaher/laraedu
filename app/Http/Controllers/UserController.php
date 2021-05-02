@@ -47,7 +47,7 @@ class UserController extends Controller
                     ->rawColumns(['action']);
             }
             $datatable->addColumn('avatar', function ($row){
-                $avatar = $row->getFirstMediaUrl('avatars', 'thumb') != null ? $row->getFirstMediaUrl('avatars', 'thumb') : url('/storage/avatar.jpg');
+                $avatar = $row->getFirstMediaUrl('avatars', 'thumb') != null ? $row->getFirstMediaUrl('avatars', 'thumb') : url('/images/avatar.jpg');
                 return '<img src="'.$avatar.'" alt="avatar" class="avatar rounded img-responsive mr-1" />';
             })->rawColumns(['avatar']);
             return $datatable->make(true);
