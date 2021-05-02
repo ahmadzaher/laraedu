@@ -7,9 +7,12 @@
 
     $(function () {
         $('#show_nav').on('click', function (e){
+            var screenWidth = $( document ).width();
             $('#sidebarMenu').css('width', '250px');
-            $('#main-content').css('margin-left', '250px');
+            if(screenWidth > 600)
+                $('#main-content').css('margin-left', '250px');
             $('.sidebar-toggle').css('display', 'none');
+            console.log(screenWidth)
         });
         $('#hide_nav').on('click', function (e){
             $('#sidebarMenu').css('width', 0);
