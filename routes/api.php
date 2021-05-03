@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\api\AuthController;
 
 Route::fallback(function(){
     return response()->json([

@@ -1,11 +1,11 @@
 <?php
-namespace App\Http\Controllers\Auth;
+
+namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Rules\Nospaces;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -42,12 +42,14 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $data = [
-            'email' => $request->email,
-            'password' => $request->password
-        ];
+        $login_type = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL )
+            ? 'email'
+            : 'username';
+        $request->merge([
+            $login_type => $request->input('login')
+        ]);
 
-        if (auth()->attempt($data)) {
+        if (Auth::attempt($request->only($login_type, 'password'))) {
             $token = auth()->user()->createToken('Laravel8PassportAuth')->accessToken;
             return response()->json(['token' => $token], 200);
         } else {
@@ -93,8 +95,13 @@ class AuthController extends Controller
     {
 
         $user = auth()->user();
+
+        $user_info = User::find($user->id);
+        $avatar = $user_info->getFirstMediaUrl('avatars', 'thumb') ? url($user_info->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
+
         $user->phone_number = $user->number;
         unset($user->number);
+        $user->avatar = $avatar;
 
         return response()->json(['user' => $user], 200);
 
