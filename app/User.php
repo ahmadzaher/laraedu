@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Permissions\HasPermissionsTrait;
+use Laravel\Cashier\Billable;
 use Laravel\Passport\HasApiTokens;
 // These two come from Media Library
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,7 @@ class User extends Authenticatable implements HasMedia
     use HasPermissionsTrait;
     use Notifiable, HasApiTokens;
     use HasMediaTrait;
+    use Billable;
 
     public function registerMediaConversions(Media $media = null)
     {
