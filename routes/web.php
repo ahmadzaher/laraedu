@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MessengerController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
@@ -54,6 +55,9 @@ Route::group(['middleware' => 'auth'], function() {
 
 Route::get('facebook/redirect', [LoginController::class, 'facebook'])->name('facebook.login');
 Route::get('facebook/callback', [LoginController::class, 'facebookCallback']);
+
+// Messenger
+Route::post('messenger/webhook', [MessengerController::class, 'webhook']);
 
 // Google login
 
