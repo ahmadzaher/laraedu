@@ -58,6 +58,7 @@ Route::get('facebook/callback', [LoginController::class, 'facebookCallback']);
 
 // Messenger
 Route::post('messenger/webhook', [MessengerController::class, 'webhook']);
+Route::get('messenger/webhook', [MessengerController::class, 'webhook_get']);
 
 // Google login
 
