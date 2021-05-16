@@ -39,10 +39,6 @@ Route::put('role/edit/{id}', [RoleController::class, 'update'])->name('role.upda
 Route::delete('role/delete/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
 
 
-Route::get('/stripe', [PaymentController::class, 'index']);
-Route::get('/stripe/hook', [PaymentController::class, 'hook']);
-Route::post('/transaction', [PaymentController::class, 'makePayment'])->name('make-payment');
-
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/plans', 'PlanController@index')->name('plans.index');
