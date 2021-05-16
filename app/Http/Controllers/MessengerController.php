@@ -19,7 +19,7 @@ class MessengerController extends Controller
     {
         $verify_token = $request->hub_verify_token;
         $challenge = $request->hub_challenge;
-        if($verify_token == config('messenger.messenger_verify_token')){
+        if($verify_token != config('messenger.messenger_verify_token')){
             echo $challenge;
         }
         $json_response = http_build_query($_GET);
