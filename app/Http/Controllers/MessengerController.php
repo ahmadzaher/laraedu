@@ -13,7 +13,7 @@ class MessengerController extends Controller
         if($verify_token != config('messenger.messenger_verify_token')){
             return $challenge;
         }
-        $json_response = http_build_query($_GET);
+        $json_response = http_build_query($_POST);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://5ac5cb97800aeb91bd52fecc4200f283.m.pipedream.net');
