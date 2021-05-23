@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ClassController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SectionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Permissions\HasPermissionsTrait;
@@ -37,6 +39,22 @@ Route::post('role', [RoleController::class, 'store'])->name('role.store');
 Route::get('role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
 Route::put('role/edit/{id}', [RoleController::class, 'update'])->name('role.update');
 Route::delete('role/delete/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
+
+Route::get('class', [ClassController::class, 'index'])->name('classes');
+Route::get('class/list', [ClassController::class, 'getClasses'])->name('class.list');
+Route::get('class/add', [ClassController::class, 'add'])->name('class.add');
+Route::post('class', [ClassController::class, 'store'])->name('class.store');
+Route::get('class/edit/{id}', [ClassController::class, 'edit'])->name('class.edit');
+Route::put('class/edit/{id}', [ClassController::class, 'update'])->name('class.update');
+Route::delete('class/delete/{id}', [ClassController::class, 'destroy'])->name('class.destroy');
+
+Route::get('section', [SectionController::class, 'index'])->name('sections');
+Route::get('section/list', [SectionController::class, 'getSections'])->name('section.list');
+Route::get('section/add', [SectionController::class, 'add'])->name('section.add');
+Route::post('section', [SectionController::class, 'store'])->name('section.store');
+Route::get('section/edit/{id}', [SectionController::class, 'edit'])->name('section.edit');
+Route::put('section/edit/{id}', [SectionController::class, 'update'])->name('section.update');
+Route::delete('section/delete/{id}', [SectionController::class, 'destroy'])->name('section.destroy');
 
 
 Route::group(['middleware' => 'auth'], function() {

@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-        <h2 class="mb-4">Roles Table</h2>
-        @can('create-role')
-        <a type="button" class="btn btn-primary" href="{{ route('role.add') }}">{{ __('Add new role') }}</a>
+        <h2 class="mb-4">Class Table</h2>
+        @can('create-class')
+        <a type="button" class="btn btn-primary" href="{{ route('class.add') }}">{{ __('Add new class') }}</a>
         <hr />
         @endcan
         <table style="width: 100%" class="table table-bordered yajra-datatable">
@@ -11,8 +11,8 @@
             <tr>
                 <th>No</th>
                 <th>Name</th>
-                <th>Slug</th>
-                @if(Auth::user()->can('edit-role') || Auth::user()->can('delete-role'))
+                <th>Name numeric</th>
+                @if(Auth::user()->can('edit-class') || Auth::user()->can('delete-class'))
                 <th>Action</th>
                 @endif
             </tr>
@@ -29,12 +29,12 @@
                 processing: true,
                 serverSide: true,
                 scrollX: true,
-                ajax: "{{ route('role.list') }}",
+                ajax: "{{ route('class.list') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'name', name: 'name'},
-                    {data: 'slug', name: 'slug'},
-                        @if(Auth::user()->can('edit-role') || Auth::user()->can('delete-role'))
+                    {data: 'name_numeric', name: 'name_numeric'},
+                        @if(Auth::user()->can('edit-class') || Auth::user()->can('delete-class'))
                     {
                         data: 'action',
                         name: 'action',

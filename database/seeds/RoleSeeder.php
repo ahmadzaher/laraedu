@@ -20,10 +20,21 @@ class RoleSeeder extends Seeder
             ['name' => 'Edit User', 'slug' => 'edit-user'],
             ['name' => 'Delete User', 'slug' => 'delete-user'],
             ['name' => 'View User', 'slug' => 'view-user'],
+
             ['name' => 'Create Role', 'slug' => 'create-role'],
             ['name' => 'Edit Role', 'slug' => 'edit-role'],
             ['name' => 'Delete Role', 'slug' => 'delete-role'],
             ['name' => 'View Role', 'slug' => 'view-role'],
+
+            ['name' => 'Create Class', 'slug' => 'create-class'],
+            ['name' => 'Edit Class', 'slug' => 'edit-class'],
+            ['name' => 'Delete Class', 'slug' => 'delete-class'],
+            ['name' => 'View Class', 'slug' => 'view-class'],
+
+            ['name' => 'Create Section', 'slug' => 'create-section'],
+            ['name' => 'Edit Section', 'slug' => 'edit-section'],
+            ['name' => 'Delete Section', 'slug' => 'delete-section'],
+            ['name' => 'View Section', 'slug' => 'view-section'],
         ];
         DB::table('permissions')->insert($superadmin_permission);
 
@@ -49,29 +60,5 @@ class RoleSeeder extends Seeder
         $superadmin->permissions()->attach($superadmin_permission);
 
 
-        $manager_permission = Permission::where('slug', 'edit-product')->first();
-        $manager_role = new Role();
-        $manager_role->slug = 'manager';
-        $manager_role->name = 'Assistant Manager';
-        $manager_role->save();
-        $manager_role->permissions()->attach($manager_permission);
-
-        $editUsers = new Permission();
-        $editUsers->slug = 'edit-product';
-        $editUsers->name = 'Edit Product';
-        $editUsers->save();
-        $editUsers->roles()->attach($manager_role);
-
-        $manager_perm = Permission::where('slug','edit-product')->first();
-
-        $manager = new User();
-        $manager->name = 'Hafizul Islam';
-        $manager->username = 'zaher_ahmad';
-        $manager->number = '+963948346976';
-        $manager->email = 'hafiz@gmail.com';
-        $manager->password = bcrypt('secrettt');
-        $manager->save();
-        $manager->roles()->attach($manager_role);
-        $manager->permissions()->attach($manager_perm);
     }
 }
