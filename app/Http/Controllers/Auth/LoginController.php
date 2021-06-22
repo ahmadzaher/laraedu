@@ -85,7 +85,7 @@ class LoginController extends Controller
             'name' => $user->name != null ? $user->name : $user->nickname,
             'password' => Hash::make(Str::random(24))
         ]);
-        $avatar = $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') ? $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') : $user->avatar != null ? $user->avatar : url('/images/avatar.jpg');
+        $avatar = $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') ? $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') : ($user->avatar != null ? $user->avatar : url('/images/avatar.jpg'));
         $user_from_facebook->addMediaFromUrl($avatar)->toMediaCollection('avatars');
 
         Auth::login($user_from_facebook, true);
@@ -106,7 +106,7 @@ class LoginController extends Controller
             'name' => $user->name != null ? $user->name : $user->nickname,
             'password' => Hash::make(Str::random(24))
         ]);
-        $avatar = $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') ? $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') : $user->avatar != null ? $user->avatar : url('/images/avatar.jpg');
+        $avatar = $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') ? $user_from_facebook->getFirstMediaUrl('avatars', 'thumb') : ($user->avatar != null ? $user->avatar : url('/images/avatar.jpg'));
         $user_from_facebook->addMediaFromUrl($avatar)->toMediaCollection('avatars');
 
         Auth::login($user_from_facebook, true);
