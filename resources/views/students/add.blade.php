@@ -104,14 +104,12 @@
                                 <div class="d-flex justify-content-center">
                                     <div class="form-group">
                                         @foreach($roles as $role)
-                                            @if($role->slug != 'student' && $role->slug != 'teacher')
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->id }}" id="role{{ $role->id }}">
                                                 <label class="form-check-label" for="{{ $role->id }}">
                                                     {{ $role->slug }}
                                                 </label>
                                             </div>
-                                            @endif
                                         @endforeach
                                     </div>
                                 </div>

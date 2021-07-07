@@ -4,6 +4,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Permissions\HasPermissionsTrait;
@@ -30,6 +31,16 @@ Route::put('user/edit/{id}', [UserController::class, 'update'])->name('user.upda
 Route::delete('user/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+
+
+Route::get('student', [StudentController::class, 'index'])->name('students');
+Route::get('student/list', [StudentController::class, 'getUsers'])->name('student.list');
+Route::get('student/add', [StudentController::class, 'add'])->name('student.add');
+Route::post('student', [StudentController::class, 'store'])->name('student.store');
+Route::get('student/edit/{id}', [StudentController::class, 'edit'])->name('student.edit');
+Route::put('student/edit/{id}', [StudentController::class, 'update'])->name('student.update');
+Route::delete('student/delete/{id}', [StudentController::class, 'destroy'])->name('student.destroy');
 
 
 Route::get('role', [RoleController::class, 'index'])->name('roles');

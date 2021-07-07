@@ -38,7 +38,7 @@ class RoleController extends Controller
                 $datatable->addColumn('action', function($row){
                     $role_id = $row->id;
                     $actionBtn = view('roles.control_buttons', compact('role_id'));
-                    if($row->slug == 'superadmin')
+                    if($row->slug == 'superadmin' || $row->slug == 'student' || $row->slug == 'teacher')
                         $actionBtn = '';
                     return $actionBtn;
                 })
@@ -146,8 +146,8 @@ class RoleController extends Controller
         ]);
 
         $role = Role::find($id);
-        if($role->slug == 'superadmin'){
-            return redirect('/role')->with('warning', 'You can\'t edit or delete " Super Admin " role');
+        if($role->slug == 'superadmin' || $role->slug == 'student' || $role->slug == 'teacher'){
+            return redirect('/role')->with('warning', 'You can\'t edit or delete " '.$role->name.' " role');
         }
         $role->name =  $request->name;
         $role->slug = $request->slug;

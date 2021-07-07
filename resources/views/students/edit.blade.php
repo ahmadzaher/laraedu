@@ -79,20 +79,17 @@
                                 <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Roles:') }}</label>
                                 <div class="d-flex justify-content-center">
                                     <div class="form-group">
-
                                         @foreach($roles as $role)
-                                            @if($role->slug != 'student' && $role->slug != 'teacher')
-                                                <div class="form-check">
-                                                    <input
-                                                        @if(in_array($role->id, $user_roles))
+                                            <div class="form-check">
+                                                <input
+                                                    @if(in_array($role->id, $user_roles))
                                                         checked
-                                                        @endif
-                                                        class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->id }}" id="role{{ $role->id }}">
-                                                    <label class="form-check-label" for="{{ $role->id }}">
-                                                        {{ $role->name }}
-                                                    </label>
-                                                </div>
-                                            @endif
+                                                    @endif
+                                                    class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->id }}" id="role{{ $role->id }}">
+                                                <label class="form-check-label" for="{{ $role->id }}">
+                                                    {{ $role->name }}
+                                                </label>
+                                            </div>
                                         @endforeach
                                     </div>
                                 </div>

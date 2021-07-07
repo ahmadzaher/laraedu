@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class StudentController extends Controller
 {
 
     public function __construct()
@@ -24,7 +24,7 @@ class UserController extends Controller
         if(!$request->user()->can('view-user')) {
             return redirect('/home')->with('warning', 'You don\'t have permission to view users');
         }
-        return view('users.user');
+        return view('students.user');
     }
 
     public function getUsers(Request $request)
@@ -37,9 +37,7 @@ class UserController extends Controller
             $data = User::latest()
                 ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
                 ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
-                ->where('roles.slug', '!=', 'student')
-                ->where('roles.slug', '!=', 'teacher')
-                ->orWhere('roles.slug', null)
+                ->where('roles.slug', '=', 'student')
                 ->select('users.*', 'roles.slug as role')
                 ->get();
 
@@ -50,7 +48,7 @@ class UserController extends Controller
             if($user->can('edit-user') || $user->can('delete-user')){
                 $datatable->addColumn('action', function($row){
                     $user_id = $row->id;
-                    $actionBtn = view('users.control_buttons', compact('user_id'));
+                    $actionBtn = view('students.control_buttons', compact('user_id'));
                     return $actionBtn;
                 })
                     ->rawColumns(['action']);
@@ -69,7 +67,7 @@ class UserController extends Controller
             return redirect('/user')->with('warning', 'You don\'t have permission to add user');
         }
         $roles = Role::all();
-        return view('users.add', compact('roles'));
+        return view('students.add', compact('roles'));
     }
     public function store(Request $request){
         $user = $request->user();
@@ -146,7 +144,7 @@ class UserController extends Controller
         }
         $roles = Role::all();
 
-        return view('users.edit', compact('user', 'roles', 'user_roles'));
+        return view('students.edit', compact('user', 'roles', 'user_roles'));
     }
     public function update(Request $request, $id)
     {
