@@ -3,9 +3,9 @@
 @section('content')
 
 
-        <h2 class="mb-4">Users Table</h2>
+        <h2 class="mb-4">Students Table</h2>
         @can('create-user')
-        <a type="button" class="btn btn-primary" href="{{ route('user.add') }}">Add new user</a>
+        <a type="button" class="btn btn-primary" href="{{ route('student.add') }}">Add new student</a>
         <hr />
         @endcan
         <table style="width: 100%" class="table table-bordered yajra-datatable">

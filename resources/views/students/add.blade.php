@@ -5,10 +5,10 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Add User') }}</div>
+                    <div class="card-header">{{ __('Add Student') }}</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('user.store') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('student.store') }}" enctype="multipart/form-data">
                             @csrf
 
                             <div class="form-group row">
@@ -97,24 +97,7 @@
                                 </div>
                             </div>
 
-                            @role('superadmin')
-                            <hr />
-                            <div class="form-group row">
-                                <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Roles:') }}</label>
-                                <div class="d-flex justify-content-center">
-                                    <div class="form-group">
-                                        @foreach($roles as $role)
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->id }}" id="role{{ $role->id }}">
-                                                <label class="form-check-label" for="{{ $role->id }}">
-                                                    {{ $role->slug }}
-                                                </label>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                            @endrole
+                            <hr>
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">

@@ -64,7 +64,7 @@ class StudentController extends Controller
     public function add(Request $request){
         $user = $request->user();
         if(!$user->can('create-user')){
-            return redirect('/user')->with('warning', 'You don\'t have permission to add user');
+            return redirect('/student')->with('warning', 'You don\'t have permission to add user');
         }
         $roles = Role::all();
         return view('students.add', compact('roles'));
@@ -72,7 +72,7 @@ class StudentController extends Controller
     public function store(Request $request){
         $user = $request->user();
         if(!$user->can('create-user')){
-            return redirect('/user')->with('warning', 'You don\'t have permission to add user');
+            return redirect('/student')->with('warning', 'You don\'t have permission to add user');
         }
 
         $request->validate([
@@ -95,8 +95,8 @@ class StudentController extends Controller
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
         }
 
-        $roles = $request->roles;
-        $user->roles()->attach($roles);
+        $role = Role::Where(['slug' => 'student'])->get();
+        $user->roles()->attach($role);
 
         // Assign permissions to user
 //        if(is_array($roles))
@@ -107,38 +107,38 @@ class StudentController extends Controller
 //            $user->permissions()->attach($permission);
 //        }
 
-        return redirect('/user')->with('success', 'User saved!');
+        return redirect('/student')->with('success', 'User saved!');
 
     }
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
         if(!$user->can('delete-user')){
-            return redirect('/user')->with('warning', 'You don\'t have permission to delete user');
+            return redirect('/student')->with('warning', 'You don\'t have permission to delete user');
         }
         $user = User::find($id);
 
         if($id == Auth::id()){
-            return redirect('/user')->with('warning', 'You can\'t delete your profile');
+            return redirect('/student')->with('warning', 'You can\'t delete your profile');
         }
         if($user->hasRole('superadmin')){
-            return redirect('/user')->with('warning', 'You can\'t delete superadmin user');
+            return redirect('/student')->with('warning', 'You can\'t delete superadmin user');
         }
         $user->delete();
 
-        return redirect('/user')->with('success', 'User Deleted!');
+        return redirect('/student')->with('success', 'User Deleted!');
     }
     public function edit(Request $request, $id)
     {
         $user = User::with('roles')->find($id);
 
         if(!$request->user()->can('edit-user')){
-            return redirect('/user')->with('warning', 'You don\'t have permission to edit user');
+            return redirect('/student')->with('warning', 'You don\'t have permission to edit user');
         }
         $user_roles = [];
         foreach($user->roles as $role){
-            if($role->slug == 'student' or $role->slug == 'teacher'){
-                return redirect('/user')->with('warning', 'Something went Wrong');
+            if($role->slug == 'teacher'){
+                return redirect('/student')->with('warning', 'Something went Wrong');
             }
             $user_roles[] = $role->id;
         }
@@ -158,7 +158,7 @@ class StudentController extends Controller
         $user = User::find($id);
 
         if(!$request->user()->can('edit-user')){
-            return redirect('/user')->with('warning', 'You don\'t have permission to update user');
+            return redirect('/student')->with('warning', 'You don\'t have permission to update user');
         }
         $user->name =  $request->name;
         $user->username = $request->username;
@@ -173,8 +173,9 @@ class StudentController extends Controller
         }
 
         if($id != $request->user()->id){
-            $roles = $request->roles;
-            $user->roles()->sync($roles);
+
+            $role = Role::Where(['slug' => 'student'])->get();
+            $user->roles()->sync($role);
 
             // Assign permission to staff
 
@@ -189,6 +190,6 @@ class StudentController extends Controller
         }
 
 
-        return redirect('/user')->with('success', 'User updated!');
+        return redirect('/student')->with('success', 'User updated!');
     }
 }

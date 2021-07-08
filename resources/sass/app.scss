@@ -122,3 +122,10 @@
 .form-control{
     height: auto;
 }
+
+element.style {
+}
+.nav-pills ul > li > .nav-link.active, .nav-pills .show > .nav-link {
+    color: #ffffff;
+    background-color: #39546b;
+}

@@ -11082,3 +11082,9 @@ a.text-dark:focus {
   height: auto;
 }
 
+.nav-pills ul > li > .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #ffffff;
+  background-color: #39546b;
+}
+
