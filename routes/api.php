@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\UserStatistics;
 
 Route::fallback(function(){
@@ -19,4 +20,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user', [AuthController::class, 'userInfo']);
     Route::get('user/statistics', [UserStatistics::class, 'users']);
 	Route::post('user', [AuthController::class, 'edit_profile']);
+    Route::middleware('can:view-user')->group(function () {
+        Route::get('users', [UserController::class, 'getUsers']);
+    });
 });
