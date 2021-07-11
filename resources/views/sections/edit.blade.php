@@ -26,7 +26,7 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="capacity" class="col-md-4 col-form-label text-md-right">{{ __('Name numeric') }}</label>
+                                <label for="capacity" class="col-md-4 col-form-label text-md-right">{{ __('capacity') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="capacity" type="text" class="form-control @error('capacity') is-invalid @enderror" name="capacity" value="{{ $section->capacity }}" required autocomplete="capacity" autofocus>

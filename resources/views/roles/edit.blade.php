@@ -39,12 +39,30 @@
                                 </div>
                             </div>
 
+
+                            <hr />
                             <div class="form-group row">
                                 <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Permissions:') }}</label>
                                 <div class="d-flex justify-content-center">
-                                    <div class="form-group">
+                                    <div class="form-group row h-100 mx-auto text-center">
+                                        <?php $name = ''; ?>
 
                                         @foreach($permissions as $permission)
+
+                                            <?php
+                                            $new = false;
+                                            $strArray = explode(' ', $permission['name']);
+                                            $permissionName = $strArray[1];
+
+                                            if($permissionName != $name){
+                                                if($name != '')
+                                                    echo '</div>';
+                                                echo '<div class="col-md-4 ">';
+                                                echo '<br>'.$permissionName . ':<br><br>';
+                                                $new = true;
+                                            }
+                                            $name = $permissionName;
+                                            ?>
                                             <div class="form-check">
                                                 <input
 
@@ -52,12 +70,12 @@
                                                     checked
                                                     @endif
                                                     class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permission['id'] }}" id="permission{{ $permission['id'] }}">
-                                                <label class="form-check-label" for="{{ $permission['id'] }}">
+                                                <label class="form-check-label" for="permission{{ $permission['id'] }}">
                                                     {{ $permission['name'] }}
                                                 </label>
                                             </div>
                                         @endforeach
-                                    </div>
+                                    </div></div>
                                 </div>
                             </div>
 

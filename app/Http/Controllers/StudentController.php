@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Role;
 use App\Rules\Nospaces;
+use App\SchoolClass;
+use App\SchoolSection;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -37,8 +39,15 @@ class StudentController extends Controller
             $data = User::latest()
                 ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
                 ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+                ->leftJoin('school_classes', 'school_classes.id', '=', 'users.class_id')
+                ->leftJoin('school_sections', 'school_sections.id', '=', 'users.section_id')
                 ->where('roles.slug', '=', 'student')
-                ->select('users.*', 'roles.slug as role')
+                ->select(
+                    'users.*',
+                    'roles.slug as role',
+                    'school_classes.name as class_name',
+                    'school_sections.name as section_name'
+                )
                 ->get();
 
 
@@ -67,7 +76,9 @@ class StudentController extends Controller
             return redirect('/student')->with('warning', 'You don\'t have permission to add user');
         }
         $roles = Role::all();
-        return view('students.add', compact('roles'));
+        $sections = SchoolSection::all();
+        $classes = SchoolClass::all();
+        return view('students.add', compact('roles', 'sections', 'classes'));
     }
     public function store(Request $request){
         $user = $request->user();
@@ -81,6 +92,8 @@ class StudentController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8', new Nospaces],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'section' => ['required'],
+            'class' => ['required'],
         ]);
         $user = new User([
             'name' => $request->name,
@@ -88,7 +101,10 @@ class StudentController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'number' => $request->number,
+
         ]);
+        $user->schoolClass()->associate($request->class);
+        $user->schoolSection()->associate($request->section);
         $user->save();
         if (isset($request->avatar)) {
             $user->clearMediaCollection('avatars');
@@ -130,7 +146,21 @@ class StudentController extends Controller
     }
     public function edit(Request $request, $id)
     {
-        $user = User::with('roles')->find($id);
+        $user = User::with('roles')->with('SchoolClass')->with('SchoolSection')->find($id);
+
+        $classes = SchoolClass::all();
+        $class_id = $user->class_id;
+        $section_id = $user->section_id;
+        $class = SchoolClass::with('sections')->find($class_id);
+
+        $sections = [];
+        if(isset($class->sections))
+        foreach($class->sections as $section){
+            $sections[] = [
+                'id' => $section->id,
+                'name' => $section->name
+            ];
+        }
 
         if(!$request->user()->can('edit-user')){
             return redirect('/student')->with('warning', 'You don\'t have permission to edit user');
@@ -144,12 +174,14 @@ class StudentController extends Controller
         }
         $roles = Role::all();
 
-        return view('students.edit', compact('user', 'roles', 'user_roles'));
+        return view('students.edit', compact('user', 'roles', 'user_roles', 'class_id', 'section_id', 'classes', 'sections'));
     }
     public function update(Request $request, $id)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'section' => ['required'],
+            'class' => ['required'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$id],
             'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$id, 'min:8', new Nospaces],
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -164,6 +196,8 @@ class StudentController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->number = $request->number;
+        $user->schoolClass()->associate($request->class);
+        $user->schoolSection()->associate($request->section);
         if(isset($request->password))
             $user->password = Hash::make($request->password);
         $user->save();

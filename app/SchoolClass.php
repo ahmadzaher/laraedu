@@ -15,5 +15,9 @@ class SchoolClass extends Model
         return $this->belongsToMany(SchoolSection::class,'sections_classes');
 
     }
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 
 }

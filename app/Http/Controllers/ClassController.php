@@ -23,6 +23,19 @@ class ClassController extends Controller
         return view('classes.class');
     }
 
+    public function getClassSections(Request $request, $id)
+    {
+        $class = SchoolClass::with('sections')->find($id);
+
+        $class_sections = [];
+        foreach($class->sections as $section){
+            $class_sections[] = [
+                'value' => $section->id,
+                'name' => $section->name
+            ];
+        }
+        return json_encode($class_sections);
+    }
 
     public function getClasses(Request $request)
     {

@@ -56,6 +56,7 @@ Route::get('class/list', [ClassController::class, 'getClasses'])->name('class.li
 Route::get('class/add', [ClassController::class, 'add'])->name('class.add');
 Route::post('class', [ClassController::class, 'store'])->name('class.store');
 Route::get('class/edit/{id}', [ClassController::class, 'edit'])->name('class.edit');
+Route::get('class/sections/{id}', [ClassController::class, 'getClassSections'])->name('class.sections');
 Route::put('class/edit/{id}', [ClassController::class, 'update'])->name('class.update');
 Route::delete('class/delete/{id}', [ClassController::class, 'destroy'])->name('class.destroy');
 

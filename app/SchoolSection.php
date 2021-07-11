@@ -10,9 +10,13 @@ class SchoolSection extends Model
         'name', 'capacity'
     ];
 
-    public function sections() {
+    public function classes() {
 
         return $this->belongsToMany(SchoolClass::class,'sections_classes');
 
+    }
+    public function user()
+    {
+        return $this->hasOne(User::class);
     }
 }

@@ -14,6 +14,8 @@
                 <th>No</th>
                 <th>Avatar</th>
                 <th>Name</th>
+                <th>Class</th>
+                <th>Section</th>
                 <th>Username</th>
                 <th>Phone number</th>
                 <th>Email</th>
@@ -39,6 +41,8 @@
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'avatar', name: 'avatar'},
                     {data: 'name', name: 'name'},
+                    {data: 'class_name', name: 'class_name'},
+                    {data: 'section_name', name: 'section_name'},
                     {data: 'username', name: 'username'},
                     {data: 'number', name: 'number'},
                     {data: 'email', name: 'email'},

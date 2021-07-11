@@ -63,6 +63,56 @@
                             </div>
 
                             <div class="form-group row">
+                                <label for="class" class="col-md-4 col-form-label text-md-right">{{ __('Class') }}</label>
+                                <div class="col-md-6">
+                                    <select name="class" class="form-control @error('class') is-invalid @enderror" id="class" required>
+                                        <option selected disabled>
+                                            Not Selected
+                                        </option>
+                                        @foreach($classes as $class)
+                                            <option value="{{ $class['id'] }}">{{ $class['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('class')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="section" class="col-md-4 col-form-label text-md-right">{{ __('Section') }}</label>
+                                <div class="col-md-6">
+                                    <select name="section" class="form-control @error('section') is-invalid @enderror" id="section" required>
+                                        <option selected disabled>
+                                            Select class first
+                                        </option>
+                                    </select>
+                                    @error('section')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="avatar" class="col-md-4 col-form-label text-md-right">{{ __('Avatar (optional)') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="avatar" type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar">
+                                    @error('avatar')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group row">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                                 <div class="col-md-6">
@@ -84,21 +134,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <label for="avatar" class="col-md-4 col-form-label text-md-right">{{ __('Avatar (optional)') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="avatar" type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar">
-                                    @error('avatar')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <hr>
-
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">
                                     <button type="submit" class="btn btn-primary">
@@ -112,4 +147,34 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        $('#class').on('change', function() {
+            var id = this.value;
+
+
+
+            //Ajax Load data from ajax
+            $.ajax({
+                url : "{{ env('APP_URL') }}" + '/class/sections/' + parseInt(id),
+                type: "GET",
+                dataType: "JSON",
+                success: function(data)
+                {
+                    console.log(data);
+                    $("#section").html('');
+                    $.each(data, function() {
+                        $("#section").append('<option value="' + this.value + '">' + this.name + '</option>')
+                    })
+
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Error get data from ajax');
+                }
+            });
+        })
+    </script>
 @endsection

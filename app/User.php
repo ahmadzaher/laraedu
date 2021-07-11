@@ -33,7 +33,7 @@ class User extends Authenticatable implements HasMedia
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'email', 'password', 'number'
+        'name', 'username', 'email', 'password', 'number', 'class_id'
     ];
 
     /**
@@ -62,5 +62,15 @@ class User extends Authenticatable implements HasMedia
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'users_permissions');
+    }
+
+    public function SchoolClass()
+    {
+        return $this->belongsTo(SchoolClass::class, 'class_id');
+    }
+
+    public function SchoolSection()
+    {
+        return $this->belongsTo(SchoolSection::class, 'section_id');
     }
 }
