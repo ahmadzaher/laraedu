@@ -3,7 +3,9 @@
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -37,6 +39,16 @@ Route::get('student/edit/{id}', [StudentController::class, 'edit'])->name('stude
 Route::put('student/edit/{id}', [StudentController::class, 'update'])->name('student.update');
 Route::delete('student/delete/{id}', [StudentController::class, 'destroy'])->name('student.destroy');
 
+
+// Teacher routes
+Route::get('teacher', [TeacherController::class, 'index'])->name('teachers');
+Route::get('teacher/list', [TeacherController::class, 'getUsers'])->name('teacher.list');
+Route::get('teacher/add', [TeacherController::class, 'add'])->name('teacher.add');
+Route::post('teacher', [TeacherController::class, 'store'])->name('teacher.store');
+Route::get('teacher/edit/{id}', [TeacherController::class, 'edit'])->name('teacher.edit');
+Route::put('teacher/edit/{id}', [TeacherController::class, 'update'])->name('teacher.update');
+Route::delete('teacher/delete/{id}', [TeacherController::class, 'destroy'])->name('teacher.destroy');
+
 // Role routes
 Route::get('role', [RoleController::class, 'index'])->name('roles');
 Route::get('role/list', [RoleController::class, 'getRoles'])->name('role.list');
@@ -64,6 +76,16 @@ Route::post('section', [SectionController::class, 'store'])->name('section.store
 Route::get('section/edit/{id}', [SectionController::class, 'edit'])->name('section.edit');
 Route::put('section/edit/{id}', [SectionController::class, 'update'])->name('section.update');
 Route::delete('section/delete/{id}', [SectionController::class, 'destroy'])->name('section.destroy');
+
+
+// Department routes
+Route::get('department', [DepartmentController::class, 'index'])->name('departments');
+Route::get('department/list', [DepartmentController::class, 'getDepartments'])->name('department.list');
+Route::get('department/add', [DepartmentController::class, 'add'])->name('department.add');
+Route::post('department', [DepartmentController::class, 'store'])->name('department.store');
+Route::get('department/edit/{id}', [DepartmentController::class, 'edit'])->name('department.edit');
+Route::put('department/edit/{id}', [DepartmentController::class, 'update'])->name('department.update');
+Route::delete('department/delete/{id}', [DepartmentController::class, 'destroy'])->name('department.destroy');
 
 
 

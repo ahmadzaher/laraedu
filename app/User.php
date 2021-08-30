@@ -73,4 +73,9 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsTo(SchoolSection::class, 'section_id');
     }
+
+    public function departments()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 }

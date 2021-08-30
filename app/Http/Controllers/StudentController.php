@@ -23,7 +23,7 @@ class StudentController extends Controller
 
     public function index(Request $request)
     {
-        if(!$request->user()->can('view-user')) {
+        if(!$request->user()->can('view-student')) {
             return redirect('/home')->with('warning', 'You don\'t have permission to view users');
         }
         return view('students.user');
@@ -33,7 +33,7 @@ class StudentController extends Controller
     {
         if ($request->ajax()) {
             $user = $request->user();
-            if(!$user->can('view-user')) {
+            if(!$user->can('view-student')) {
                 return redirect('/home')->with('warning', 'You don\'t have permission to view users');
             }
             $data = User::latest()
@@ -54,7 +54,7 @@ class StudentController extends Controller
             $datatable =  Datatables::of($data)
                 ->addIndexColumn();
 
-            if($user->can('edit-user') || $user->can('delete-user')){
+            if($user->can('edit-student') || $user->can('delete-student')){
                 $datatable->addColumn('action', function($row){
                     $user_id = $row->id;
                     $actionBtn = view('students.control_buttons', compact('user_id'));
@@ -72,7 +72,7 @@ class StudentController extends Controller
 
     public function add(Request $request){
         $user = $request->user();
-        if(!$user->can('create-user')){
+        if(!$user->can('create-student')){
             return redirect('/student')->with('warning', 'You don\'t have permission to add user');
         }
         $roles = Role::all();
@@ -82,7 +82,7 @@ class StudentController extends Controller
     }
     public function store(Request $request){
         $user = $request->user();
-        if(!$user->can('create-user')){
+        if(!$user->can('create-student')){
             return redirect('/student')->with('warning', 'You don\'t have permission to add user');
         }
 
@@ -129,7 +129,7 @@ class StudentController extends Controller
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
-        if(!$user->can('delete-user')){
+        if(!$user->can('delete-student')){
             return redirect('/student')->with('warning', 'You don\'t have permission to delete user');
         }
         $user = User::find($id);
@@ -162,7 +162,7 @@ class StudentController extends Controller
             ];
         }
 
-        if(!$request->user()->can('edit-user')){
+        if(!$request->user()->can('edit-student')){
             return redirect('/student')->with('warning', 'You don\'t have permission to edit user');
         }
         $user_roles = [];
@@ -189,7 +189,7 @@ class StudentController extends Controller
         ]);
         $user = User::find($id);
 
-        if(!$request->user()->can('edit-user')){
+        if(!$request->user()->can('edit-student')){
             return redirect('/student')->with('warning', 'You don\'t have permission to update user');
         }
         $user->name =  $request->name;
