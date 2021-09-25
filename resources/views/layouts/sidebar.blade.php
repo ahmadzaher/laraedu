@@ -18,13 +18,13 @@
                 <ul class="collapse lisst-unstyled {{ Request::is('profile') ? 'show' : '' }} p-0 m-1" id="user">
                     <li class="">
 
-                        <a class="nav-link {{ Request::is('profile') ? 'active' : '' }} link-dark" href="{{ route('profile.edit') }}" >
+                        <a class="nav-link {{ Request::is('profile') ? 'active' : '' }} link-dark ml-2" href="{{ route('profile.edit') }}" >
                             {{ __('Profile') }}
                         </a>
                     </li>
                     <li>
 
-                        <a class="nav-link link-dark" href="{{ route('logout') }}"
+                        <a class="nav-link link-dark ml-2" href="{{ route('logout') }}"
                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                             {{ __('Logout') }}
@@ -53,54 +53,71 @@
                     Dashboard
                 </a>
             </li>
+            @if(Auth::user()->can('view-user') || Auth::user()->can('view-role'))
             <?php
                 $active = \Request::route()->getName() == 'users' ||
-                \Request::route()->getName() == 'students' ||
-                \Request::route()->getName() == 'teachers' ||
-                \Request::route()->getName() == 'departments';
+                \Request::route()->getName() == 'roles';
             ?>
             <li class="sidebarCollapse">
                 <a href="#users" data-toggle="collapse" aria-expanded="false" class="arrow-toggle @if($active) active @endif nav-link link-dark">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
                         <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
                     </svg>
-                    Users
+                    Staffs
                 </a>
                 <ul class="collapse lisst-unstyled @if($active) show @endif p-0 m-1" id="users">
                     @can('view-user')
                         <li>
-                            <a href="{{ route('users') }}" class="nav-link link-dark {{ Request::is('user') ? 'active' : '' }}">
+                            <a href="{{ route('users') }}" class="nav-link link-dark ml-2 {{ Request::is('user') ? 'active' : '' }}">
 {{--                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">--}}
 {{--                                    <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>--}}
 {{--                                </svg>--}}
-                                Staffs
+                                Staffs List
                             </a>
                         </li>
                     @endcan
 
-                    @can('view-student')
+                    @can('view-role')
                         <li>
-                            <a href="{{ route('students') }}" class="nav-link link-dark {{ Request::is('student') ? 'active' : '' }}">
+                            <a href="{{ route('roles') }}" class="nav-link link-dark ml-2 {{ Request::is('role') ? 'active' : '' }}">
                                 {{--                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">--}}
                                 {{--                                    <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>--}}
                                 {{--                                </svg>--}}
-                                Students
+                                Roles
                             </a>
                         </li>
                     @endcan
+                </ul>
+            </li>
+            @endif
+            <?php
+            $active =
+                \Request::route()->getName() == 'teachers' ||
+                \Request::route()->getName() == 'departments';
+            ?>
+            @if(Auth::user()->can('view-teacher') || Auth::user()->can('view-department'))
+            <li class="sidebarCollapse">
+                <a href="#teachers" data-toggle="collapse" aria-expanded="false" class="arrow-toggle @if($active) active @endif nav-link link-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
+                        <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                    </svg>
+                    Teachers
+                </a>
+                <ul class="collapse lisst-unstyled @if($active) show @endif p-0 m-1" id="teachers">
+
 
                     @can('view-teacher')
                         <li>
-                            <a href="{{ route('teachers') }}" class="nav-link link-dark {{ Request::is('teacher') ? 'active' : '' }}">
+                            <a href="{{ route('teachers') }}" class="nav-link link-dark ml-2 {{ Request::is('teacher') ? 'active' : '' }}">
 
-                                Teachers
+                                Teachers List
                             </a>
                         </li>
                     @endcan
 
                     @can('view-department')
                         <li>
-                            <a href="{{ route('departments') }}" class="nav-link link-dark {{ Request::is('department') ? 'active' : '' }}">
+                            <a href="{{ route('departments') }}" class="nav-link link-dark ml-2 {{ Request::is('department') ? 'active' : '' }}">
 
                                 Departments
                             </a>
@@ -108,39 +125,85 @@
                     @endcan
                 </ul>
             </li>
+            @endif
+            <?php
+            $active =
+                \Request::route()->getName() == 'students' ||
+                \Request::route()->getName() == 'student.add';
+            ?>
+            @if(Auth::user()->can('view-student') || Auth::user()->can('view-department'))
+                <li class="sidebarCollapse">
+                    <a href="#student" data-toggle="collapse" aria-expanded="false" class="arrow-toggle @if($active) active @endif nav-link link-dark">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
+                            <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                        </svg>
+                        Students
+                    </a>
+                    <ul class="collapse lisst-unstyled @if($active) show @endif p-0 m-1" id="student">
 
-            @can('view-role')
-                <li>
-                    <a href="{{ route('roles') }}" class="nav-link link-dark {{ Request::is('role') ? 'active' : '' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
-                            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
-                        </svg>
-                        Roles
-                    </a>
+                        @can('view-student')
+                            <li>
+                                <a  href="{{ route('students') }}" class="nav-link link-dark ml-2 {{ Request::is('student') ? 'active' : '' }}">
+
+                                    Students List
+                                </a>
+                            </li>
+                        @endcan
+                        @can('create-student')
+                            <li>
+                                <a href="{{ route('student.add') }}" class="nav-link link-dark ml-2 {{ Request::is('student/add') ? 'active' : '' }}">
+
+                                    Add New Student
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
                 </li>
-            @endcan
-            @can('view-class')
-                <li>
-                    <a href="{{ route('classes') }}" class="nav-link link-dark {{ Request::is('class') ? 'active' : '' }}">
+            @endif
+            <?php
+            $active =
+                \Request::route()->getName() == 'classes' ||
+                \Request::route()->getName() == 'sections' ||
+                \Request::route()->getName() == 'subjects';
+            ?>
+            @if(Auth::user()->can('view-class') || Auth::user()->can('view-section') || Auth::user()->can('view-subject'))
+                <li class="sidebarCollapse">
+                    <a href="#academic" data-toggle="collapse" aria-expanded="false" class="arrow-toggle @if($active) active @endif nav-link link-dark">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ol" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
                             <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338v.041zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635V5z"/>
                         </svg>
-                        Classes
+                        Academics
                     </a>
+                    <ul class="collapse lisst-unstyled @if($active) show @endif p-0 m-1" id="academic">
+
+                        @can('view-class')
+                            <li>
+                                <a href="{{ route('classes') }}" class="nav-link link-dark {{ Request::is('class') ? 'active' : '' }}">
+
+                                    Classes
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view-section')
+                            <li>
+                                <a href="{{ route('sections') }}" class="nav-link link-dark {{ Request::is('section') ? 'active' : '' }}">
+
+                                    Sections
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view-subject')
+                            <li>
+                                <a href="{{ route('subjects') }}" class="nav-link link-dark {{ Request::is('subject') ? 'active' : '' }}">
+
+                                    Subjects
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
                 </li>
-            @endcan
-            @can('view-section')
-                <li>
-                    <a href="{{ route('sections') }}" class="nav-link link-dark {{ Request::is('section') ? 'active' : '' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ol" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
-                            <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338v.041zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635V5z"/>
-                        </svg>
-                        Sections
-                    </a>
-                </li>
-            @endcan
+            @endif
         </ul>
     </div>
 

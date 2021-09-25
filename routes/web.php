@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
@@ -76,6 +77,15 @@ Route::post('section', [SectionController::class, 'store'])->name('section.store
 Route::get('section/edit/{id}', [SectionController::class, 'edit'])->name('section.edit');
 Route::put('section/edit/{id}', [SectionController::class, 'update'])->name('section.update');
 Route::delete('section/delete/{id}', [SectionController::class, 'destroy'])->name('section.destroy');
+
+// Subject routes
+Route::get('subject', [SubjectController::class, 'index'])->name('subjects');
+Route::get('subject/list', [SubjectController::class, 'getSubjects'])->name('subject.list');
+Route::get('subject/add', [SubjectController::class, 'add'])->name('subject.add');
+Route::post('subject', [SubjectController::class, 'store'])->name('subject.store');
+Route::get('subject/edit/{id}', [SubjectController::class, 'edit'])->name('subject.edit');
+Route::put('subject/edit/{id}', [SubjectController::class, 'update'])->name('subject.update');
+Route::delete('subject/delete/{id}', [SubjectController::class, 'destroy'])->name('subject.destroy');
 
 
 // Department routes
