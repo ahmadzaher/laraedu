@@ -164,6 +164,7 @@
             $active =
                 \Request::route()->getName() == 'classes' ||
                 \Request::route()->getName() == 'sections' ||
+                \Request::route()->getName() == 'teacher_allocation' ||
                 \Request::route()->getName() == 'subjects';
             ?>
             @if(Auth::user()->can('view-class') || Auth::user()->can('view-section') || Auth::user()->can('view-subject'))
@@ -190,6 +191,14 @@
                                 <a href="{{ route('sections') }}" class="nav-link link-dark {{ Request::is('section') ? 'active' : '' }}">
 
                                     Sections
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view-teacher')
+                            <li>
+                                <a href="{{ route('teacher_allocation') }}" class="nav-link link-dark {{ Request::is('teacher_allocation') ? 'active' : '' }}">
+
+                                    Assign Class Teacher
                                 </a>
                             </li>
                         @endcan

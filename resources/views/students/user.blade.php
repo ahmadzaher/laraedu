@@ -54,7 +54,28 @@
                         searchable: true
                     },
                     @endif
-                ]
+                ],
+                buttons: [
+                    {
+                        extend: "excel",                    // Extend the excel button
+                        excelStyles: {                      // Add an excelStyles definition
+                            cells: "2",                     // to row 2
+                            style: {                        // The style block
+                                font: {                     // Style the font
+                                    name: "Arial",          // Font name
+                                    size: "14",             // Font size
+                                    color: "FFFFFF",        // Font Color
+                                    b: false,               // Remove bolding from header row
+                                },
+                                fill: {                     // Style the cell fill (background)
+                                    pattern: {              // Type of fill (pattern or gradient)
+                                        color: "457B9D",    // Fill color
+                                    }
+                                }
+                            }
+                        },
+                    },
+                ],
             });
 
         })

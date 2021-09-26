@@ -78,4 +78,9 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
+
+    public function allocations()
+    {
+        return $this->belongsToMany(Permission::class, 'teacher_allocations');
+    }
 }

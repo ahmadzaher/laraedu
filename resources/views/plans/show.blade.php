@@ -1,8 +1,7 @@
-@extends('layouts.app')
-@section('content')
+@extends('layouts.app')@section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-12">
+            <div class="col-md-10">
                 <div class="">
                     <p>You will be charged ${{ number_format($plan->cost, 2) }} for {{ $plan->name }} Plan</p>
                 </div>

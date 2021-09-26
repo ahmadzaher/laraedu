@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Department;
 use App\Role;
 use App\Rules\Nospaces;
+use App\SchoolClass;
+use App\TeacherAllocation;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -200,5 +202,178 @@ class TeacherController extends Controller
 
             return redirect('/teacher')->with('success', 'User updated!');
         }
+    }
+
+    public function teacher_allocation(Request $request)
+    {
+        if (!$request->user()->can('view-teacher')) {
+            return redirect('/home')->with('warning', 'You don\'t have permission to view users');
+        }
+        return view('teachers.allocations');
+    }
+
+    public function getAllocations(Request $request)
+    {
+        if ($request->ajax()) {
+            $user = $request->user();
+            if (!$user->can('view-teacher')) {
+                return redirect('/home')->with('warning', 'You don\'t have permission to view users');
+            }
+            $data = TeacherAllocation::latest('teacher_allocations.created_at')
+                ->leftJoin('users', 'teacher_allocations.teacher_id', '=', 'users.id')
+                ->leftJoin('school_classes', 'teacher_allocations.class_id', '=', 'school_classes.id')
+                ->leftJoin('school_sections', 'teacher_allocations.section_id', '=', 'school_sections.id')
+                ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+                ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+                ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
+                ->where('roles.slug', '=', 'teacher')
+                ->select(
+                    //'teacher_allocations.*',
+                    'users.name',
+                    'school_classes.name as class_name',
+                    'school_sections.name as section_name',
+                    'roles.slug as role',
+                    'departments.name as department_name',
+                    'teacher_allocations.id as id'
+                )
+                ->get();
+
+
+            $datatable = Datatables::of($data)
+                ->addIndexColumn();
+
+            if ($user->can('edit-teacher') || $user->can('delete-teacher')) {
+                $datatable->addColumn('action', function ($row) {
+                    $id = $row->id;
+                    $actionBtn = view('teachers.allocation_control_buttons', compact('id'));
+                    return $actionBtn;
+                })
+                    ->rawColumns(['action']);
+            }
+            return $datatable->make(true);
+        }
+    }
+    public function add_allocation(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->can('create-teacher')) {
+            return redirect('/teacher_allocation')->with('warning', 'You don\'t have permission to add allocation');
+        }
+        $teachers = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->where('roles.slug', '=', 'teacher')
+            ->select('users.id as id', 'users.name')
+            ->get();
+        $classes = SchoolClass::all();
+
+        return view('teachers.add_allocation', compact('teachers', 'classes'));
+    }
+
+    public function store_allocation(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->can('create-teacher')) {
+            return redirect('/teacher_allocation')->with('warning', 'You don\'t have permission to add allocation');
+        }
+        if (TeacherAllocation::where('class_id', '=', $request->class)
+            ->where('section_id', '=', $request->section)
+            ->where('teacher_id', '=', $request->class_teacher)
+            ->exists()) {
+            return redirect('/allocation/add')->with('warning', 'Class Teachers Are Already Allocated For This Class');
+        }
+        if (TeacherAllocation::where('class_id', '=', $request->class)
+            ->where('section_id', '=', $request->section)
+            ->exists()) {
+            return redirect('/allocation/add')->with('warning', 'This Class Teacher Already Assigned');
+        }
+
+        $request->validate([
+            'class_teacher' => ['required'],
+            'class' => ['required'],
+            'section' => ['required'],
+        ]);
+        $allocation = new TeacherAllocation([
+            'teacher_id' => $request->class_teacher,
+            'class_id' => $request->class,
+            'section_id' => $request->section,
+
+        ]);
+
+        $allocation->save();
+
+
+        return redirect('/teacher_allocation')->with('success', 'Allocated Successfully');
+
+    }
+
+    public function destroy_allocation(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!$user->can('delete-teacher')) {
+            return redirect('/teacher_allocation')->with('warning', 'You don\'t have permission to delete allocation');
+        }
+        $allocation = TeacherAllocation::find($id);
+
+        $allocation->delete();
+
+        return redirect('/teacher_allocation')->with('success', 'Deleted Successfully!');
+    }
+
+    public function edit_allocation(Request $request, $id)
+    {
+        $allocation = TeacherAllocation::with('Teacher')->with('SchoolClass')->with('SchoolSection')->find($id);
+
+
+        $teachers = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->where('roles.slug', '=', 'teacher')
+            ->select('users.id as id', 'users.name')
+            ->get();
+        $classes = SchoolClass::all();
+        $class_id = $allocation->class_id;
+
+        $class = SchoolClass::with('sections')->find($class_id);
+
+        $sections = [];
+        if(isset($class->sections))
+        foreach($class->sections as $section){
+            $sections[] = [
+                'id' => $section->id,
+                'name' => $section->name
+            ];
+        }
+        $section_id = $allocation->section_id;
+        $teacher_id = $allocation->teacher_id;
+
+        if (!$request->user()->can('edit-teacher')) {
+            return redirect('/teacher_allocation')->with('warning', 'You don\'t have permission to edit user');
+        }
+
+        return view('teachers.edit_allocation', compact('allocation', 'teachers', 'classes', 'class_id', 'sections', 'section_id', 'teacher_id'));
+    }
+
+    public function update_allocation(Request $request, $id)
+    {
+        $request->validate([
+            'class_teacher' => ['required'],
+            'class' => ['required'],
+            'section' => ['required'],
+        ]);
+        $allocation = new TeacherAllocation([
+            'teacher_id' => $request->class_teacher,
+            'class_id' => $request->class,
+            'section_id' => $request->section,
+
+        ]);
+        $allocation = TeacherAllocation::find($id);
+
+        if (!$request->user()->can('edit-teacher')) {
+            return redirect('/teacher_allocation')->with('warning', 'You don\'t have permission to update user');
+        }
+        $allocation->teacher_id = $request->class_teacher;
+        $allocation->class_id = $request->class;
+        $allocation->section_id = $request->section;
+        $allocation->save();
+        return redirect('/teacher_allocation')->with('success', 'Allocation updated!');
     }
 }

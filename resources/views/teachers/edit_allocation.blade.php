@@ -4,56 +4,29 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card">
-                    <div class="card-header">{{ __('Edit User') }}</div>
+                    <div class="card-header">{{ __('Edit Class Teacher') }}</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('student.edit', $user->id) }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('allocation.edit', $allocation->id) }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
-                            <div class="form-group row">
-                                <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $user->name }}" required autocomplete="name" autofocus>
-
-                                    @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
 
                             <div class="form-group row">
-                                <label for="number" class="col-md-4 col-form-label text-md-right">{{ __('Phone Number') }}</label>
+                                <label for="class_teacher" class="col-md-4 col-form-label text-md-right">{{ __('Class Teacher') }}</label>
                                 <div class="col-md-6">
-                                    <input name="number" type="text" class="form-control" id="number" value="{{ $user->number }}">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $user->email }}" required autocomplete="email">
-
-                                    @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-
-                            <div class="form-group row">
-                                <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="username" type="username" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ $user->username }}" required autocomplete="username">
-
-                                    @error('username')
+                                    <select name="class_teacher" class="form-control @error('class_teacher') is-invalid @enderror" id="class_teacher" required>
+                                        <option selected disabled>
+                                            Not Selected
+                                        </option>
+                                        @foreach($teachers as $teacher)
+                                            <option
+                                                @if($teacher_id == $teacher['id'])
+                                                selected
+                                                @endif
+                                                value="{{ $teacher['id'] }}">{{ $teacher['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('class_teacher')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -106,42 +79,8 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="avatar" class="col-md-4 col-form-label text-md-right">{{ __('Avatar (optional)') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="avatar" type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar">
-                                    @error('avatar')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
 
                             <hr>
-                            <div class="form-group row">
-                                <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password">
-
-                                    @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password">
-                                </div>
-                            </div>
 
 {{--                            <div class="form-group row">--}}
 {{--                                <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>--}}

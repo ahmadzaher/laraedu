@@ -8,9 +8,9 @@
     $(function () {
         $('#show_nav').on('click', function (e){
             var screenWidth = $( document ).width();
-            $('#sidebarMenu').css('width', '250px');
+            $('#sidebarMenu').css('width', '270px');
             if(screenWidth > 600)
-                $('#main-content').css('margin-left', '250px');
+                $('#main-content').css('margin-left', '270px');
             $('.sidebar-toggle').css('display', 'none');
         });
         $('#hide_nav').on('click', function (e){

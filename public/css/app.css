@@ -10966,7 +10966,7 @@ a.text-dark:focus {
 }
 
 #sidebarMenu {
-  width: 250px;
+  width: 270px;
   position: fixed;
   margin-top: 0;
   z-index: 891;
@@ -10979,7 +10979,7 @@ a.text-dark:focus {
 }
 
 #main-content {
-  margin-left: 250px;
+  margin-left: 270px;
 }
 
 #sidebarMenu li {
@@ -11001,9 +11001,9 @@ a.text-dark:focus {
 
 @media (min-width: 1200px) {
   #sidebarMenu {
-    flex: 0 0 16.6666666667%;
-    max-width: 16.6666666667%;
-    width: 250px;
+    flex: 16.6666666667%;
+    max-width: 270px;
+    width: 270px;
   }
 
   .sidebar-toggle {
@@ -11027,11 +11027,11 @@ a.text-dark:focus {
 
 @media (min-width: 1200px) {
   #sidebarMenu {
-    width: 250px;
+    width: 270px;
   }
 
   #main-content {
-    margin-left: 250px;
+    margin-left: 270px;
   }
 
   .sidebar-toggle {

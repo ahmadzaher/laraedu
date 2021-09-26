@@ -50,6 +50,15 @@ Route::get('teacher/edit/{id}', [TeacherController::class, 'edit'])->name('teach
 Route::put('teacher/edit/{id}', [TeacherController::class, 'update'])->name('teacher.update');
 Route::delete('teacher/delete/{id}', [TeacherController::class, 'destroy'])->name('teacher.destroy');
 
+//Teacher allocations
+Route::get('teacher_allocation', [TeacherController::class, 'teacher_allocation'])->name('teacher_allocation');
+Route::get('teacher_allocations', [TeacherController::class, 'getAllocations'])->name('allocation.list');
+Route::get('allocation/add', [TeacherController::class, 'add_allocation'])->name('allocation.add');
+Route::post('allocation', [TeacherController::class, 'store_allocation'])->name('allocation.store');
+Route::get('allocation/edit/{id}', [TeacherController::class, 'edit_allocation'])->name('allocation.edit');
+Route::put('allocation/edit/{id}', [TeacherController::class, 'update_allocation'])->name('allocation.update');
+Route::delete('allocation/delete/{id}', [TeacherController::class, 'destroy_allocation'])->name('allocation.destroy');
+
 // Role routes
 Route::get('role', [RoleController::class, 'index'])->name('roles');
 Route::get('role/list', [RoleController::class, 'getRoles'])->name('role.list');
