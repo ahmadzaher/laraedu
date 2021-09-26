@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Subject;
+use App\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,10 +25,27 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-//        dd($user->hasRole('developer')); //will return true, if user has role
-//        dd($user->givePermissionsTo('create-tasks'));// will return permission, if not null
-//        dd($user->can('create-user')); // will return true, if user has permission
-        return view('home');
+        $number_of_students = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->leftJoin('school_classes', 'school_classes.id', '=', 'users.class_id')
+            ->leftJoin('school_sections', 'school_sections.id', '=', 'users.section_id')
+            ->where('roles.slug', '=', 'student')
+            ->count();
+
+        $number_of_teachers = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->leftJoin('school_classes', 'school_classes.id', '=', 'users.class_id')
+            ->leftJoin('school_sections', 'school_sections.id', '=', 'users.section_id')
+            ->where('roles.slug', '=', 'teacher')
+            ->count();
+
+        $number_of_staffs = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->where('roles.slug', '!=', 'student')
+            ->where('roles.slug', '!=', 'teacher')
+            ->orWhere('roles.slug', null)
+            ->count();
+        $number_of_subjects = Subject::latest()->count();
+        return view('home', compact('number_of_staffs', 'number_of_students', 'number_of_teachers', 'number_of_subjects'));
     }
 }
