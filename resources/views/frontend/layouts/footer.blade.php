@@ -38,13 +38,14 @@
 
             <!-- social -->
             <div class="col-md-4 col-md-push-8">
-                <ul class="footer-social">
-                    <li><a href="#" class="facebook"><i class="fa fa-facebook"></i></a></li>
-                    <li><a href="#" class="twitter"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a></li>
-                    <li><a href="#" class="instagram"><i class="fa fa-instagram"></i></a></li>
-                    <li><a href="#" class="youtube"><i class="fa fa-youtube"></i></a></li>
-                    <li><a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a></li>
+                <ul class="footer-social row">
+                    <li><a href="{{ option('facebook_url') }}" class="facebook"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="{{ option('twitter_url') }}" class="twitter"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="{{ option('google_url') }}" class="google-plus"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="{{ option('instagram_url') }}" class="instagram"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="{{ option('youtube_url') }}" class="linkedin"><i class="fa fa-linkedin"></i></a></li>
+                    <li><a href="{{ option('linkedin_url') }}" class="youtube"><i class="fa fa-youtube"></i></a></li>
+                    <li><a href="{{ option('pinterest_url') }}" class="pinterest"><i class="fa fa-pinterest"></i></a></li>
                 </ul>
             </div>
             <!-- /social -->

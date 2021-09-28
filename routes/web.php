@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\frontend;
 
 Auth::routes(['register' => false]);
 
@@ -129,6 +130,12 @@ Route::get('department/edit/{id}', [DepartmentController::class, 'edit'])->name(
 Route::put('department/edit/{id}', [DepartmentController::class, 'update'])->name('department.update');
 Route::delete('department/delete/{id}', [DepartmentController::class, 'destroy'])->name('department.destroy');
 
+// Frontend routes
+Route::get('frontend/settings', 'frontend\SettingsController@index')->name('frontend_settings');
+Route::put('frontend/settings/update', 'frontend\SettingsController@update')->name('frontend_settings.update');
+Route::get('frontend/hero_area', 'frontend\HeroAreaController@index')->name('hero_area');
+Route::post('frontend/hero_area/update', 'frontend\HeroAreaController@update')->name('hero_area.update');
+Route::get('frontend/menu', 'frontend\MenuController@index')->name('frontend_menu');
 
 
 Route::group(['middleware' => 'role:superadmin'], function() {

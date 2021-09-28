@@ -264,6 +264,51 @@
                     </ul>
                 </li>
             @endif
+            <?php
+            $active =
+            \Request::route()->getName() == 'frontend_settings' ||
+            \Request::route()->getName() == 'frontend_menu';
+            ?>
+            @if(Auth::user()->can('view-frontend-settings') || Auth::user()->can('view-frontend-menu'))
+                <li class="sidebarCollapse">
+                    <a href="#frontend" data-toggle="collapse" aria-expanded="false" class="arrow-toggle @if($active) active @endif nav-link link-dark">
+                        <i class="fa fa-globe bi" size="33px"></i>
+                        Frontend
+                    </a>
+                    <ul class="collapse lisst-unstyled @if($active) show @endif p-0 m-1" id="frontend">
+
+
+                        @can('view-frontend-settings')
+                            <li>
+                                <a href="{{ route('frontend_settings') }}" class="nav-link link-dark ml-2 {{ Request::is('frontend/settings') ? 'active' : '' }}">
+
+                                    Settings
+                                </a>
+                            </li>
+                        @endcan
+
+
+                        @can('view-frontend-settings')
+                            <li>
+                                <a href="{{ route('hero_area') }}" class="nav-link link-dark ml-2 {{ Request::is('frontend/hero_area') ? 'active' : '' }}">
+
+                                    Hero Area
+                                </a>
+                            </li>
+                        @endcan
+
+
+                        @can('view-frontend-menu')
+                            <li>
+                                <a href="{{ route('frontend_menu') }}" class="nav-link link-dark ml-2 {{ Request::is('frontend/menu') ? 'active' : '' }}">
+
+                                    Menu
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
         </ul>
     </div>
 

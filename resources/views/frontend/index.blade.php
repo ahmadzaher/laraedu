@@ -5,16 +5,16 @@
     <div id="home" class="hero-area">
 
         <!-- Backgound Image -->
-        <div class="bg-image bg-parallax overlay" style="background-image:url({{ asset('frontend/img/home-background.jpg') }})"></div>
+        <div class="bg-image bg-parallax overlay" style="background-image:url({{ option('hero_photo_url') }})"></div>
         <!-- /Backgound Image -->
 
         <div class="home-wrapper">
             <div class="container">
                 <div class="row">
                     <div class="col-md-8">
-                        <h1 class="white-text">Edusite Free Online Training Courses</h1>
-                        <p class="lead white-text">Libris vivendo eloquentiam ex ius, nec id splendide abhorreant, eu pro alii error homero.</p>
-                        <a class="main-button icon-button" href="#">Get Started!</a>
+                        <h1 class="white-text">{{ option('hero_title') }}</h1>
+                        <p class="lead white-text">{{ option('hero_description') }}</p>
+                        <a class="main-button icon-button" href="{{ option('button_url') }}">{{ option('button_text') }}</a>
                     </div>
                 </div>
             </div>
