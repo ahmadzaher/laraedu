@@ -22,7 +22,7 @@
         <!-- Navigation -->
         <nav id="nav">
             <ul class="main-menu nav navbar-nav navbar-right">
-                @include('frontend.layouts.links')
+                @include('frontend.layout.links')
             </ul>
         </nav>
         <!-- /Navigation -->
