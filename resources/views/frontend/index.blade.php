@@ -5,7 +5,7 @@
     <div id="home" class="hero-area">
 
         <!-- Backgound Image -->
-        <div class="bg-image bg-parallax overlay" style="background-image:url(./frontend/img/home-background.jpg)"></div>
+        <div class="bg-image bg-parallax overlay" style="background-image:url({{ asset('frontend/img/home-background.jpg') }})"></div>
         <!-- /Backgound Image -->
 
         <div class="home-wrapper">
@@ -261,7 +261,7 @@
     <div id="cta" class="section">
 
         <!-- Backgound Image -->
-        <div class="bg-image bg-parallax overlay" style="background-image:url(./frontend/img/cta1-background.jpg)"></div>
+        <div class="bg-image bg-parallax overlay" style="background-image:url({{ asset('frontend/img/cta1-background.jpg') }})"></div>
         <!-- /Backgound Image -->
 
         <!-- container -->
@@ -368,7 +368,7 @@
     <div id="contact-cta" class="section">
 
         <!-- Backgound Image -->
-        <div class="bg-image bg-parallax overlay" style="background-image:url(./frontend/img/cta2-background.jpg)"></div>
+        <div class="bg-image bg-parallax overlay" style="background-image:url({{ asset('frontend/img/cta2-background.jpg') }})"></div>
         <!-- Backgound Image -->
 
         <!-- container -->
