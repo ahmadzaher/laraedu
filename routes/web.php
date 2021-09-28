@@ -18,11 +18,11 @@ use App\Http\Controllers\PermissionController;
 Auth::routes(['register' => false]);
 
 // Frontend Routes
-Route::get('/home', 'FrontendController@index')->name('home');
-Route::get('/', 'FrontendController@index')->name('home');
+Route::get('/', 'FrontendController@index')->name('frontend');
 
 //Dashboard
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+Route::get('/home', 'HomeController@index')->name('home');
 
 
 //User routes
