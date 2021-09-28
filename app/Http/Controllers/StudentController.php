@@ -47,8 +47,7 @@ class StudentController extends Controller
                     'roles.slug as role',
                     'school_classes.name as class_name',
                     'school_sections.name as section_name'
-                )
-                ->get();
+                )->get();
 
 
             $datatable =  Datatables::of($data)

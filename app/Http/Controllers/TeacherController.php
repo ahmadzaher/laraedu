@@ -46,8 +46,7 @@ class TeacherController extends Controller
                     'users.*',
                     'roles.slug as role',
                     'departments.name as department_name',
-                )
-                ->get();
+                )->get();
 
 
             $datatable = Datatables::of($data)
