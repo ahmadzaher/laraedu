@@ -45,7 +45,7 @@ class TeacherController extends Controller
                 ->select(
                     'users.*',
                     'roles.slug as role',
-                    'departments.name as department_name',
+                    'departments.name as department_name'
                 )->get();
 
 
