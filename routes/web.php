@@ -3,7 +3,9 @@
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
-use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SubjectController;;
+use App\Http\Controllers\exam\ExamController;
+use App\Http\Controllers\exam\ExamGradeController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
@@ -95,6 +97,24 @@ Route::post('subject', [SubjectController::class, 'store'])->name('subject.store
 Route::get('subject/edit/{id}', [SubjectController::class, 'edit'])->name('subject.edit');
 Route::put('subject/edit/{id}', [SubjectController::class, 'update'])->name('subject.update');
 Route::delete('subject/delete/{id}', [SubjectController::class, 'destroy'])->name('subject.destroy');
+
+// Exam routes
+Route::get('exam', [ExamController::class, 'index'])->name('exams');
+Route::get('exam/list', [ExamController::class, 'getExams'])->name('exam.list');
+Route::get('exam/add', [ExamController::class, 'add'])->name('exam.add');
+Route::post('exam', [ExamController::class, 'store'])->name('exam.store');
+Route::get('exam/edit/{id}', [ExamController::class, 'edit'])->name('exam.edit');
+Route::put('exam/edit/{id}', [ExamController::class, 'update'])->name('exam.update');
+Route::delete('exam/delete/{id}', [ExamController::class, 'destroy'])->name('exam.destroy');
+
+// Exam routes
+Route::get('exam_grade', [ExamGradeController::class, 'index'])->name('exam_grades');
+Route::get('exam_grade/list', [ExamGradeController::class, 'getExamGrades'])->name('exam_grade.list');
+Route::get('exam_grade/add', [ExamGradeController::class, 'add'])->name('exam_grade.add');
+Route::post('exam_grade', [ExamGradeController::class, 'store'])->name('exam_grade.store');
+Route::get('exam_grade/edit/{id}', [ExamGradeController::class, 'edit'])->name('exam_grade.edit');
+Route::put('exam_grade/edit/{id}', [ExamGradeController::class, 'update'])->name('exam_grade.update');
+Route::delete('exam_grade/delete/{id}', [ExamGradeController::class, 'destroy'])->name('exam_grade.destroy');
 
 
 // Department routes
