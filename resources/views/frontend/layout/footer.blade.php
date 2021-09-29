@@ -12,7 +12,7 @@
             <div class="col-md-6">
                 <div class="footer-logo">
                     <a class="logo" href="#">
-                        <img src="{{ option('logo') }}" height="70" width="70" alt="logo">
+                        <img src="{{ url()->full() . option('logo') }}" height="70" width="70" alt="logo">
                     </a>
                 </div>
             </div>
