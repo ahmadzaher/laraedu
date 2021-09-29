@@ -5,7 +5,7 @@
     <div id="home" class="hero-area">
 
         <!-- Backgound Image -->
-        <div class="bg-image bg-parallax overlay" style="background-image:url({{ env('APP_URL/') . option('hero_photo_url') }})"></div>
+        <div class="bg-image bg-parallax overlay" style="background-image:url({{ url()->full() . option('hero_photo_url') }})"></div>
         <!-- /Backgound Image -->
 
         <div class="home-wrapper">
