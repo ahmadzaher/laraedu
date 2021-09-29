@@ -19,7 +19,9 @@ use App\Http\Controllers\frontend;
 Auth::routes(['register' => false]);
 
 // Frontend Routes
-Route::get('/', 'FrontendController@index')->name('frontend');
+Route::group(['middleware' => 'frontendActive'], function() {
+    Route::get('/', 'FrontendController@index')->name('frontend');
+});
 
 //Dashboard
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
@@ -132,7 +134,7 @@ Route::delete('department/delete/{id}', [DepartmentController::class, 'destroy']
 
 // Frontend routes
 Route::get('frontend/settings', 'frontend\SettingsController@index')->name('frontend_settings');
-Route::put('frontend/settings/update', 'frontend\SettingsController@update')->name('frontend_settings.update');
+Route::post('frontend/settings/update', 'frontend\SettingsController@update')->name('frontend_settings.update');
 Route::get('frontend/hero_area', 'frontend\HeroAreaController@index')->name('hero_area');
 Route::post('frontend/hero_area/update', 'frontend\HeroAreaController@update')->name('hero_area.update');
 Route::get('frontend/menu', 'frontend\MenuController@index')->name('frontend_menu');

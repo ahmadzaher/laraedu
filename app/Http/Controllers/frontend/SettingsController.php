@@ -4,6 +4,7 @@ namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -13,6 +14,21 @@ class SettingsController extends Controller
     }
     public function update(Request $request)
     {
+        if ($request->hasFile('logo')) {
+            if ($request->file('logo')->isValid()) {
+                $validated = $request->validate([
+                    'logo' => 'mimes:jpeg,png,jpg|max:1024',
+                ]);
+                if($validated)
+                {
+                    $extension = $request->logo->extension();
+                    $request->logo->storeAs('/public', 'logo'.".".$extension);
+                    $url = Storage::url('logo'.".".$extension);
+
+                    option(['logo' => $url]);
+                }
+            }
+        }
         option(['cms_title' => $request->cms_title]);
         option(['active' => $request->active]);
         option(['receive_email_to' => $request->receive_email_to]);

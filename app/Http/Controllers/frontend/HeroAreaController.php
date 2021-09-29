@@ -19,13 +19,16 @@ class HeroAreaController extends Controller
             if ($request->file('hero_photo_url')->isValid()) {
                 //
                 $validated = $request->validate([
-                    'hero_photo_url' => 'mimes:jpeg,png|max:1014',
+                    'hero_photo_url' => 'mimes:jpeg,png,jpg|max:1024',
                 ]);
-                $extension = $request->hero_photo_url->extension();
-                $request->hero_photo_url->storeAs('/public', 'hero_photo'.".".$extension);
-                $url = Storage::url('hero_photo'.".".$extension);
+                if($validated)
+                {
+                    $extension = $request->hero_photo_url->extension();
+                    $request->hero_photo_url->storeAs('/public', 'hero_photo'.".".$extension);
+                    $url = Storage::url('hero_photo'.".".$extension);
 
-                option(['hero_photo_url' => $url]);
+                    option(['hero_photo_url' => $url]);
+                }
             }
         }
         option(['hero_title' => $request->hero_title]);

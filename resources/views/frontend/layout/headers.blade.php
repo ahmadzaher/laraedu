@@ -6,8 +6,8 @@
         <div class="navbar-header">
             <!-- Logo -->
             <div class="navbar-brand">
-                <a class="logo" href="index.html">
-                    <img src="{{ asset('frontend/img/logo-alt.png') }}" alt="logo">
+                <a class="logo" href="#">
+                    <img src="{{ option('logo') }}" height="" width="70" alt="logo">
                 </a>
             </div>
             <!-- /Logo -->

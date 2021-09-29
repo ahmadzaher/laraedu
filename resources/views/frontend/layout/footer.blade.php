@@ -11,8 +11,8 @@
             <!-- footer logo -->
             <div class="col-md-6">
                 <div class="footer-logo">
-                    <a class="logo" href="index.html">
-                        <img src="{{ asset('frontend/img/logo.png') }}" alt="logo">
+                    <a class="logo" href="#">
+                        <img src="{{ option('logo') }}" height="70" width="70" alt="logo">
                     </a>
                 </div>
             </div>
@@ -21,11 +21,7 @@
             <!-- footer nav -->
             <div class="col-md-6">
                 <ul class="footer-nav">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Courses</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    @include('frontend.layout.links')
                 </ul>
             </div>
             <!-- /footer nav -->
@@ -52,8 +48,13 @@
 
             <!-- copyright -->
             <div class="col-md-8 col-md-pull-4">
+                <div>
+                    <p>
+                        {{ option('footer_about_text') }}
+                    </p>
+                </div>
                 <div class="footer-copyright">
-                    <span>&copy; Copyright 2018. All Rights Reserved. | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com">Colorlib</a></span>
+                    <span>&copy; {{ option('copyright_text') }} </span>
                 </div>
             </div>
             <!-- /copyright -->

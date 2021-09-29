@@ -8,9 +8,8 @@
                     <div class="card-header">{{ __('Frontend Settings') }}</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('frontend_settings.update') }}">
+                        <form method="POST" action="{{ route('frontend_settings.update') }}" enctype="multipart/form-data">
                             @csrf
-                            @method('PUT')
                             <div class="form-group row">
                                 <label for="cms_title" class="col-md-4 col-form-label text-md-right">{{ __('CMS Title') }}</label>
 
@@ -22,6 +21,13 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                     @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="logo" class="col-md-4 col-form-label text-md-right">{{ __('Logo') }}</label>
+                                <div class="col-md-6">
+                                    <input id="logo" type="file" name="logo">
                                 </div>
                             </div>
 

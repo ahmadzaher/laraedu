@@ -222,13 +222,13 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 }
 
 .navbar-brand .logo {
-	margin-top: 10px;
+	/*margin-top: 10px;*/
 	display: inline-block;
 }
 
-.navbar-brand .logo > img {
-	max-height:30px;
-}
+/*.navbar-brand .logo > img {*/
+/*	max-height:30px;*/
+/*}*/
 
 @media only screen and (max-width: 767px) {
 	.navbar-brand {
@@ -655,9 +655,9 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 	display: inline-block;
 }
 
-.footer-logo  .logo > img {
-	max-height:30px;
-}
+/*.footer-logo  .logo > img {*/
+/*	max-height:30px;*/
+/*}*/
 
 /* -- Footer Nav -- */
 .footer-nav {

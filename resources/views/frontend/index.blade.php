@@ -380,7 +380,7 @@
                 <div class="col-md-8 col-md-offset-2 text-center">
                     <h2 class="white-text">Contact Us</h2>
                     <p class="lead white-text">Libris vivendo eloquentiam ex ius, nec id splendide abhorreant.</p>
-                    <a class="main-button icon-button" href="#">Contact Us Now</a>
+                    <a class="main-button icon-button" href = "{{ option('receive_email_to') }}?subject = Feedback&body = Message">Contact Us Now</a>
                 </div>
 
             </div>
