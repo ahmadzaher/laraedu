@@ -28,7 +28,7 @@ class TeacherController extends Controller
             )->paginate(10);
         foreach($data as $key => $teacher)
         {
-            $avatar = $teacher->getFirstMediaUrl('avatars', 'thumb') != null ? $teacher->getFirstMediaUrl('avatars', 'thumb') : url('/images/avatar.jpg');
+            $avatar = $teacher->getFirstMediaUrl('avatars', 'thumb') != null ? url($teacher->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
 
             $data[$key]['avatar'] = $avatar;
             unset($data[$key]['media']);

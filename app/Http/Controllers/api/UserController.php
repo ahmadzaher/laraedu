@@ -24,9 +24,9 @@ class UserController extends Controller
                 'username',
                 'number'
             )->paginate(10);
-        foreach($data as $key => $teacher)
+        foreach($data as $key => $staff)
         {
-            $avatar = $teacher->getFirstMediaUrl('avatars', 'thumb') != null ? $teacher->getFirstMediaUrl('avatars', 'thumb') : url('/images/avatar.jpg');
+            $avatar = $staff->getFirstMediaUrl('avatars', 'thumb') != null ? url($staff->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
 
             $data[$key]['avatar'] = $avatar;
             unset($data[$key]['media']);

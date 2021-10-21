@@ -26,9 +26,9 @@ class StudentController extends Controller
                 'school_classes.name as class_name',
                 'school_sections.name as section_name'
             )->paginate(10);
-        foreach($data as $key => $teacher)
+        foreach($data as $key => $student)
         {
-            $avatar = $teacher->getFirstMediaUrl('avatars', 'thumb') != null ? $teacher->getFirstMediaUrl('avatars', 'thumb') : url('/images/avatar.jpg');
+            $avatar = $student->getFirstMediaUrl('avatars', 'thumb') != null ? url($student->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
 
             $data[$key]['avatar'] = $avatar;
             unset($data[$key]['media']);
