@@ -40,7 +40,8 @@ class UserController extends Controller
                 ->where('roles.slug', '!=', 'student')
                 ->where('roles.slug', '!=', 'teacher')
                 ->orWhere('roles.slug', null)
-                ->select('users.*', 'roles.slug as role')->get();
+                ->select('users.*', 'roles.slug as role')
+                ->groupBy('users.id')->get();
 
 
             $datatable =  Datatables::of($data)

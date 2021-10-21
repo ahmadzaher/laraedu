@@ -23,7 +23,9 @@ class UserController extends Controller
                 'users.created_at',
                 'username',
                 'number'
-            )->paginate(10);
+            )
+            ->groupBy('users.id')
+            ->paginate(10);
         foreach($data as $key => $staff)
         {
             $avatar = $staff->getFirstMediaUrl('avatars', 'thumb') != null ? url($staff->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
