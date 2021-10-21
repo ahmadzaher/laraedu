@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Subject;
 use App\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -29,10 +30,40 @@ class UserStatistics extends Controller
                 $seven_days_user_gain = $seven_days_user_gain + $value->users;
             }
         }
+
+        $number_of_students = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->leftJoin('school_classes', 'school_classes.id', '=', 'users.class_id')
+            ->leftJoin('school_sections', 'school_sections.id', '=', 'users.section_id')
+            ->where('roles.slug', '=', 'student')
+            ->count();
+
+        $number_of_teachers = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->leftJoin('school_classes', 'school_classes.id', '=', 'users.class_id')
+            ->leftJoin('school_sections', 'school_sections.id', '=', 'users.section_id')
+            ->where('roles.slug', '=', 'teacher')
+            ->count();
+
+        $number_of_staffs = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->where('roles.slug', '!=', 'student')
+            ->where('roles.slug', '!=', 'teacher')
+            ->orWhere('roles.slug', null)
+            ->count();
+        $number_of_subjects = Subject::latest()->count();
+        // return view('home', compact('number_of_staffs', 'number_of_students', 'number_of_teachers', 'number_of_subjects'));
+
         return response()->json([
-            'seven_days_user_chart_label' => $seven_days_user_chart_label,
-            'seven_days_user_chart_data' => $seven_days_user_chart_data,
-            'seven_days_user_gain' => $seven_days_user_gain
+            'seven_days_user_statistics' => [
+                'seven_days_user_chart_label' => $seven_days_user_chart_label,
+                'seven_days_user_chart_data' => $seven_days_user_chart_data,
+                'seven_days_user_gain' => $seven_days_user_gain,
+            ],
+            'number_of_staffs' => $number_of_staffs,
+            'number_of_students' => $number_of_students,
+            'number_of_teachers' => $number_of_teachers,
+            'number_of_subjects' => $number_of_subjects
         ], 200);
 
 

@@ -46,6 +46,6 @@ class ProfileController extends Controller
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
         }
 
-        return redirect('/')->with('success', 'Your Profile has been edited successfully!');
+        return redirect('/dashboard')->with('success', 'Your Profile has been edited successfully!');
     }
 }

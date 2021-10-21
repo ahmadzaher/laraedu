@@ -6,16 +6,15 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class TeacherController extends Controller
 {
     public function getUsers()
     {
         $data = User::latest()
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
-            ->where('roles.slug', '!=', 'student')
-            ->where('roles.slug', '!=', 'teacher')
-            ->orWhere('roles.slug', null)
+            ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
+            ->where('roles.slug', '=', 'teacher')
             ->select(
                 'users.id',
                 'users.name',
@@ -23,6 +22,9 @@ class UserController extends Controller
                 'users.created_at',
                 'username',
                 'number',
+                'department_id',
+                'roles.slug as role',
+                'departments.name as department_name'
             )->paginate(10);
         foreach($data as $key => $teacher)
         {
