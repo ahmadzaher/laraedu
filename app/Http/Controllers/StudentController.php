@@ -62,7 +62,7 @@ class StudentController extends Controller
                     ->rawColumns(['action']);
             }
             $datatable->addColumn('avatar', function ($row){
-                $avatar = url($row->getFirstMediaUrl('avatars', 'thumb')) != null ? url($row->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
+                $avatar = $row->getFirstMediaUrl('avatars', 'thumb') != null ? url($row->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
                 return '<img src="'.$avatar.'" alt="avatar" class="avatar rounded img-responsive mr-1" />';
             })->rawColumns(['avatar']);
             return $datatable->make(true);
@@ -112,15 +112,6 @@ class StudentController extends Controller
 
         $role = Role::Where(['slug' => 'student'])->get();
         $user->roles()->attach($role);
-
-        // Assign permissions to user
-//        if(is_array($roles))
-//        foreach($roles as $role){
-//            $role = Role::find($role);
-//            $permission = $role->permissions()->get();
-//            $user->permissions()->detach($permission);
-//            $user->permissions()->attach($permission);
-//        }
 
         return redirect('/student')->with('success', 'User saved!');
 

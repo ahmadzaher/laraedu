@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Role;
+use App\Rules\Nospaces;
+use App\SchoolClass;
+use App\SchoolSection;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -36,5 +41,39 @@ class StudentController extends Controller
 
 
         return response()->json($data, 200);
+    }
+    public function store(Request $request)
+    {
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8', new Nospaces],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+//            'section' => ['required'],
+//            'class' => ['required'],
+        ]);
+        $user = new User([
+            'name' => $request->name,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'number' => $request->number,
+
+        ]);
+        $user->schoolClass()->associate($request->class);
+        $user->schoolSection()->associate($request->section);
+        $user->save();
+        if (isset($request->avatar)) {
+            $user->clearMediaCollection('avatars');
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+        }
+
+        $role = Role::Where(['slug' => 'student'])->get();
+        $user->roles()->attach($role);
+
+        return response()->json($user, 200);
+
     }
 }

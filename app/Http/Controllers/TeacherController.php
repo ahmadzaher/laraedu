@@ -61,7 +61,7 @@ class TeacherController extends Controller
                     ->rawColumns(['action']);
             }
             $datatable->addColumn('avatar', function ($row) {
-                $avatar = url($row->getFirstMediaUrl('avatars', 'thumb')) != null ? url($row->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
+                $avatar = $row->getFirstMediaUrl('avatars', 'thumb') != null ? url($row->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
                 return '<img src="' . $avatar . '" alt="avatar" class="avatar rounded img-responsive mr-1" />';
             })->rawColumns(['avatar']);
             return $datatable->make(true);
