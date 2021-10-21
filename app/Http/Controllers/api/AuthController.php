@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use function React\Promise\map;
 
 class AuthController extends Controller
 {
@@ -130,10 +131,44 @@ class AuthController extends Controller
             $user = User::find($user->id);
             $user->clearMediaCollection('avatars');
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+            $user->save();
         }
-        $user->save();
+        $user_roles = [];
+
+        $user_permissions = [];
+
+        foreach($user->roles as $role){
+            if($role->slug == 'student' or $role->slug == 'teacher'){
+                return redirect('/user')->with('warning', 'Something went Wrong');
+            }
+            $user_roles[] = [
+                'id' => $role->id,
+                'name' => $role->name,
+                'slug' => $role->slug
+            ];
+            foreach ( $role->permissions as $key => $permission )
+            {
+                $permission_data = [
+                    'id' => $permission->id,
+                    'name' => $permission->name,
+                    'slug' => $permission->slug
+                ];
+                if(in_array($permission_data, $user_permissions))
+                    continue;
+                $user_permissions[] = $permission_data;
+            }
+        }
         $user->phone_number = $user->number;
-        unset($user->number);
-        return response()->json(['user' => $user], 200);
+        $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
+
+        return response()->json(['user' => [
+            'id' => $user->id,
+            'email' => $user->email,
+            'username' => $user->username,
+            'phone_number' => $user->phone_number,
+            'avatar' => $avatar,
+            'roles' => $user_roles,
+            'permissions' => $user_permissions
+        ]], 200);
     }
 }
