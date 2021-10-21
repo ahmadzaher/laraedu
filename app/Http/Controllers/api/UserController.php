@@ -22,7 +22,7 @@ class UserController extends Controller
                 'email',
                 'users.created_at',
                 'username',
-                'number',
+                'number'
             )->paginate(10);
         foreach($data as $key => $teacher)
         {
