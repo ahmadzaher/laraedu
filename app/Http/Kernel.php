@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'frontendActive' => \App\Http\Middleware\FrontendActiveMiddleware::class,
         'localization' => \App\Http\Middleware\localization::class,
+        'api_version' => \App\Http\Middleware\APIversion::class,
     ];
 }
