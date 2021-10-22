@@ -1,108 +1,69 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\api\v1;
+
 use App\Http\Controllers\Controller;
 use App\Rules\Nospaces;
-use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
-use function React\Promise\map;
 
-class AuthController extends Controller
+class UserController extends Controller
 {
-    /**
-     * Registration Req
-     */
-    public function register(Request $request)
+    public function getUsers()
     {
-        $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', 'min:4'],
+        $data = User::latest()
+            ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->where('roles.slug', '!=', 'student')
+            ->where('roles.slug', '!=', 'teacher')
+            ->orWhere('roles.slug', null)
+            ->select(
+                'users.id',
+                'users.name',
+                'email',
+                'users.created_at',
+                'username',
+                'number'
+            )
+            ->groupBy('users.id')
+            ->paginate(10);
+        foreach($data as $key => $staff)
+        {
+            $avatar = $staff->getFirstMediaUrl('avatars', 'thumb') != null ? url($staff->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
+
+            $data[$key]['avatar'] = $avatar;
+            unset($data[$key]['media']);
+        }
+
+
+        return response()->json($data, 200);
+    }
+
+    public function store(Request $request){
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8', new Nospaces],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
-
-        $user = User::create([
+        $user = new User([
             'name' => $request->name,
-            'email' => $request->email,
-            'number' => $request->number,
             'username' => $request->username,
-            'password' => bcrypt($request->password)
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'number' => $request->number,
         ]);
-
-        $token = $user->createToken('Laravel8PassportAuth')->accessToken;
-
-        return response()->json(['token' => $token], 200);
-    }
-
-    /**
-     * Login Req
-     */
-    public function login(Request $request)
-    {
-        $login_type = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL )
-            ? 'email'
-            : 'username';
-        $request->merge([
-            $login_type => $request->input('login')
-        ]);
-
-        if (Auth::attempt($request->only($login_type, 'password'))) {
-            $token = auth()->user()->createToken('Laravel8PassportAuth')->accessToken;
-            return response()->json(['token' => $token], 200);
-        } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
+        $user->save();
+        if (isset($request->avatar)) {
+            $user->clearMediaCollection('avatars');
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
         }
-    }
 
-    public function facebook(Request $request)
-    {
-        $token = $request->token;
-        // Attempt to query the graph:
-        $graph_url = "https://graph.facebook.com/me?"
-            . "access_token=" . $token;
-        $response = [];
-        $c = curl_init();
-        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($c, CURLOPT_URL, $graph_url);
-        $contents = curl_exec($c);
-        $err = curl_getinfo($c, CURLINFO_HTTP_CODE);
-        curl_close($c);
-        if ($contents)
-            $response = $contents;
-        $decoded_response = json_decode($response);
-
-        if (isset($decoded_response->error)) {
-            return response()->json(['error' => 'Unauthorised'], 401);
-        }
-        $user = Socialite::driver('facebook')->stateless()->userFromToken($token);
-        $user = User::firstOrCreate([
-            'email' => $user->email
-        ], [
-            'username' => $user->email,
-            'name' => $user->name != null ? $user->name : $user->nickname,
-            'password' => Hash::make(Str::random(24))
-        ]);
-        // return $user->password;
-        $token = $user->createToken('Laravel8PassportAuth')->accessToken;
-        return response()->json(['token' => $token], 200);
-
-    }
-
-    public function userInfo()
-    {
-
-        $user = auth()->user();
-
-        $user_info = User::find($user->id);
-        $avatar = $user_info->getFirstMediaUrl('avatars', 'thumb') ? url($user_info->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
-
-        $user->phone_number = $user->number;
-        unset($user->number);
-        $user->avatar = $avatar;
+        $roles = $request->roles;
+        $user->roles()->attach($roles);
 
         $user_roles = [];
 
@@ -110,7 +71,7 @@ class AuthController extends Controller
 
         foreach($user->roles as $role){
             if($role->slug == 'student' or $role->slug == 'teacher'){
-                return redirect('/user')->with('warning', 'Something went Wrong');
+                return response()->json(['message' => 'Something went wrong!']);
             }
             $user_roles[] = [
                 'id' => $role->id,
@@ -136,46 +97,53 @@ class AuthController extends Controller
             'id' => $user->id,
             'email' => $user->email,
             'username' => $user->username,
+            'name' => $user->name,
             'phone_number' => $user->phone_number,
             'avatar' => $avatar,
             'roles' => $user_roles,
             'permissions' => $user_permissions
         ], 200);
 
+
     }
 
-    public function edit_profile(Request $request)
+    public function update(Request $request, $id)
     {
-        $user = auth()->user();
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$user->id, 'min:8', new Nospaces],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$id],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$id, 'min:8', new Nospaces],
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'password' => ['string', 'min:8', 'confirmed', 'nullable'],
         ]);
+        $user = User::find($id);
 
         $user->name =  $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->number = $request->phone_number;
-
+        $user->number = $request->number;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
         $user->save();
         if (isset($request->avatar)) {
-            $user = User::find($user->id);
             $user->clearMediaCollection('avatars');
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
-            $user->save();
         }
+
+        if($id != $request->user()->id){
+            $roles = $request->roles;
+            $user->roles()->sync($roles);
+
+        }
+
+
         $user_roles = [];
 
         $user_permissions = [];
 
         foreach($user->roles as $role){
             if($role->slug == 'student' or $role->slug == 'teacher'){
-                return redirect('/user')->with('warning', 'Something went Wrong');
+                return response()->json(['message' => 'Something went wrong!']);
             }
             $user_roles[] = [
                 'id' => $role->id,
@@ -201,10 +169,26 @@ class AuthController extends Controller
             'id' => $user->id,
             'email' => $user->email,
             'username' => $user->username,
+            'name' => $user->name,
             'phone_number' => $user->phone_number,
             'avatar' => $avatar,
             'roles' => $user_roles,
             'permissions' => $user_permissions
         ], 200);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if($id == Auth::id()){
+            return response()->json(['message' => 'You cann\'t delete your account'], 403);
+        }
+        if($user->hasRole('superadmin')){
+            return response()->json(['message' => 'You can\'t delete superadmin user'], 403);
+        }
+        $user->delete();
+
+        return response()->json(['message' => 'User Deleted!'], 200);
     }
 }

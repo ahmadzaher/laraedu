@@ -1,26 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Role;
 use App\Rules\Nospaces;
-use App\SchoolClass;
-use App\SchoolSection;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class StudentController extends Controller
+class TeacherController extends Controller
 {
     public function getUsers()
     {
         $data = User::latest()
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
-            ->leftJoin('school_classes', 'school_classes.id', '=', 'users.class_id')
-            ->leftJoin('school_sections', 'school_sections.id', '=', 'users.section_id')
-            ->where('roles.slug', '=', 'student')
+            ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
+            ->where('roles.slug', '=', 'teacher')
             ->select(
                 'users.id',
                 'users.name',
@@ -28,12 +25,13 @@ class StudentController extends Controller
                 'users.created_at',
                 'username',
                 'number',
-                'school_classes.name as class_name',
-                'school_sections.name as section_name'
+                'department_id',
+                'roles.slug as role',
+                'departments.name as department_name'
             )->paginate(10);
-        foreach($data as $key => $student)
+        foreach($data as $key => $teacher)
         {
-            $avatar = $student->getFirstMediaUrl('avatars', 'thumb') != null ? url($student->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
+            $avatar = $teacher->getFirstMediaUrl('avatars', 'thumb') != null ? url($teacher->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
 
             $data[$key]['avatar'] = $avatar;
             unset($data[$key]['media']);
@@ -42,6 +40,7 @@ class StudentController extends Controller
 
         return response()->json($data, 200);
     }
+
     public function store(Request $request)
     {
 
@@ -62,18 +61,26 @@ class StudentController extends Controller
             'number' => $request->number,
 
         ]);
-        $user->schoolClass()->associate($request->class);
-        $user->schoolSection()->associate($request->section);
         $user->save();
         if (isset($request->avatar)) {
             $user->clearMediaCollection('avatars');
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
         }
 
-        $role = Role::Where(['slug' => 'student'])->get();
+        $role = Role::Where(['slug' => 'teacher'])->get();
         $user->roles()->attach($role);
+        $user->phone_number = $user->number;
+        $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
-        return response()->json($user, 200);
+
+        return response()->json([
+            'id' => $user->id,
+            'email' => $user->email,
+            'username' => $user->username,
+            'name' => $user->name,
+            'phone_number' => $user->phone_number,
+            'avatar' => $avatar
+        ], 200);
 
     }
 }

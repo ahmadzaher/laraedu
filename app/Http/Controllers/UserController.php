@@ -73,6 +73,7 @@ class UserController extends Controller
     }
     public function store(Request $request){
         $user = $request->user();
+
         if(!$user->can('create-user')){
             return redirect('/user')->with('warning', 'You don\'t have permission to add user');
         }
@@ -178,16 +179,6 @@ class UserController extends Controller
             $roles = $request->roles;
             $user->roles()->sync($roles);
 
-            // Assign permission to staff
-
-//        $user->permissions()->detach();
-//        if(is_array($roles))
-//        foreach($roles as $role){
-//            $role = Role::find($role);
-//            $permission = $role->permissions()->get();
-//            $user->permissions()->detach($permission);
-//            $user->permissions()->attach($permission);
-//        }
         }
 
 
