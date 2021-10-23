@@ -38,11 +38,13 @@ Route::middleware('auth:api')->group(function () {
     // Student
     Route::get('student/list', [StudentController::class, 'getUsers'])->middleware('can:view-student');
     Route::post('student/add', [StudentController::class, 'store'])->middleware('can:create-student');
-    Route::post('student/edit', [StudentController::class, 'update'])->middleware('can:edit-student');
+    Route::post('student/edit/{id}', [StudentController::class, 'update'])->middleware('can:edit-student');
+    Route::delete('student/delete/{id}', [StudentController::class, 'destroy'])->middleware('can:delete-student');
     // Teacher
     Route::get('teacher/list', [TeacherController::class, 'getUsers'])->middleware(['can:view-teacher']);
     Route::post('teacher/add', [TeacherController::class, 'store'])->middleware(['can:create-teacher']);
-    Route::post('teacher/edit', [TeacherController::class, 'update'])->middleware('can:edit-teacher');
+    Route::post('teacher/edit/{id}', [TeacherController::class, 'update'])->middleware('can:edit-teacher');
+    Route::delete('teacher/delete/{id}', [TeacherController::class, 'destroy'])->middleware('can:delete-teacher');
     // User
     Route::middleware('can:view-user')->group(function () {
         Route::get('user/list', [UserController::class, 'getUsers']);

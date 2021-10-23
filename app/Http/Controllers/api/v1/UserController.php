@@ -118,6 +118,11 @@ class UserController extends Controller
         ]);
         $user = User::find($id);
 
+
+        if($user == null){
+            return response()->json(['message' => 'Something went wrong!'], 404);
+        }
+
         $user->name =  $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
@@ -180,12 +185,17 @@ class UserController extends Controller
     public function destroy(Request $request, $id)
     {
         $user = User::find($id);
-
+        if($user == null){
+            return response()->json(['message' => 'Something went wrong!'], 404);
+        }
         if($id == Auth::id()){
             return response()->json(['message' => 'You cann\'t delete your account'], 403);
         }
         if($user->hasRole('superadmin')){
             return response()->json(['message' => 'You can\'t delete superadmin user'], 403);
+        }
+        if($user->hasRole('student') or $user->hasRole('teacher')){
+            return response()->json(['message' => 'You can\'t delete student or teacher using this request'], 403);
         }
         $user->delete();
 
