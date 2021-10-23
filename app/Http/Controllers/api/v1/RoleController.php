@@ -31,9 +31,6 @@ class RoleController extends Controller
 
     public function add(Request $request){
         $user = $request->user();
-        if(!$user->can('create-role')){
-            return redirect('/role')->with('warning', 'You don\'t have permission to add role');
-        }
         $user_info = User::with(['roles' => function($query){
             $query->with('permissions');
         }])->where('id', $user->id)->first();
@@ -51,24 +48,43 @@ class RoleController extends Controller
         return view('roles.add', compact('permissions'));
     }
     public function store(Request $request){
-        $user = $request->user();
-        if(!$user->can('create-role')){
-            return redirect('/role')->with('warning', 'You don\'t have permission to add role');
-        }
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:roles'],
             'slug' => ['required', 'string', 'max:255', 'unique:roles'],
         ]);
+
+        $user = $request->user();
+        $user_info = User::with(['roles' => function($query){
+            $query->with('permissions');
+        }])->where('id', $user->id)->first();
+        $roles = $user_info->roles;
+        $permissions = [];
+        $permissions_add = [];
+        foreach($roles as $role){
+            foreach ($role->permissions as $permission){
+                $perms = $permission->toArray();
+                unset($perms['pivot']);
+                $permissions[] = ($perms['id']);
+
+            }
+        }
+        foreach ($request->permissions as $permission)
+        {
+            if (in_array($permission, $permissions))
+                $permissions_add [] = $permission;
+        }
+        $permissions = (array_unique($permissions_add, SORT_REGULAR));
+
+
         $role = new Role([
             'name' => $request->name,
             'slug' => $request->slug,
         ]);
         $role->save();
-        $permissions = $request->permissions;
         $role->permissions()->sync($permissions);
 
-        return redirect('/role')->with('success', 'Role saved!');
+        return response()->json($role, 200);
 
     }
     public function destroy(Request $request, $id)

@@ -30,11 +30,15 @@ Route::middleware('auth:api')->group(function () {
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
     Route::get('section/list', [SectionController::class, 'getSections'])->middleware('can:view-section');
 
-
+    // Role
     Route::middleware('can:view-role')->group(function () {
         Route::get('role/list', [RoleController::class, 'getRoles']);
         Route::get('permission/list', [RoleController::class, 'getPermissions']);
     });
+    Route::post('role/add', [RoleController::class, 'store'])->middleware(['can:create-role']);
+    Route::post('role/edit/{id}', [RoleController::class, 'update'])->middleware('can:edit-role');
+    Route::delete('role/delete/{id}', [RoleController::class, 'destroy'])->middleware('can:delete-role');
+
     // Student
     Route::get('student/list', [StudentController::class, 'getUsers'])->middleware('can:view-student');
     Route::post('student/add', [StudentController::class, 'store'])->middleware('can:create-student');
@@ -53,5 +57,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user/add', [UserController::class, 'store'])->middleware(['can:create-user']);
     Route::post('user/edit/{id}', [UserController::class, 'update'])->middleware('can:edit-user');
     Route::delete('user/delete/{id}', [UserController::class, 'destroy'])->middleware('can:delete-user');
+
 
 });
