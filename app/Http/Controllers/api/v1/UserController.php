@@ -41,6 +41,37 @@ class UserController extends Controller
         return response()->json($data, 200);
     }
 
+    public function get(Request $request, $id)
+    {
+        $user = User::with('roles')->find($id);
+
+        if($user == null){
+            return response()->json(['message' => 'Something went wrong!'], 404);
+        }
+
+        if(!$request->user()->can('edit-user')){
+            return response()->json(['message' => 'You don\'t have permission to edit user'], 403);
+        }
+        $user_roles = [];
+        foreach($user->roles as $role){
+            if($role->slug == 'student' or $role->slug == 'teacher'){
+                return response()->json(['message' => 'Something went wrong!'], 404);
+            }
+            $user_roles[] = $role->id;
+        }
+        $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
+
+        return response()->json([
+            'id' => $user->id,
+            'email' => $user->email,
+            'username' => $user->username,
+            'name' => $user->name,
+            'phone_number' => $user->number,
+            'avatar' => $avatar
+        ], 200);
+
+    }
+
     public function store(Request $request){
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -54,7 +85,7 @@ class UserController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'number' => $request->number,
+            'number' => $request->phone_number,
         ]);
         $user->save();
         if (isset($request->avatar)) {
@@ -90,7 +121,7 @@ class UserController extends Controller
                 $user_permissions[] = $permission_data;
             }
         }
-        $user->phone_number = $user->number;
+
         $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
         return response()->json([
@@ -98,7 +129,7 @@ class UserController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
-            'phone_number' => $user->phone_number,
+            'phone_number' => $user->number,
             'avatar' => $avatar,
             'roles' => $user_roles,
             'permissions' => $user_permissions
@@ -126,7 +157,7 @@ class UserController extends Controller
         $user->name =  $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->number = $request->number;
+        $user->number = $request->phone_number;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
         $user->save();
@@ -167,7 +198,7 @@ class UserController extends Controller
                 $user_permissions[] = $permission_data;
             }
         }
-        $user->phone_number = $user->number;
+
         $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
         return response()->json([
@@ -175,7 +206,7 @@ class UserController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
-            'phone_number' => $user->phone_number,
+            'phone_number' => $user->number,
             'avatar' => $avatar,
             'roles' => $user_roles,
             'permissions' => $user_permissions

@@ -28,7 +28,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'number' => $request->number,
+            'number' => $request->phone_number,
             'username' => $request->username,
             'password' => bcrypt($request->password)
         ]);
@@ -100,7 +100,7 @@ class AuthController extends Controller
         $user_info = User::find($user->id);
         $avatar = $user_info->getFirstMediaUrl('avatars', 'thumb') ? url($user_info->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
-        $user->phone_number = $user->number;
+
         unset($user->number);
         $user->avatar = $avatar;
 
@@ -129,14 +129,14 @@ class AuthController extends Controller
                 $user_permissions[] = $permission_data;
             }
         }
-        $user->phone_number = $user->number;
+
         $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
         return response()->json([
             'id' => $user->id,
             'email' => $user->email,
             'username' => $user->username,
-            'phone_number' => $user->phone_number,
+            'phone_number' => $user->number,
             'avatar' => $avatar,
             'roles' => $user_roles,
             'permissions' => $user_permissions
@@ -194,14 +194,14 @@ class AuthController extends Controller
                 $user_permissions[] = $permission_data;
             }
         }
-        $user->phone_number = $user->number;
+
         $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
         return response()->json([
             'id' => $user->id,
             'email' => $user->email,
             'username' => $user->username,
-            'phone_number' => $user->phone_number,
+            'phone_number' => $user->number,
             'avatar' => $avatar,
             'roles' => $user_roles,
             'permissions' => $user_permissions

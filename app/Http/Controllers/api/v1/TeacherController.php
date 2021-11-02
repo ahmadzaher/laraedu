@@ -42,6 +42,39 @@ class TeacherController extends Controller
         return response()->json($data, 200);
     }
 
+    public function get(Request $request, $id)
+    {
+        $user = User::with('roles')->find($id);
+
+        if($user == null){
+            return response()->json(['message' => 'Something went wrong!'], 404);
+        }
+
+        if(!$request->user()->can('edit-student')){
+            return response()->json(['message' => 'You don\'t have permission to edit user'], 403);
+        }
+        $user_roles = [];
+        $student_role = new \stdClass();
+        $student_role->slug = 'teacher';
+        foreach($user->roles as $role){
+            $user_roles[] = $role->slug;
+        }
+        if(!in_array('teacher', $user_roles)){
+            return response()->json(['message' => 'Something went wrong!'], 404);
+        }
+        $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
+
+        return response()->json([
+            'id' => $user->id,
+            'email' => $user->email,
+            'username' => $user->username,
+            'name' => $user->name,
+            'phone_number' => $user->number,
+            'avatar' => $avatar
+        ], 200);
+
+    }
+
     public function store(Request $request)
     {
 
@@ -59,7 +92,7 @@ class TeacherController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'number' => $request->number,
+            'number' => $request->phone_number,
 
         ]);
         $user->save();
@@ -70,7 +103,7 @@ class TeacherController extends Controller
 
         $role = Role::Where(['slug' => 'teacher'])->get();
         $user->roles()->attach($role);
-        $user->phone_number = $user->number;
+
         $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
 
@@ -79,7 +112,7 @@ class TeacherController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
-            'phone_number' => $user->phone_number,
+            'phone_number' => $user->number,
             'avatar' => $avatar
         ], 200);
 
@@ -101,7 +134,7 @@ class TeacherController extends Controller
         $user->name =  $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->number = $request->number;
+        $user->number = $request->phone_number;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
         $user->save();
@@ -116,7 +149,7 @@ class TeacherController extends Controller
             $user->roles()->sync($role);
 
         }
-        $user->phone_number = $user->number;
+
         $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
 
@@ -125,7 +158,7 @@ class TeacherController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
-            'phone_number' => $user->phone_number,
+            'phone_number' => $user->number,
             'avatar' => $avatar
         ], 200);
     }
