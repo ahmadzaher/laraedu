@@ -18,4 +18,10 @@ class Quiz extends Model
         'ends_at',
         'content',
     ];
+
+    public function quiz_metas() {
+
+        return $this->hasMany(QuizMeta::class);
+
+    }
 }

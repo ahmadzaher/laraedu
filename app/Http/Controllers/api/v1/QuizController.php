@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Quiz;
+use App\QuizMeta;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -49,6 +50,16 @@ class QuizController extends Controller
 
         ]);
         $quiz->save();
+        foreach ($request->meta as $key => $content)
+        {
+            $quiz_meta = new QuizMeta([
+                'quiz_id' => $quiz->id,
+                'key' => $key,
+                'content' => $content
+            ]);
+            $quiz_meta->save();
+        }
+        $quiz->quiz_metas = QuizMeta::where('quiz_id', '=', $quiz->id)->get();
 
         return response($quiz, 201);
     }
@@ -61,6 +72,7 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
+        $quiz = Quiz::with('quiz_metas')->find($quiz->id);
         return Response($quiz, 200);
     }
 

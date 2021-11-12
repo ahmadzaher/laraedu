@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class QuizMetaTable extends Migration
+class CreateQuizMetasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,7 @@ class QuizMetaTable extends Migration
      */
     public function up()
     {
-        Schema::create('quiz_meta', function (Blueprint $table) {
-
+        Schema::create('quiz_metas', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger('quiz_id');
@@ -24,7 +23,6 @@ class QuizMetaTable extends Migration
             $table->string('key');
 
             $table->text('content')->nullable();
-
         });
     }
 
@@ -35,6 +33,6 @@ class QuizMetaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quiz_meta');
+        Schema::dropIfExists('quiz_metas');
     }
 }
