@@ -15,6 +15,11 @@ class Question extends Model
         'content',
     ];
 
+    public function answers() {
+
+        return $this->hasMany(Answer::class);
+
+    }
 
 }
 

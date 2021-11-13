@@ -74,7 +74,6 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
-        $quiz = Quiz::with('quiz_metas')->find($quiz->id);
         return Response($quiz, 200);
     }
 
@@ -149,6 +148,8 @@ class QuizController extends Controller
                 }
             }
         }
+        Question::where('quiz_id', '=', $quiz)->delete();
+
         foreach ($request->questions as $question)
         {
             if($question['type'] == 'true/false')
@@ -201,5 +202,18 @@ class QuizController extends Controller
         }
         $quiz = Quiz::with('questions', 'answers')->find($quiz);
         return Response($quiz, 201);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $quiz
+     * @return \Illuminate\Http\Response
+     */
+    public function questions_show($quiz)
+    {
+        $quiz = Quiz::with('quiz_metas', 'questions', 'answers')->find($quiz);
+
+        return Response($quiz, 200);
     }
 }
