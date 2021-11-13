@@ -200,7 +200,9 @@ class QuizController extends Controller
 
             }
         }
-        $quiz = Quiz::with('quiz_metas', 'questions', 'answers')->find($quiz);
+        $quiz = Question::with('answers')
+            ->where('quiz_id', '=', $quiz)
+            ->get();
         return Response($quiz, 201);
     }
 
@@ -212,7 +214,9 @@ class QuizController extends Controller
      */
     public function questions_show($quiz)
     {
-        $quiz = Quiz::with('quiz_metas', 'questions', 'answers')->find($quiz);
+        $quiz = Question::with('answers')
+            ->where('quiz_id', '=', $quiz)
+            ->get();
 
         return Response($quiz, 200);
     }
