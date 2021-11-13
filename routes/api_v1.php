@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\v1\QuizController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,8 +26,10 @@ Route::middleware('auth:api')->group(function () {
     // User Profile
     Route::get('user', [AuthController::class, 'userInfo']);
     Route::post('user', [AuthController::class, 'edit_profile']);
-    Route::namespace('\App\Http\Controllers\api\v1')->group(function() {
+    Route::namespace('\App\Http\Controllers\api\v1')->middleware('role:superadmin')->group(function() {
        Route::apiResource('quiz', 'QuizController');
+       Route::post('quiz/questions/{quiz_id}', [QuizController::class, 'questions_store']);
+
     });
 
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');

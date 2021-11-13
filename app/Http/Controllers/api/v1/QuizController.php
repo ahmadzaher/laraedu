@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\Answer;
 use App\Http\Controllers\Controller;
 use App\Quiz;
 use App\QuizMeta;
+use App\Question;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -122,5 +124,82 @@ class QuizController extends Controller
     {
         $quiz->delete();
         return response(['message' => 'Quiz Deleted Successfully!'], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $quiz
+     * @return \Illuminate\Http\Response
+     */
+    public function questions_store(Request $request, $quiz)
+    {
+        foreach ($request->questions as $question)
+        {
+            if( !isset($question['type'], $question['active'], $question['level'], $question['score'], $question['content']) )
+                return Response(['msg' => 'The given data was invalid!'], 422);
+            if($question['type'] == 'multiple'){
+                if ( !isset($question['answers']) )
+                    return Response(['msg' => 'The given data was invalid!'], 422);
+                foreach ($question['answers'] as $answer)
+                {
+                    if( !isset($answer['active'], $answer['correct'], $answer['content']) )
+                        return Response(['msg' => 'The given data was invalid!'], 422);
+                }
+            }
+        }
+        foreach ($request->questions as $question)
+        {
+            if($question['type'] == 'true/false')
+            {
+                $correct = $question['correct'];
+                $question = new Question([
+                    'quiz_id' => $quiz,
+                    'type' => $question['type'],
+                    'active' => $question['active'],
+                    'level' => $question['level'],
+                    'score' => $question['score'],
+                    'content' => $question['content']
+                ]);
+                $question->save();
+                $answer = new Answer([
+                    'quiz_id' => $quiz,
+                    'question_id' => $question['id'],
+                    'active' => $answer['active'],
+                    'correct' => $correct,
+                    'content' => $answer['content']
+                ]);
+                $answer->save();
+            }
+            if($question['type'] == 'multiple')
+            {
+                $answers = $question['answers'];
+                $question = new Question([
+                    'quiz_id' => $quiz,
+                    'type' => $question['type'],
+                    'active' => $question['active'],
+                    'level' => $question['level'],
+                    'score' => $question['score'],
+                    'content' => $question['content']
+                ]);
+                $question->save();
+
+                foreach ($answers as $answer)
+                {
+                    $answer = new Answer([
+                        'quiz_id' => $quiz,
+                        'question_id' => $question['id'],
+                        'active' => $answer['active'],
+                        'correct' => $answer['correct'],
+                        'content' => $answer['content']
+                    ]);
+                    $answer->save();
+                }
+
+            }
+        }
+        $quiz = Quiz::with('questions', 'answers')->find($quiz);
+        return Response($quiz, 201);
     }
 }
