@@ -200,7 +200,7 @@ class QuizController extends Controller
 
             }
         }
-        $quiz = Quiz::with('questions', 'answers')->find($quiz);
+        $quiz = Quiz::with('quiz_metas', 'questions', 'answers')->find($quiz);
         return Response($quiz, 201);
     }
 
