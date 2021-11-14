@@ -22,8 +22,8 @@ class User extends Authenticatable implements HasMedia
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')
-            ->width(60)
-            ->height(60);
+            ->width(200)
+            ->height(200);
     }
     /**
      * The attributes that are mass assignable.
