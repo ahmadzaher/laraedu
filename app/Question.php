@@ -15,6 +15,8 @@ class Question extends Model implements HasMedia
         'level',
         'score',
         'content',
+        'attachment_type',
+        'attachment_url'
     ];
 
     use HasMediaTrait;

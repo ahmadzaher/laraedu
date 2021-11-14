@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\v1\QuestionController;
 use App\Http\Controllers\api\v1\QuizController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,7 @@ Route::middleware('auth:api')->group(function () {
     Route::namespace('\App\Http\Controllers\api\v1')->middleware('role:superadmin')->group(function() {
        Route::apiResource('quiz', 'QuizController');
        Route::apiResource('question', 'QuestionController');
+        Route::post('question/{id}', [QuestionController::class, 'update']);
     });
 
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
