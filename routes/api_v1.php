@@ -28,8 +28,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user', [AuthController::class, 'edit_profile']);
     Route::namespace('\App\Http\Controllers\api\v1')->middleware('role:superadmin')->group(function() {
        Route::apiResource('quiz', 'QuizController');
-        Route::post('quiz/questions/{quiz_id}', [QuizController::class, 'questions_store']);
-        Route::get('quiz/questions/{quiz_id}', [QuizController::class, 'questions_show']);
+       Route::apiResource('question', 'QuestionController');
     });
 
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
