@@ -3,8 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\Models\Media;
 
-class Question extends Model
+class Question extends Model implements HasMedia
 {
     protected $fillable = [
         'type',
@@ -13,6 +16,15 @@ class Question extends Model
         'score',
         'content',
     ];
+
+    use HasMediaTrait;
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('question_image')
+            ->width(800)
+            ->height(800);
+    }
 
     public function answers() {
 

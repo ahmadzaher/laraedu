@@ -38,6 +38,7 @@ class QuestionController extends Controller
             'answers.*.active' => ['required', 'integer'],
             'answers.*.content' => ['required'],
             'answers.*.correct' => ['required', 'integer'],
+            'question_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ( $request->type == 'single' || $request->type == 'multiple' )
         {
@@ -128,6 +129,15 @@ class QuestionController extends Controller
             $answer->save();
             $question->correct = $request->correct == 0 ? false : true;
         }
+        if (isset($request->question_image)) {
+            $question->clearMediaCollection('question_images');
+            $question->addMediaFromRequest('question_image')->toMediaCollection('question_images');
+        }
+        if ( $question->getFirstMediaUrl('question_images', 'question_image') )
+        {
+            $question->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
+        }
+        unset($question->media);
 
         return Response($question, 201);
     }
