@@ -18,7 +18,15 @@ class QuizController extends Controller
      */
     public function index(Request $request)
     {
-        $quizzes = Quiz::latest()->paginate($request->per_page);;
+        $search = $request->search;
+        if($search != '')
+        {
+            $quizzes = Quiz::latest()->where(function ($query) use ($search) {
+                $query->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('id', 'like', '%'.$search.'%');
+            })->paginate($request->per_page);
+        }else
+            $quizzes = Quiz::latest()->paginate($request->per_page);;
         return response($quizzes, 200);
     }
 
