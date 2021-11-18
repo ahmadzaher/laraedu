@@ -16,9 +16,9 @@ class QuizController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $quizzes = Quiz::latest()->paginate(10);;
+        $quizzes = Quiz::latest()->paginate($request->per_page);;
         return response($quizzes, 200);
     }
 
