@@ -22,7 +22,8 @@ class QuestionController extends Controller
         {
             $quizzes = Question::with('answers')->latest()->where(function ($query) use ($search) {
                 $query->where('content', 'like', '%'.$search.'%')
-                    ->orWhere('id', 'like', '%'.$search.'%');
+                    ->orWhere('id', 'like', '%'.$search.'%')
+                    ->orWhere('type', 'like', '%'.$search.'%');
             })->paginate($request->per_page);
         }else
             $quizzes = Question::with('answers')->latest()->paginate($request->per_page);;
