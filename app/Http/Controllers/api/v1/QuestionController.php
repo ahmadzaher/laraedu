@@ -14,11 +14,19 @@ class QuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $questions = Question::with('answers')->get();
 
-        return Response($questions, 200);
+        $search = $request->search;
+        if($search != '')
+        {
+            $quizzes = Question::with('answers')->latest()->where(function ($query) use ($search) {
+                $query->where('content', 'like', '%'.$search.'%')
+                    ->orWhere('id', 'like', '%'.$search.'%');
+            })->paginate($request->per_page);
+        }else
+            $quizzes = Question::with('answers')->latest()->paginate($request->per_page);;
+        return response($quizzes, 200);
     }
 
     /**
