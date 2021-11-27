@@ -16,7 +16,8 @@ class Question extends Model implements HasMedia
         'score',
         'content',
         'attachment_type',
-        'attachment_url'
+        'attachment_url',
+        'group_id'
     ];
 
     use HasMediaTrait;
@@ -32,6 +33,11 @@ class Question extends Model implements HasMedia
 
         return $this->hasMany(Answer::class);
 
+    }
+
+    public function group()
+    {
+        return $this->hasOne(QuestionGroup::class);
     }
 
 }

@@ -29,7 +29,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user', [AuthController::class, 'edit_profile']);
     Route::namespace('\App\Http\Controllers\api\v1')->middleware('role:superadmin')->group(function() {
        Route::apiResource('quiz', 'QuizController');
-       Route::apiResource('question', 'QuestionController');
+        Route::apiResource('question', 'QuestionController');
+        Route::apiResource('question_groups', 'QuestionGroupController');
         Route::post('question/{id}', [QuestionController::class, 'update']);
     });
 

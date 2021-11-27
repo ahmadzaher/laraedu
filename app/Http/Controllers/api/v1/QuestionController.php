@@ -20,14 +20,15 @@ class QuestionController extends Controller
         $search = $request->search;
         if($search != '')
         {
-            $quizzes = Question::with('answers')->latest()->where(function ($query) use ($search) {
+            $questions = Question::with('answers')
+                ->latest()->where(function ($query) use ($search) {
                 $query->where('content', 'like', '%'.$search.'%')
                     ->orWhere('id', 'like', '%'.$search.'%')
                     ->orWhere('type', 'like', '%'.$search.'%');
             })->paginate($request->per_page);
         }else
-            $quizzes = Question::with('answers')->latest()->paginate($request->per_page);;
-        return response($quizzes, 200);
+            $questions = Question::with('answers')->latest()->paginate($request->per_page);;
+        return response($questions, 200);
     }
 
     /**
@@ -40,7 +41,7 @@ class QuestionController extends Controller
     {
         $request->validate([
             'type' => ['required', 'max:255'],
-            //'active' => ['required', 'integer'],
+            'group' => ['required', 'integer'],
             'level' => ['required', 'integer'],
             'score' => ['required'],
             'content' => ['required'],
@@ -58,7 +59,8 @@ class QuestionController extends Controller
                 'active' => 1,
                 'level' => $request->level,
                 'score' => $request->score,
-                'content' => $request['content']
+                'content' => $request['content'],
+                'group_id' => $request->group
             ]);
 
             if ($request->type == 'single') {
@@ -93,6 +95,7 @@ class QuestionController extends Controller
                 'level' => $request->level,
                 'score' => $request->score,
                 'content' => $request['content'],
+                'group_id' => $request->group
             ]);
             $question->save();
 
@@ -118,6 +121,7 @@ class QuestionController extends Controller
                 'level' => $request->level,
                 'score' => $request->score,
                 'content' => $request['content'],
+                'group_id' => $request->group
             ]);
             $question->save();
 
@@ -128,6 +132,8 @@ class QuestionController extends Controller
             ]);
             $answer->save();
         }
+
+        $question->save();
 
 
         $question = Question::with('answers')->find($question->id);
@@ -180,7 +186,7 @@ class QuestionController extends Controller
     {
         $request->validate([
             'type' => ['required', 'max:255'],
-            //'active' => ['required', 'integer'],
+            'group' => ['required', 'integer'],
             'level' => ['required', 'integer'],
             'score' => ['required'],
             'content' => ['required'],
@@ -200,6 +206,7 @@ class QuestionController extends Controller
             $question->level = $request->level;
             $question->score = $request->score;
             $question->content = $request['content'];
+            $question->group_id = $request->group;
 
             if ($request->type == 'single') {
                 $correct_exists = 0;
@@ -233,6 +240,7 @@ class QuestionController extends Controller
             $question->level = $request->level;
             $question->score = $request->score;
             $question->content = $request['content'];
+            $question->group_id = $request->group;
 
             $question->save();
 
@@ -257,6 +265,7 @@ class QuestionController extends Controller
             $question->level = $request->level;
             $question->score = $request->score;
             $question->content = $request['content'];
+            $question->group_id = $request->group;
 
             $question->save();
 
