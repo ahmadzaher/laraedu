@@ -50,6 +50,8 @@ class QuestionController extends Controller
             'answers.*.correct' => ['required', 'integer'],
             'question_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
+        if(is_string($request->answers))
+            $request->answers = json_decode($request->answers);
         if ($request->type == 'single' || $request->type == 'multiple') {
             if (!is_array($request->answers))
                 return Response(['msg' => 'No Answers'], 422);
