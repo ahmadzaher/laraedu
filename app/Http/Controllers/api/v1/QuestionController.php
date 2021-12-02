@@ -6,6 +6,7 @@ use App\Answer;
 use App\Http\Controllers\Controller;
 use App\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuestionController extends Controller
 {
@@ -121,7 +122,6 @@ class QuestionController extends Controller
                 $answer->save();
             }
 
-            $question->answer = $request->answer;
         }
         if ($request->type == 'true/false') {
             if (!isset($request->correct))
@@ -207,8 +207,9 @@ class QuestionController extends Controller
             'level' => ['required', 'integer'],
             'score' => ['required'],
             'content' => ['required'],
-            'answers.*.id' => ['required', 'integer'],
+            'answers.*.active' => ['integer'],
             'answers.*.content' => ['required'],
+            'answer.*' => ['required'],
             'answers.*.correct' => ['required', 'integer'],
             'question_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
@@ -224,6 +225,8 @@ class QuestionController extends Controller
             $question->score = $request->score;
             $question->content = $request['content'];
             $question->group_id = $request->group;
+            $question->solution = $request->solution;
+            $question->hint = $request->hint;
 
             if ($request->type == 'single') {
                 $correct_exists = 0;
@@ -236,16 +239,18 @@ class QuestionController extends Controller
             }
 
             $question->save();
-
+            DB::table('answers')->where('question_id', $question->id)->delete();
 
             foreach ($request->answers as $answer) {
-                $old_answer = Answer::find($answer['id']);
-                $old_answer->question_id = $id;
-                $old_answer->active = 1;
-                $old_answer->correct = $answer['correct'];
-                $old_answer->content = $answer['content'];
-                $old_answer->save();
+                $answer = new Answer([
+                    'question_id' => $question->id,
+                    'active' => 1,
+                    'correct' => $answer['correct'],
+                    'content' => $answer['content']
+                ]);
+                $answer->save();
             }
+
             $question = Question::with('answers')->find($question->id);
         }
 
@@ -258,17 +263,22 @@ class QuestionController extends Controller
             $question->score = $request->score;
             $question->content = $request['content'];
             $question->group_id = $request->group;
+            $question->solution = $request->solution;
+            $question->hint = $request->hint;
 
             $question->save();
+            DB::table('answers')->where('question_id', $question->id)->delete();
 
-            foreach ($request->answer as $answer_id => $answer) {
-                $old_answer = Answer::find($answer_id);
-                $old_answer->question_id = $id;
-                $old_answer->active = 1;
-                $old_answer->correct = 1;
-                $old_answer->content = $answer;
-                $old_answer->save();
+            foreach ($request->answer as $answer) {
+                $answer = new Answer([
+                    'question_id' => $question->id,
+                    'active' => 1,
+                    'correct' => 1,
+                    'content' => $answer
+                ]);
+                $answer->save();
             }
+
 
         }
 
@@ -283,6 +293,8 @@ class QuestionController extends Controller
             $question->score = $request->score;
             $question->content = $request['content'];
             $question->group_id = $request->group;
+            $question->solution = $request->solution;
+            $question->hint = $request->hint;
 
             $question->save();
 
