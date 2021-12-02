@@ -63,7 +63,9 @@ class QuestionController extends Controller
                 'level' => $request->level,
                 'score' => $request->score,
                 'content' => $request['content'],
-                'group_id' => $request->group
+                'group_id' => $request->group,
+                'solution' => $request->solution,
+                'hint' => $request->hint,
             ]);
 
             if ($request->type == 'single') {
@@ -98,7 +100,9 @@ class QuestionController extends Controller
                 'level' => $request->level,
                 'score' => $request->score,
                 'content' => $request['content'],
-                'group_id' => $request->group
+                'group_id' => $request->group,
+                'solution' => $request->solution,
+                'hint' => $request->hint
             ]);
             $question->save();
 
@@ -124,7 +128,9 @@ class QuestionController extends Controller
                 'level' => $request->level,
                 'score' => $request->score,
                 'content' => $request['content'],
-                'group_id' => $request->group
+                'group_id' => $request->group,
+                'solution' => $request->solution,
+                'hint' => $request->hint,
             ]);
             $question->save();
 
