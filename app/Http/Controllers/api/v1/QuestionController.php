@@ -184,10 +184,9 @@ class QuestionController extends Controller
             $question->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
         }
         unset($question->media);
-        $question = Question::find($question->id)
+        $question = Question::with('answers')
             ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
-            ->with('answers')
-            ->select(['questions.*', 'question_groups.title as group_name'])->get()->last();
+            ->select(['questions.*', 'question_groups.title as group_name'])->find($question->id);
         //$question->answers = Answer::where('question_id', '=', $question->id)->get();
         return Response($question, 200);
     }
