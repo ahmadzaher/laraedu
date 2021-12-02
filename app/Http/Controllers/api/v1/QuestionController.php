@@ -21,13 +21,18 @@ class QuestionController extends Controller
         if($search != '')
         {
             $questions = Question::with('answers')
+                ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
                 ->latest()->where(function ($query) use ($search) {
                 $query->where('content', 'like', '%'.$search.'%')
-                    ->orWhere('id', 'like', '%'.$search.'%')
+                    ->orWhere('questions.id', 'like', '%'.$search.'%')
                     ->orWhere('type', 'like', '%'.$search.'%');
-            })->paginate($request->per_page);
+            })->select(['questions.*', 'question_groups.title as group_name'])->paginate($request->per_page);
         }else
-            $questions = Question::with('answers')->latest()->paginate($request->per_page);;
+            $questions = Question::with('answers')
+                ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
+                ->latest()
+                ->select(['questions.*', 'question_groups.title as group_name'])
+                ->paginate($request->per_page);
         return response($questions, 200);
     }
 
@@ -179,7 +184,11 @@ class QuestionController extends Controller
             $question->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
         }
         unset($question->media);
-        $question->answers = Answer::where('question_id', '=', $question->id)->get();
+        $question = Question::find($question->id)
+            ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
+            ->with('answers')
+            ->select(['questions.*', 'question_groups.title as group_name'])->get()->last();
+        //$question->answers = Answer::where('question_id', '=', $question->id)->get();
         return Response($question, 200);
     }
 
