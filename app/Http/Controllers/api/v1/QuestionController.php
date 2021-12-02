@@ -135,7 +135,6 @@ class QuestionController extends Controller
             $answer->save();
         }
 
-        $question->save();
 
 
         $question = Question::with('answers')->find($question->id);
