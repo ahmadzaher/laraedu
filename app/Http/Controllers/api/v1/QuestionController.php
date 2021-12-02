@@ -47,6 +47,7 @@ class QuestionController extends Controller
             'content' => ['required'],
             'answers.*.active' => ['integer'],
             'answers.*.content' => ['required'],
+            'answer.*' => ['required'],
             'answers.*.correct' => ['required', 'integer'],
             'question_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
