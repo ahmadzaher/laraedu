@@ -93,7 +93,7 @@ class QuestionController extends Controller
                 return Response(['msg' => 'Answer is required'], 422);
             $question = new Question([
                 'type' => $request->type,
-                'active' => 1,
+                'active' => $request->active,
                 'level' => $request->level,
                 'score' => $request->score,
                 'content' => $request['content'],
@@ -119,7 +119,7 @@ class QuestionController extends Controller
 
             $question = new Question([
                 'type' => $request->type,
-                'active' => 1,
+                'active' => $request->active,
                 'level' => $request->level,
                 'score' => $request->score,
                 'content' => $request['content'],
