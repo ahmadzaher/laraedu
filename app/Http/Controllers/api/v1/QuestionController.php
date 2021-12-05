@@ -179,15 +179,16 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
-        if ( $question->getFirstMediaUrl('question_images', 'question_image') )
-        {
-            $question->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
-        }
         unset($question->media);
         $question = Question::with('answers')
             ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
             ->select(['questions.*', 'question_groups.title as group_name'])->find($question->id);
         //$question->answers = Answer::where('question_id', '=', $question->id)->get();
+        if ( $question->getFirstMediaUrl('question_images', 'question_image') )
+        {
+            $question->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
+        }
+        unset($question->media);
         return Response($question, 200);
     }
 
@@ -306,6 +307,16 @@ class QuestionController extends Controller
         }
 
         $question = Question::with('answers')->find($id);
+
+        if (isset($request->question_image)) {
+            $question->clearMediaCollection('question_images');
+            $question->addMediaFromRequest('question_image')->toMediaCollection('question_images');
+        }
+        if ( $question->getFirstMediaUrl('question_images', 'question_image') )
+        {
+            $question->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
+        }
+        unset($question->media);
         return Response($question, 201);
     }
 
