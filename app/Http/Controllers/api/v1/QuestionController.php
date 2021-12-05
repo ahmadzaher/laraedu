@@ -307,6 +307,9 @@ class QuestionController extends Controller
         }
 
         $question = Question::with('answers')->find($id);
+        if (isset($request->delete_question_image)) {
+            $question->clearMediaCollection('question_images');
+        }
 
         if (isset($request->question_image)) {
             $question->clearMediaCollection('question_images');
