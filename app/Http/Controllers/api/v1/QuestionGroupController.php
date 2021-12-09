@@ -20,6 +20,32 @@ class QuestionGroupController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function all(Request $request)
+    {
+
+        $search = $request->search;
+        if($search != '')
+        {
+            $groups = QuestionGroup::latest()->where(function ($query) use ($search){
+                $query->where('title', 'like', '%'.$search.'%');
+            })->paginate($request->per_page);
+//            $questions = Question::with('answers')
+//                ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
+//                ->latest()->where(function ($query) use ($search) {
+//                    $query->where('content', 'like', '%'.$search.'%')
+//                        ->orWhere('questions.id', 'like', '%'.$search.'%')
+//                        ->orWhere('type', 'like', '%'.$search.'%');
+//                })->select(['questions.*', 'question_groups.title as group_name'])->paginate($request->per_page);
+        }else
+            $groups = QuestionGroup::latest()->paginate($request->per_page);
+        return response($groups, 200);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
