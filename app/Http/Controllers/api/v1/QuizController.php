@@ -21,12 +21,16 @@ class QuizController extends Controller
         $search = $request->search;
         if($search != '')
         {
-            $quizzes = Quiz::latest()->where(function ($query) use ($search) {
+            $quizzes = Quiz::leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
+                ->latest()->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%'.$search.'%')
-                    ->orWhere('id', 'like', '%'.$search.'%');
-            })->paginate($request->per_page);
+                    ->orWhere('quizzes.id', 'like', '%'.$search.'%');
+            })->select(['quizzes.*', 'categories.name as category_name'])->paginate($request->per_page);
         }else
-            $quizzes = Quiz::latest()->paginate($request->per_page);;
+            $quizzes = Quiz::leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
+                ->latest()
+                ->select(['quizzes.*', 'categories.name as category_name'])
+                ->paginate($request->per_page);
         return response($quizzes, 200);
     }
 
