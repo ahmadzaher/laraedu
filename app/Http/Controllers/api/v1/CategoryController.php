@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\Category;
 use App\Http\Controllers\Controller;
-use App\QuestionGroup;
 use Illuminate\Http\Request;
 
-class QuestionGroupController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,11 +18,12 @@ class QuestionGroupController extends Controller
         $search = $request->search;
         if($search != '')
         {
-            $groups = QuestionGroup::latest()->where(function ($query) use ($search){
-                $query->where('title', 'like', '%'.$search.'%');
+            $groups = Category::latest()->where(function ($query) use ($search){
+                $query->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%');
             })->paginate($request->per_page);
         }else
-            $groups = QuestionGroup::latest()->paginate($request->per_page);
+            $groups = Category::latest()->paginate($request->per_page);
         return response($groups, 200);
     }
 
@@ -31,10 +32,10 @@ class QuestionGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function all(Request $request)
+    public function all()
     {
-        $sections = QuestionGroup::latest()->get();
-        return response($sections, 200);
+        $categories = Category::latest()->get();
+        return response($categories, 200);
     }
 
     /**
@@ -45,59 +46,62 @@ class QuestionGroupController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
-            'title' => ['required', 'string', 'max:255', 'unique:question_groups']
+            'name' => ['required', 'string', 'max:255', 'unique:categories']
         ]);
-        $question_group = new QuestionGroup([
-            'title' => $request->title
+        $category = new Category([
+            'name' => $request->name,
+            'description' => $request->description
 
         ]);
-        $question_group->save();
-        return response($question_group, 201);
+        $category->save();
+        return response($category, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\QuestionGroup  $questionGroup
+     * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(QuestionGroup $questionGroup)
+    public function show(Category $category)
     {
-        return Response($questionGroup, 200);
+        return Response($category, 200);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\QuestionGroup  $questionGroup
+     * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, QuestionGroup $questionGroup)
+    public function update(Request $request, Category $category)
     {
         $request->validate([
-            'title' => ['required', 'string', 'max:255', 'unique:question_groups,title,'.$questionGroup->id],
+            'name' => ['required', 'string', 'max:255', 'unique:categories,name,'.$category->id],
         ]);
-        if($questionGroup == null){
+        if($category == null){
             return response(['message' => 'Something went wrong!'], 404);
         }
 
-        $questionGroup->title = $request->title;
-        $questionGroup->save();
+        $category->name = $request->name;
+        $category->description = $request->description;
+        $category->save();
 
-        return response($questionGroup, 200);
+        return response($category, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\QuestionGroup  $questionGroup
+     * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(QuestionGroup $questionGroup)
+    public function destroy(Category $category)
     {
-        $questionGroup->delete();
+        $category->delete();
         return response(['msg' => 'Deleted Successfully!'], 200);
     }
 }

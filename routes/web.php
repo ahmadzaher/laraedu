@@ -18,10 +18,10 @@ use App\Http\Controllers\frontend;
 
 Auth::routes(['register' => false]);
 
-Route::any('/', function () {
-//    echo env('APP_URL') . '/build'; exit;
-    return redirect(env('BASE_URL') . '/build');
-});
+//Route::any('/', function () {
+////    echo env('APP_URL') . '/build'; exit;
+//    return redirect(env('BASE_URL') . '/build');
+//});
 // Frontend Routes
 Route::group(['domain' => 'namedomain.com', 'middleware' => 'frontendActive'], function() {
     Route::get('/', 'FrontendController@index')->name('frontend');

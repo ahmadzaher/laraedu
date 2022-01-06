@@ -31,6 +31,8 @@ Route::middleware('auth:api')->group(function () {
     Route::namespace('\App\Http\Controllers\api\v1')->middleware('role:superadmin')->group(function() {
        Route::apiResource('quiz', 'QuizController');
         Route::apiResource('question', 'QuestionController');
+        Route::apiResource('category', 'CategoryController');
+        Route::get('quizzes/categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
         Route::post('question/{id}', [QuestionController::class, 'update']);
         Route::apiResource('question_groups', 'QuestionGroupController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);

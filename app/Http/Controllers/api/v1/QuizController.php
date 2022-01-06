@@ -45,6 +45,7 @@ class QuizController extends Controller
             'type' => ['required', 'string', 'max:255'],
             'score' => ['required', 'string', 'max:255'],
             'published' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'integer'],
         ]);
         $quiz = new Quiz([
             'title' => $request->title,
@@ -57,6 +58,7 @@ class QuizController extends Controller
             'starts_at' => $request->starts_at,
             'ends_at' => $request->ends_at,
             'content' => $request->quiz_content,
+            'category_id' => $request->category,
 
         ]);
         $quiz->save();
@@ -101,6 +103,7 @@ class QuizController extends Controller
             'type' => ['required', 'string', 'max:255'],
             'score' => ['required', 'string', 'max:255'],
             'published' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'integer'],
         ]);
         if($quiz == null){
             return response(['message' => 'Something went wrong!'], 404);
@@ -116,6 +119,7 @@ class QuizController extends Controller
         $quiz->starts_at = $request->starts_at;
         $quiz->ends_at = $request->ends_at;
         $quiz->content = $request->quiz_content;
+        $quiz->category_id = $request->category;
         $quiz->save();
 
         return response($quiz, 200);
