@@ -48,5 +48,11 @@ class Question extends Model implements HasMedia
         return Carbon::parse($value)->diffForHumans();
     }
 
+    public function quizzes() {
+
+        return $this->belongsToMany(Quiz::class,'quizzes_questions');
+
+    }
+
 }
 

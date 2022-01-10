@@ -21,13 +21,13 @@ class QuizController extends Controller
         $search = $request->search;
         if($search != '')
         {
-            $quizzes = Quiz::leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
+            $quizzes = Quiz::with('questions')->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
                 ->latest()->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%'.$search.'%')
                     ->orWhere('quizzes.id', 'like', '%'.$search.'%');
             })->select(['quizzes.*', 'categories.name as category_name'])->paginate($request->per_page);
         }else
-            $quizzes = Quiz::leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
+            $quizzes = Quiz::with('questions')->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
                 ->latest()
                 ->select(['quizzes.*', 'categories.name as category_name'])
                 ->paginate($request->per_page);
@@ -75,6 +75,9 @@ class QuizController extends Controller
             ]);
             $quiz_meta->save();
         }
+        $questions = (array_unique($request->questions, SORT_REGULAR));
+
+        $quiz->questions()->sync($questions);
         $quiz->quiz_metas = QuizMeta::where('quiz_id', '=', $quiz->id)->get();
 
         return response($quiz, 201);
@@ -88,6 +91,10 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
+        $questions = Question::with('answers')->whereHas('quizzes', function ($query) use ($quiz) {
+            return $query->where('id', '=', $quiz->id);
+        })->get();
+        $quiz->questions = $questions;
         return Response($quiz, 200);
     }
 
@@ -108,6 +115,7 @@ class QuizController extends Controller
             'score' => ['required', 'string', 'max:255'],
             'published' => ['required', 'string', 'max:255'],
             'category' => ['required', 'integer'],
+            'questions' => ['required']
         ]);
         if($quiz == null){
             return response(['message' => 'Something went wrong!'], 404);
@@ -125,6 +133,10 @@ class QuizController extends Controller
         $quiz->content = $request->quiz_content;
         $quiz->category_id = $request->category;
         $quiz->save();
+
+        $questions = (array_unique($request->questions, SORT_REGULAR));
+
+        $quiz->questions()->sync($questions);
 
         return response($quiz, 200);
     }

@@ -24,14 +24,10 @@ class Quiz extends Model
         return $this->hasMany(QuizMeta::class);
 
     }
+
     public function questions() {
 
-        return $this->hasMany(Question::class);
-
-    }
-    public function answers() {
-
-        return $this->hasMany(Answer::class);
+        return $this->belongsToMany(Question::class,'quizzes_questions');
 
     }
 }
