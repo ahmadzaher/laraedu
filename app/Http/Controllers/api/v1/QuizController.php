@@ -46,9 +46,9 @@ class QuizController extends Controller
             'title' => ['required', 'string', 'max:255', 'unique:quizzes'],
             'meta_title' => ['required', 'string', 'max:255', 'unique:quizzes'],
             'slug' => ['required', 'string', 'max:255', 'unique:quizzes'],
-            'type' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'max:255'],
             'score' => ['required', 'string', 'max:255'],
-            'published' => ['required', 'string', 'max:255'],
+            'published' => ['required', 'max:255'],
             'category' => ['required', 'integer'],
         ]);
         $quiz = new Quiz([
@@ -111,9 +111,9 @@ class QuizController extends Controller
             'title' => ['required', 'string', 'max:255', 'unique:quizzes,title,'.$quiz->id],
             'meta_title' => ['required', 'string', 'max:255', 'unique:quizzes,meta_title,'.$quiz->id],
             'slug' => ['required', 'string', 'max:255', 'unique:quizzes,slug,'.$quiz->id],
-            'type' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'max:255'],
             'score' => ['required', 'string', 'max:255'],
-            'published' => ['required', 'string', 'max:255'],
+            'published' => ['required', 'max:255'],
             'category' => ['required', 'integer'],
             'questions' => ['required']
         ]);

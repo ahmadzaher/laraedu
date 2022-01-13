@@ -23,7 +23,7 @@ Auth::routes(['register' => false]);
 //    return redirect(env('BASE_URL') . '/build');
 //});
 // Frontend Routes
-Route::group(['domain' => 'namedomain.com', 'middleware' => 'frontendActive'], function() {
+Route::group(['middleware' => 'frontendActive'], function() {
     Route::get('/', 'FrontendController@index')->name('frontend');
 });
 
