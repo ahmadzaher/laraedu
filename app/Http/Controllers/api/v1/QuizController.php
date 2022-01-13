@@ -66,6 +66,7 @@ class QuizController extends Controller
 
         ]);
         $quiz->save();
+        if(!empty($request->meta))
         foreach ($request->meta as $key => $content)
         {
             $quiz_meta = new QuizMeta([
