@@ -19,21 +19,36 @@ class QuestionController extends Controller
     {
 
         $search = $request->search;
-        if($search != '')
-        {
+        $types = $request->types;
+        $groups = $request->groups;
+        $difficulties = $request->difficulties;
+
             $questions = Question::with('answers')
                 ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
                 ->latest()->where(function ($query) use ($search) {
-                $query->where('content', 'like', '%'.$search.'%')
-                    ->orWhere('questions.id', 'like', '%'.$search.'%')
-                    ->orWhere('type', 'like', '%'.$search.'%');
-            })->select(['questions.*', 'question_groups.title as group_name'])->paginate($request->per_page);
-        }else
-            $questions = Question::with('answers')
-                ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
-                ->latest()
-                ->select(['questions.*', 'question_groups.title as group_name'])
-                ->paginate($request->per_page);
+                    $query->where('content', 'like', '%'.$search.'%')
+                        ->orWhere('questions.id', 'like', '%'.$search.'%')
+                        ->orWhere('type', 'like', '%'.$search.'%');
+
+                })->where(function ($query) use ($types) {
+
+                    if(is_array($types) && !empty($types)){
+                        $query->whereIn('type', $types);
+                    }
+                })->where(function ($query) use ($difficulties) {
+
+                    if(is_array($difficulties) && !empty($difficulties)){
+                        $query->whereIn('level', $difficulties);
+                    }
+                })->where(function ($query) use ($groups) {
+
+                    if(is_array($groups) && !empty($groups)){
+                        $query->whereIn('group_id', $groups);
+                    }
+                })->select(['questions.*', 'question_groups.title as group_name'])->paginate($request->per_page);
+
+
+
         return response($questions, 200);
     }
 
