@@ -21,7 +21,8 @@ class QuizController extends Controller
         $search = $request->search;
         if($search != '')
         {
-            $quizzes = Quiz::with('questions')->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
+            $quizzes = Quiz::with('questions')
+                ->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
                 ->latest()->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%'.$search.'%')
                     ->orWhere('quizzes.id', 'like', '%'.$search.'%');
@@ -47,7 +48,7 @@ class QuizController extends Controller
             'meta_title' => ['required', 'string', 'max:255', 'unique:quizzes'],
             'slug' => ['required', 'string', 'max:255', 'unique:quizzes'],
             'type' => ['required', 'max:255'],
-            'score' => ['required', 'string', 'max:255'],
+            'score' => ['required', 'max:255'],
             'published' => ['required', 'max:255'],
             'category' => ['required', 'integer'],
         ]);
@@ -113,7 +114,7 @@ class QuizController extends Controller
             'meta_title' => ['required', 'string', 'max:255', 'unique:quizzes,meta_title,'.$quiz->id],
             'slug' => ['required', 'string', 'max:255', 'unique:quizzes,slug,'.$quiz->id],
             'type' => ['required', 'max:255'],
-            'score' => ['required', 'string', 'max:255'],
+            'score' => ['required', 'max:255'],
             'published' => ['required', 'max:255'],
             'category' => ['required', 'integer'],
             'questions' => ['required']
