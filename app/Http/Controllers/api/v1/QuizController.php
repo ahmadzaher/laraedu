@@ -93,9 +93,12 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
-        $questions = Question::with('answers')->whereHas('quizzes', function ($query) use ($quiz) {
+        $questions = Question::with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
             return $query->where('id', '=', $quiz->id);
         })->get();
+        foreach ($questions as $key => $question) {
+            $questions[$key]->group_name = $question->group->title;
+        }
         $quiz->questions = $questions;
         return Response($quiz, 200);
     }

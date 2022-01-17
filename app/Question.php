@@ -40,7 +40,7 @@ class Question extends Model implements HasMedia
 
     public function group()
     {
-        return $this->hasOne(QuestionGroup::class);
+        return $this->belongsTo(QuestionGroup::class);
     }
 
     public function getCreatedAtAttribute($value)
