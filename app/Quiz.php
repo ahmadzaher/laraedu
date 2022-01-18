@@ -17,6 +17,7 @@ class Quiz extends Model
         'starts_at',
         'ends_at',
         'content',
+        'category_id'
     ];
 
     public function quiz_metas() {
