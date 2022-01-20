@@ -100,7 +100,7 @@ class AuthController extends Controller
         $user_info = User::find($user->id);
         $avatar = $user_info->getFirstMediaUrl('avatars', 'thumb') ? url($user_info->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
-
+        $phone_number = $user->number;
         unset($user->number);
         $user->avatar = $avatar;
 
@@ -137,7 +137,7 @@ class AuthController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
-            'phone_number' => $user->number,
+            'phone_number' => $phone_number,
             'avatar' => $avatar,
             'roles' => $user_roles,
             'permissions' => $user_permissions
