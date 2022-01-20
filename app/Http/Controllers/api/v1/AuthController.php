@@ -170,6 +170,9 @@ class AuthController extends Controller
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
             $user->save();
         }
+        if (isset($request->delete_avatar)) {
+            $user->clearMediaCollection('avatars');
+        }
         $user_roles = [];
 
         $user_permissions = [];
