@@ -30,7 +30,7 @@ Route::post('facebook', [AuthController::class, 'facebook']);
 Route::middleware('auth:api')->group(function () {
     // User Profile
     Route::get('userinfo', [AuthController::class, 'userInfo']);
-    Route::post('user', [AuthController::class, 'edit_profile']);
+    Route::post('userinfo', [AuthController::class, 'edit_profile']);
     Route::namespace('\App\Http\Controllers\api\v1')->middleware('role:superadmin')->group(function() {
         Route::apiResource('quiz', 'QuizController');
         Route::apiResource('question', 'QuestionController');
