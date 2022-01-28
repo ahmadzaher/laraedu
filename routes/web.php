@@ -18,10 +18,10 @@ use App\Http\Controllers\frontend;
 
 Auth::routes(['register' => false]);
 
-//Route::any('/', function () {
-////    echo env('APP_URL') . '/build'; exit;
-//    return redirect(env('BASE_URL') . '/build');
-//});
+Route::get('/', function () {
+//    echo env('APP_URL') . '/build'; exit;
+    return redirect('https://edu-technology.net/dashboard');
+});
 // Frontend Routes
 Route::group(['middleware' => 'frontendActive'], function() {
     Route::get('/', 'FrontendController@index')->name('frontend');

@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\api\v1\QuestionController;
 use App\Http\Controllers\api\v1\QuestionGroupController;
-use App\Http\Controllers\api\v1\QuizController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\api\v1\ForgotPasswordController;
+use App\Http\Controllers\api\v1\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\api\v1\AuthController;
@@ -22,14 +22,17 @@ Route::fallback(function(){
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
+Route::post('password/forgot-password', [ForgotPasswordController::class, 'forgot'])->name('passwords.sent');
+Route::post('password/reset', [ResetPasswordController::class, 'sendResetResponse'])->name('passwords.reset');
+
 Route::post('facebook', [AuthController::class, 'facebook']);
 
 Route::middleware('auth:api')->group(function () {
     // User Profile
-    Route::get('user', [AuthController::class, 'userInfo']);
+    Route::get('userinfo', [AuthController::class, 'userInfo']);
     Route::post('user', [AuthController::class, 'edit_profile']);
     Route::namespace('\App\Http\Controllers\api\v1')->middleware('role:superadmin')->group(function() {
-       Route::apiResource('quiz', 'QuizController');
+        Route::apiResource('quiz', 'QuizController');
         Route::apiResource('question', 'QuestionController');
         Route::apiResource('category', 'CategoryController');
         Route::get('quizzes/categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
@@ -51,26 +54,26 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('role/delete/{id}', [RoleController::class, 'destroy'])->middleware('role:superadmin');
 
     // Student
-    Route::get('student/list', [StudentController::class, 'getUsers'])->middleware('can:view-student');
+    Route::get('student', [StudentController::class, 'getUsers'])->middleware('can:view-student');
     Route::get('student/{id}', [StudentController::class, 'get'])->middleware('can:view-student');
-    Route::post('student/add', [StudentController::class, 'store'])->middleware('can:create-student');
-    Route::post('student/edit/{id}', [StudentController::class, 'update'])->middleware('can:edit-student');
-    Route::delete('student/delete/{id}', [StudentController::class, 'destroy'])->middleware('can:delete-student');
+    Route::post('student', [StudentController::class, 'store'])->middleware('can:create-student');
+    Route::post('student/{id}', [StudentController::class, 'update'])->middleware('can:edit-student');
+    Route::delete('student/{id}', [StudentController::class, 'destroy'])->middleware('can:delete-student');
     // Teacher
-    Route::get('teacher/list', [TeacherController::class, 'getUsers'])->middleware(['can:view-teacher']);
+    Route::get('teacher', [TeacherController::class, 'getUsers'])->middleware(['can:view-teacher']);
     Route::get('teacher/{id}', [TeacherController::class, 'get'])->middleware('can:view-teacher');
-    Route::post('teacher/add', [TeacherController::class, 'store'])->middleware(['can:create-teacher']);
-    Route::post('teacher/edit/{id}', [TeacherController::class, 'update'])->middleware('can:edit-teacher');
-    Route::delete('teacher/delete/{id}', [TeacherController::class, 'destroy'])->middleware('can:delete-teacher');
+    Route::post('teacher', [TeacherController::class, 'store'])->middleware(['can:create-teacher']);
+    Route::post('teacher/{id}', [TeacherController::class, 'update'])->middleware('can:edit-teacher');
+    Route::delete('teacher/{id}', [TeacherController::class, 'destroy'])->middleware('can:delete-teacher');
     // User
     Route::middleware('can:view-user')->group(function () {
-        Route::get('user/list', [UserController::class, 'getUsers']);
+        Route::get('user', [UserController::class, 'getUsers']);
         Route::get('user/statistics', [UserStatistics::class, 'users']);
         Route::get('user/{id}', [UserController::class, 'get']);
     });
-    Route::post('user/add', [UserController::class, 'store'])->middleware(['can:create-user']);
-    Route::post('user/edit/{id}', [UserController::class, 'update'])->middleware('can:edit-user');
-    Route::delete('user/delete/{id}', [UserController::class, 'destroy'])->middleware('can:delete-user');
+    Route::post('user', [UserController::class, 'store'])->middleware(['can:create-user']);
+    Route::post('user/{id}', [UserController::class, 'update'])->middleware('can:edit-user');
+    Route::delete('user/{id}', [UserController::class, 'destroy'])->middleware('can:delete-user');
 
 
 });
