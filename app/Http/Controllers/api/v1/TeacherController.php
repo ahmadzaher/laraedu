@@ -145,12 +145,12 @@ class TeacherController extends Controller
         if(isset($request->password))
             $user->password = Hash::make($request->password);
         $user->save();
+        if (isset($request->delete_avatar)) {
+            $user->clearMediaCollection('avatars');
+        }
         if (isset($request->avatar)) {
             $user->clearMediaCollection('avatars');
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
-        }
-        if (isset($request->delete_avatar)) {
-            $user->clearMediaCollection('avatars');
         }
 
         if($id != $request->user()->id){
