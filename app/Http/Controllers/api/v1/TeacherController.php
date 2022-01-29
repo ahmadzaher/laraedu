@@ -12,13 +12,20 @@ use Illuminate\Support\Facades\Hash;
 
 class TeacherController extends Controller
 {
-    public function getUsers()
+    public function getUsers(Request $request)
     {
+        $search = $request->search;
         $data = User::latest()
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
             ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
             ->where('roles.slug', '=', 'teacher')
+            ->where(function ($query) use ($search) {
+                $query->where('users.name', 'like', '%'.$search.'%')
+                    ->orWhere('users.email', 'like', '%'.$search.'%')
+                    ->orWhere('users.username', 'like', '%'.$search.'%')
+                    ->orWhere('users.number', 'like', '%'.$search.'%');
+            })
             ->select(
                 'users.id',
                 'users.name',
@@ -29,7 +36,7 @@ class TeacherController extends Controller
                 'department_id',
                 'roles.slug as role',
                 'departments.name as department_name'
-            )->paginate(10);
+            )->paginate($request->per_page);
         foreach($data as $key => $teacher)
         {
             $avatar = $teacher->getFirstMediaUrl('avatars', 'thumb') != null ? url($teacher->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
@@ -141,6 +148,9 @@ class TeacherController extends Controller
         if (isset($request->avatar)) {
             $user->clearMediaCollection('avatars');
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+        }
+        if (isset($request->delete_avatar)) {
+            $user->clearMediaCollection('avatars');
         }
 
         if($id != $request->user()->id){

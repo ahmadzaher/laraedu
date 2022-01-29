@@ -14,14 +14,22 @@ use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
-    public function getUsers()
+    public function getUsers(Request $request)
     {
+        $search = $request->search;
+
         $data = User::latest()
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
             ->leftJoin('school_classes', 'school_classes.id', '=', 'users.class_id')
             ->leftJoin('school_sections', 'school_sections.id', '=', 'users.section_id')
             ->where('roles.slug', '=', 'student')
+            ->where(function ($query) use ($search) {
+                $query->where('users.name', 'like', '%'.$search.'%')
+                    ->orWhere('users.email', 'like', '%'.$search.'%')
+                    ->orWhere('users.username', 'like', '%'.$search.'%')
+                    ->orWhere('users.number', 'like', '%'.$search.'%');
+            })
             ->select(
                 'users.id',
                 'users.name',
@@ -31,7 +39,7 @@ class StudentController extends Controller
                 'number',
                 'school_classes.name as class_name',
                 'school_sections.name as section_name'
-            )->paginate(10);
+            )->paginate($request->per_page);
         foreach($data as $key => $student)
         {
             $avatar = $student->getFirstMediaUrl('avatars', 'thumb') != null ? url($student->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
@@ -148,6 +156,9 @@ class StudentController extends Controller
         if (isset($request->avatar)) {
             $user->clearMediaCollection('avatars');
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+        }
+        if (isset($request->delete_avatar)) {
+            $user->clearMediaCollection('avatars');
         }
 
         if($id != $request->user()->id){

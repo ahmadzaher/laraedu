@@ -11,14 +11,24 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function getUsers()
+    public function getUsers(Request $request)
     {
+        $search = $request->search;
+
         $data = User::latest()
+            ->where(function ($query) {
+                $query->where('roles.slug', '!=', 'student')
+                    ->where('roles.slug', '!=', 'teacher')
+                    ->orWhere('roles.slug', null);
+            })
+            ->where(function ($query) use ($search) {
+                $query->where('users.name', 'like', '%'.$search.'%')
+                    ->orWhere('users.email', 'like', '%'.$search.'%')
+                    ->orWhere('users.username', 'like', '%'.$search.'%')
+                    ->orWhere('users.number', 'like', '%'.$search.'%');
+            })
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
-            ->where('roles.slug', '!=', 'student')
-            ->where('roles.slug', '!=', 'teacher')
-            ->orWhere('roles.slug', null)
             ->select(
                 'users.id',
                 'users.name',
@@ -28,7 +38,7 @@ class UserController extends Controller
                 'number'
             )
             ->groupBy('users.id')
-            ->paginate(10);
+            ->paginate($request->per_page);
         foreach($data as $key => $staff)
         {
             $avatar = $staff->getFirstMediaUrl('avatars', 'thumb') != null ? url($staff->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
@@ -160,10 +170,14 @@ class UserController extends Controller
         $user->number = $request->phone_number;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
+
         $user->save();
         if (isset($request->avatar)) {
             $user->clearMediaCollection('avatars');
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+        }
+        if (isset($request->delete_avatar)) {
+            $user->clearMediaCollection('avatars');
         }
 
         if($id != $request->user()->id){
