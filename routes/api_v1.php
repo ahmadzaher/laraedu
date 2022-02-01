@@ -4,6 +4,7 @@ use App\Http\Controllers\api\v1\QuestionController;
 use App\Http\Controllers\api\v1\QuestionGroupController;
 use App\Http\Controllers\api\v1\ForgotPasswordController;
 use App\Http\Controllers\api\v1\ResetPasswordController;
+use App\Http\Controllers\api\v1\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\api\v1\AuthController;
@@ -39,6 +40,8 @@ Route::middleware('auth:api')->group(function () {
         Route::post('question/{id}', [QuestionController::class, 'update']);
         Route::apiResource('question_groups', 'QuestionGroupController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);
+        Route::get('settings/general', [SettingsController::class, 'general_settings']);
+        Route::post('settings/general', [SettingsController::class, 'update_general_settings']);
     });
 
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
