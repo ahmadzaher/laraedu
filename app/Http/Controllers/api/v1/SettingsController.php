@@ -15,8 +15,8 @@ class SettingsController extends Controller
             'default_language' => option('default_language'),
             'default_direction' => option('default_direction'),
             'app_name' => option('app_name'),
-            'app_logo' => option('app_logo'),
-            'app_favicon' => option('app_favicon'),
+            'app_logo' => option('app_logo') != '' ? env('APP_URL') . option('app_logo') : '',
+            'app_favicon' => option('app_favicon') != '' ? env('APP_URL') . option('app_favicon') : '',
         ];
         return response()->json($settings, 200);
     }
