@@ -98,6 +98,8 @@ class TeacherController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
+            'direction' => $request->direction,
+            'language' => $request->language,
             'password' => Hash::make($request->password),
             'number' => $request->phone_number,
 
@@ -119,6 +121,8 @@ class TeacherController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'phone_number' => $user->number,
             'avatar' => $avatar
         ], 200);
@@ -139,6 +143,9 @@ class TeacherController extends Controller
         }
 
         $user->name =  $request->name;
+        $user->direction =  $request->direction;
+        $user->language =  $request->language;
+        $user->email =  $request->email;
         $user->username = $request->username;
         $user->email = $request->email;
         $user->number = $request->phone_number;
@@ -168,6 +175,8 @@ class TeacherController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'phone_number' => $user->number,
             'avatar' => $avatar
         ], 200);

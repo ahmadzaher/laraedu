@@ -94,6 +94,8 @@ class UserController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
+            'direction' => $request->direction,
+            'language' => $request->language,
             'password' => Hash::make($request->password),
             'number' => $request->phone_number,
         ]);
@@ -139,6 +141,8 @@ class UserController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'phone_number' => $user->number,
             'avatar' => $avatar,
             'roles' => $user_roles,
@@ -168,6 +172,9 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->number = $request->phone_number;
+        $user->direction =  $request->direction;
+        $user->language =  $request->language;
+        $user->email =  $request->email;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
 
@@ -222,6 +229,8 @@ class UserController extends Controller
             'name' => $user->name,
             'phone_number' => $user->number,
             'avatar' => $avatar,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'roles' => $user_roles,
             'permissions' => $user_permissions
         ], 200);

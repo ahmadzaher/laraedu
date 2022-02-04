@@ -79,6 +79,8 @@ class StudentController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'phone_number' => $user->number,
             'avatar' => $avatar
         ], 200);
@@ -97,8 +99,11 @@ class StudentController extends Controller
 //            'section' => ['required'],
 //            'class' => ['required'],
         ]);
+
         $user = new User([
             'name' => $request->name,
+            'direction' => $request->direction,
+            'language' => $request->language,
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -124,6 +129,8 @@ class StudentController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'phone_number' => $user->number,
             'avatar' => $avatar
         ], 200);
@@ -149,6 +156,8 @@ class StudentController extends Controller
         $user->name =  $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
+        $user->direction = $request->direction;
+        $user->language = $request->language;
         $user->number = $request->phone_number;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
@@ -176,6 +185,8 @@ class StudentController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'phone_number' => $user->number,
             'avatar' => $avatar
         ], 200);

@@ -137,6 +137,8 @@ class AuthController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'phone_number' => $phone_number,
             'avatar' => $avatar,
             'roles' => $user_roles,
@@ -160,6 +162,8 @@ class AuthController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->number = $request->phone_number;
+        $user->direction = $request->direction;
+        $user->language = $request->language;
 
         if(isset($request->password))
             $user->password = Hash::make($request->password);
@@ -206,6 +210,8 @@ class AuthController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'phone_number' => $user->number,
             'avatar' => $avatar,
             'roles' => $user_roles,
