@@ -75,6 +75,8 @@ class UserController extends Controller
             'id' => $user->id,
             'email' => $user->email,
             'username' => $user->username,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'name' => $user->name,
             'phone_number' => $user->number,
             'avatar' => $avatar

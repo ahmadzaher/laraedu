@@ -74,6 +74,8 @@ class TeacherController extends Controller
         return response()->json([
             'id' => $user->id,
             'email' => $user->email,
+            'direction' => $user->direction,
+            'language' => $user->language,
             'username' => $user->username,
             'name' => $user->name,
             'phone_number' => $user->number,
