@@ -15,6 +15,7 @@ class Question extends Model implements HasMedia
         'active',
         'level',
         'score',
+        'default_time',
         'content',
         'attachment_type',
         'attachment_url',

@@ -65,6 +65,7 @@ class QuestionController extends Controller
             'group' => ['required', 'integer'],
             'level' => ['required', 'integer'],
             'score' => ['required'],
+            'default_time' => ['required'],
             'content' => ['required'],
             'answers.*.active' => ['integer'],
             'answers.*.content' => ['required'],
@@ -83,6 +84,7 @@ class QuestionController extends Controller
                 'active' => 1,
                 'level' => $request->level,
                 'score' => $request->score,
+                'default_time' => $request->default_time,
                 'content' => $request['content'],
                 'group_id' => $request->group,
                 'solution' => $request->solution,
@@ -120,6 +122,7 @@ class QuestionController extends Controller
                 'active' => $request->active,
                 'level' => $request->level,
                 'score' => $request->score,
+                'default_time' => $request->default_time,
                 'content' => $request['content'],
                 'group_id' => $request->group,
                 'solution' => $request->solution,
@@ -147,6 +150,7 @@ class QuestionController extends Controller
                 'active' => $request->active,
                 'level' => $request->level,
                 'score' => $request->score,
+                'default_time' => $request->default_time,
                 'content' => $request['content'],
                 'group_id' => $request->group,
                 'solution' => $request->solution,
@@ -221,6 +225,7 @@ class QuestionController extends Controller
             'group' => ['required', 'integer'],
             'level' => ['required', 'integer'],
             'score' => ['required'],
+            'default_time' => ['required'],
             'content' => ['required'],
             'answers.*.active' => ['integer'],
             'answers.*.content' => ['required'],
@@ -238,6 +243,7 @@ class QuestionController extends Controller
             $question->active = 1;
             $question->level = $request->level;
             $question->score = $request->score;
+            $question->default_time = $request->default_time;
             $question->content = $request['content'];
             $question->group_id = $request->group;
             $question->solution = $request->solution;
@@ -276,6 +282,7 @@ class QuestionController extends Controller
             $question->active = 1;
             $question->level = $request->level;
             $question->score = $request->score;
+            $question->default_time = $request->default_time;
             $question->content = $request['content'];
             $question->group_id = $request->group;
             $question->solution = $request->solution;
@@ -306,6 +313,7 @@ class QuestionController extends Controller
             $question->active = 1;
             $question->level = $request->level;
             $question->score = $request->score;
+            $question->default_time = $request->default_time;
             $question->content = $request['content'];
             $question->group_id = $request->group;
             $question->solution = $request->solution;
