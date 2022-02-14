@@ -168,14 +168,14 @@ class AuthController extends Controller
         if(isset($request->password))
             $user->password = Hash::make($request->password);
         $user->save();
+        if (isset($request->delete_avatar)) {
+            $user->clearMediaCollection('avatars');
+        }
         if (isset($request->avatar)) {
             $user = User::find($user->id);
             $user->clearMediaCollection('avatars');
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
             $user->save();
-        }
-        if (isset($request->delete_avatar)) {
-            $user->clearMediaCollection('avatars');
         }
         $user_roles = [];
 
