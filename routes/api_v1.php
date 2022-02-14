@@ -22,6 +22,7 @@ Route::fallback(function(){
 });
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::get('settings/general', [SettingsController::class, 'general_settings']);
 
 Route::post('password/forgot-password', [ForgotPasswordController::class, 'forgot'])->name('passwords.sent');
 Route::post('password/reset', [ResetPasswordController::class, 'sendResetResponse'])->name('passwords.reset');
@@ -40,7 +41,6 @@ Route::middleware('auth:api')->group(function () {
         Route::post('question/{id}', [QuestionController::class, 'update']);
         Route::apiResource('question_groups', 'QuestionGroupController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);
-        Route::get('settings/general', [SettingsController::class, 'general_settings']);
         Route::post('settings/general', [SettingsController::class, 'update_general_settings']);
     });
 
