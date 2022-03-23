@@ -92,7 +92,7 @@ class AuthController extends Controller
 
     }
 
-    public function userInfo()
+    public function userinfo(Request $request)
     {
 
         $user = auth()->user();
@@ -109,9 +109,9 @@ class AuthController extends Controller
         $user_permissions = [];
 
         foreach($user->roles as $role){
-            if($role->slug == 'student' or $role->slug == 'teacher'){
-                return redirect('/user')->with('warning', 'Something went Wrong');
-            }
+//            if($role->slug == 'student' or $role->slug == 'teacher'){
+//                return redirect('/user')->with('warning', 'Something went Wrong');
+//            }
             $user_roles[] = [
                 'id' => $role->id,
                 'name' => $role->name,

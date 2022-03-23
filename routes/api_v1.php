@@ -4,6 +4,7 @@ use App\Http\Controllers\api\v1\QuestionController;
 use App\Http\Controllers\api\v1\QuestionGroupController;
 use App\Http\Controllers\api\v1\ForgotPasswordController;
 use App\Http\Controllers\api\v1\ResetPasswordController;
+use App\Http\Controllers\api\v1\QuizController;
 use App\Http\Controllers\api\v1\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,8 +31,13 @@ Route::post('password/reset', [ResetPasswordController::class, 'sendResetRespons
 Route::post('facebook', [AuthController::class, 'facebook']);
 
 Route::middleware('auth:api')->group(function () {
+    // Student quiz
+    Route::middleware('role:student')->group(function() {
+        Route::get('quizzes', [\App\Http\Controllers\api\v1\QuizController::class, 'index']);
+        Route::get('categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
+    });
     // User Profile
-    Route::get('userinfo', [AuthController::class, 'userInfo']);
+    Route::get('userinfo', [AuthController::class, 'userinfo']);
     Route::post('userinfo', [AuthController::class, 'edit_profile']);
     Route::namespace('\App\Http\Controllers\api\v1')->middleware('role:superadmin')->group(function() {
         Route::apiResource('quiz', 'QuizController');
