@@ -10,7 +10,7 @@
                 <a href="#user" data-toggle="collapse" aria-expanded="false" class="arrow-toggle {{ Request::is('profile') ? 'active' : '' }} nav-link link-dark">
                     @auth
                         <div class="form-group d-flex justify-content-around align-items-center">
-                            <img src="{{ Auth::user()->getFirstMediaUrl('avatars', 'thumb') ? url(Auth::user()->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg')  }}" alt="avatar" class="avatar rounded img-responsive mr-1">
+                            <img width="70px" src="{{ Auth::user()->getFirstMediaUrl('avatars', 'thumb') ? url(Auth::user()->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg')  }}" alt="avatar" class="avatar rounded img-responsive mr-1">
                             {{ Auth::user()->name }}
                         </div>
                     @endauth

@@ -323,6 +323,9 @@ class QuestionController extends Controller
 
             $answer = Answer::where('question_id', '=', $id)->get()->last();
 
+
+            DB::table('answers')->where('question_id', $id)->where('id', '!=', $answer->id)->delete();
+
             $answer->question_id = $id;
             $answer->active = 1;
             $answer->correct = $request->correct;
