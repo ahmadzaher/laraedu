@@ -33,8 +33,9 @@ Route::post('facebook', [AuthController::class, 'facebook']);
 Route::middleware('auth:api')->group(function () {
     // Student quiz
     Route::middleware('role:student')->group(function() {
-        Route::get('quizzes', [\App\Http\Controllers\api\v1\QuizController::class, 'index']);
+        Route::get('quizzes', [\App\Http\Controllers\api\v1\QuizController::class, 'all']);
         Route::get('categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
+        Route::get('question/{id}', [QuestionController::class, 'get']);
     });
     // User Profile
     Route::get('userinfo', [AuthController::class, 'userinfo']);

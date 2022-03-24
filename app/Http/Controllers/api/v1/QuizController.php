@@ -35,6 +35,22 @@ class QuizController extends Controller
         return response($quizzes, 200);
     }
 
+
+    public function all(Request $request)
+    {
+        $category = $request->category;
+        $quizzes = Quiz::with('questions')->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
+            ->latest()
+            ->where(function ($query) use ($category) {
+
+                if($category != ''){
+                    $query->where('category_id', $category);
+                }
+            })
+            ->select(['quizzes.*', 'categories.name as category_name'])->get();
+        return response($quizzes, 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

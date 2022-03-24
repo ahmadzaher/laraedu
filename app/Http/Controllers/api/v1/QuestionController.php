@@ -211,6 +211,23 @@ class QuestionController extends Controller
         return Response($question, 200);
     }
 
+
+    public function get($id)
+    {
+        $question = Question::find($id);
+        unset($question->media);
+        $question = Question::with('answers')
+            ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
+            ->select(['questions.*', 'question_groups.title as group_name'])->find($question->id);
+        //$question->answers = Answer::where('question_id', '=', $question->id)->get();
+        if ( $question->getFirstMediaUrl('question_images', 'question_image') )
+        {
+            $question->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
+        }
+        unset($question->media);
+        return Response($question, 200);
+    }
+
     /**
      * Update the specified resource in storage.
      *
