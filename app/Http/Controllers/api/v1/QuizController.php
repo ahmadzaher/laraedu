@@ -133,6 +133,11 @@ class QuizController extends Controller
         })->get();
         foreach ($questions as $key => $question) {
             $questions[$key]->group_name = $question->group->title;
+
+            if ( $question->getFirstMediaUrl('question_images', 'question_image') )
+            {
+                $questions[$key]->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
+            }
         }
         $quiz->questions = $questions;
         return Response($quiz, 200);
