@@ -78,7 +78,7 @@ class QuizController extends Controller
             'published' => $request->published,
             'starts_at' => $request->starts_at,
             'ends_at' => $request->ends_at,
-            'content' => $request->quiz_content,
+            'content' => $request->content,
             'category_id' => $request->category,
 
         ]);
@@ -151,7 +151,7 @@ class QuizController extends Controller
         $quiz->published = $request->published;
         $quiz->starts_at = $request->starts_at;
         $quiz->ends_at = $request->ends_at;
-        $quiz->content = $request->quiz_content;
+        $quiz->content = $request->content;
         $quiz->category_id = $request->category;
         $quiz->save();
 
