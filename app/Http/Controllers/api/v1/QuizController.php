@@ -120,6 +120,25 @@ class QuizController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function get($id)
+    {
+        $quiz = Quiz::find($id);
+        $questions = Question::with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
+            return $query->where('id', '=', $quiz->id);
+        })->get();
+        foreach ($questions as $key => $question) {
+            $questions[$key]->group_name = $question->group->title;
+        }
+        $quiz->questions = $questions;
+        return Response($quiz, 200);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
