@@ -36,7 +36,6 @@ Route::middleware('auth:api')->group(function () {
         Route::get('quizzes', [\App\Http\Controllers\api\v1\QuizController::class, 'all']);
         Route::get('student/quiz/{id}', [\App\Http\Controllers\api\v1\QuizController::class, 'get']);
         Route::get('categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
-        Route::get('question/{id}', [QuestionController::class, 'get']);
     });
     // User Profile
     Route::get('userinfo', [AuthController::class, 'userinfo']);
