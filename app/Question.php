@@ -29,8 +29,8 @@ class Question extends Model implements HasMedia
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('question_image')
-            ->width(100)
-            ->height(100);
+            ->width(150)
+            ->height(150);
     }
 
     public function answers() {
