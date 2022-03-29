@@ -46,6 +46,7 @@ class QuizController extends Controller
                 if($category != ''){
                     $query->where('category_id', $category);
                 }
+                $query->where('published', '1');
             })
             ->select(['quizzes.*', 'categories.name as category_name'])->get();
         return response($quizzes, 200);
