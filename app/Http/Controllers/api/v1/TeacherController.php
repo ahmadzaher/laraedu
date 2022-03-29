@@ -57,9 +57,9 @@ class TeacherController extends Controller
             return response()->json(['message' => 'Something went wrong!'], 404);
         }
 
-        if(!$request->user()->can('edit-student')){
-            return response()->json(['message' => 'You don\'t have permission to edit user'], 403);
-        }
+//        if(!$request->user()->can('edit-student')){
+//            return response()->json(['message' => 'You don\'t have permission to edit user'], 403);
+//        }
         $user_roles = [];
         $student_role = new \stdClass();
         $student_role->slug = 'teacher';
