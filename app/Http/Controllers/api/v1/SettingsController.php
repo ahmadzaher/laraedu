@@ -50,7 +50,7 @@ class SettingsController extends Controller
                     Storage::delete($files);
                     $extension = $request->$file->extension();
                     $request->$file->storeAs('/public/images/'.$file, $file.".".$extension);
-                    option([$file => env('APP_URL') . '/storage/images/'.$file . '/' . $file . '.' . $extension]);
+                    option([$file => env('APP_URL') . '/public/storage/images/'.$file . '/' . $file . '.' . $extension]);
                 }
             }
         }
