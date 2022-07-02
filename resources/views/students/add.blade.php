@@ -87,6 +87,9 @@
                                         <option selected disabled>
                                             Select class first
                                         </option>
+                                        @foreach($sections as $section)
+                                            <option value="{{ $section['id'] }}">{{ $section['name'] }}</option>
+                                        @endforeach
                                     </select>
                                     @error('section')
                                     <span class="invalid-feedback" role="alert">

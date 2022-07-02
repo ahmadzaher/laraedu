@@ -124,7 +124,7 @@ class UserController extends Controller
         if($id == Auth::id()){
             return redirect('/user')->with('warning', 'You can\'t delete your profile');
         }
-        if($user->hasRole('superadmin')){
+        if(! $user->hasRole('superadmin')){
             return redirect('/user')->with('warning', 'You can\'t delete superadmin user');
         }
         $user->delete();
