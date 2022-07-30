@@ -15,14 +15,17 @@ class QuestionGroupController extends Controller
      */
     public function index(Request $request)
     {
+        $branch_id = $request->branch_id;
         $search = $request->search;
-        if($search != '')
-        {
             $groups = QuestionGroup::latest()->where(function ($query) use ($search){
                 $query->where('title', 'like', '%'.$search.'%');
+            })->where(function ($query) use ($branch_id) {
+
+                if($branch_id != ''){
+                    $query->where('categories.branch_id', $branch_id);
+                }
+
             })->paginate($request->per_page);
-        }else
-            $groups = QuestionGroup::latest()->paginate($request->per_page);
         return response($groups, 200);
     }
 
@@ -47,9 +50,11 @@ class QuestionGroupController extends Controller
     {
         $request->validate([
             'title' => ['required', 'string', 'max:255', 'unique:question_groups']
+//            'branch_id' => ['required', 'integer']
         ]);
         $question_group = new QuestionGroup([
-            'title' => $request->title
+            'title' => $request->title,
+            'branch_id' => $request->branch_id,
 
         ]);
         $question_group->save();
@@ -78,12 +83,14 @@ class QuestionGroupController extends Controller
     {
         $request->validate([
             'title' => ['required', 'string', 'max:255', 'unique:question_groups,title,'.$questionGroup->id],
+//            'branch_id' => ['required', 'integer']
         ]);
         if($questionGroup == null){
             return response(['message' => 'Something went wrong!'], 404);
         }
 
         $questionGroup->title = $request->title;
+        $questionGroup->branch_id = $request->branch_id;
         $questionGroup->save();
 
         return response($questionGroup, 200);

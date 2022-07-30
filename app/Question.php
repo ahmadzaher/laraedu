@@ -21,7 +21,8 @@ class Question extends Model implements HasMedia
         'attachment_url',
         'group_id',
         'solution',
-        'hint'
+        'hint',
+        'branch_id'
     ];
 
     use HasMediaTrait;
