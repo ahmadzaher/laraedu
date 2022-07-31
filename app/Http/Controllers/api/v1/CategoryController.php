@@ -35,9 +35,16 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function all()
+    public function all(Request $request)
     {
-        $categories = Category::latest()->get();
+        $branch_id = $request->branch_id;
+        $categories = Category::latest()->where(function ($query) use ($branch_id) {
+
+            if($branch_id != ''){
+                $query->where('categories.branch_id', $branch_id);
+            }
+
+        })->get();
         return response($categories, 200);
     }
 

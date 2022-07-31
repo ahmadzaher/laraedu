@@ -22,7 +22,7 @@ class QuestionGroupController extends Controller
             })->where(function ($query) use ($branch_id) {
 
                 if($branch_id != ''){
-                    $query->where('categories.branch_id', $branch_id);
+                    $query->where('question_groups.branch_id', $branch_id);
                 }
 
             })->paginate($request->per_page);
@@ -36,7 +36,14 @@ class QuestionGroupController extends Controller
      */
     public function all(Request $request)
     {
-        $sections = QuestionGroup::latest()->get();
+        $branch_id = $request->branch_id;
+        $sections = QuestionGroup::latest()->where(function ($query) use ($branch_id) {
+
+            if($branch_id != ''){
+                $query->where('question_groups.branch_id', $branch_id);
+            }
+
+        })->get();
         return response($sections, 200);
     }
 
