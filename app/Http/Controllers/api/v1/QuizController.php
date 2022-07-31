@@ -18,26 +18,27 @@ class QuizController extends Controller
      */
     public function index(Request $request)
     {
+        $branch_id = $request->branch_id;
         $search = $request->search;
-        if($search != '')
-        {
             $quizzes = Quiz::with('questions')
                 ->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
                 ->latest()->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%'.$search.'%')
                     ->orWhere('quizzes.id', 'like', '%'.$search.'%');
-            })->select(['quizzes.*', 'categories.name as category_name'])->paginate($request->per_page);
-        }else
-            $quizzes = Quiz::with('questions')->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
-                ->latest()
-                ->select(['quizzes.*', 'categories.name as category_name'])
-                ->paginate($request->per_page);
+            })->where(function ($query) use ($branch_id) {
+
+                    if($branch_id != ''){
+                        $query->where('quizzes.branch_id', $branch_id);
+                    }
+
+                })->select(['quizzes.*', 'categories.name as category_name'])->paginate($request->per_page);
         return response($quizzes, 200);
     }
 
 
     public function all(Request $request)
     {
+        $branch_id = $request->branch_id;
         $category = $request->category;
         $quizzes = Quiz::with('questions')->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
             ->latest()
@@ -47,6 +48,13 @@ class QuizController extends Controller
                     $query->where('category_id', $category);
                 }
                 $query->where('published', '1');
+            })
+            ->where(function ($query) use ($branch_id) {
+
+                if($branch_id != ''){
+                    $query->where('quizzes.branch_id', $branch_id);
+                }
+
             })
             ->select(['quizzes.*', 'categories.name as category_name'])->get();
         return response($quizzes, 200);
@@ -81,6 +89,7 @@ class QuizController extends Controller
             'ends_at' => $request->ends_at,
             'content' => $request->content,
             'category_id' => $request->category,
+            'branch_id' => $request->branch_id,
 
         ]);
         $quiz->save();
@@ -178,6 +187,7 @@ class QuizController extends Controller
         $quiz->ends_at = $request->ends_at;
         $quiz->content = $request->content;
         $quiz->category_id = $request->category;
+        $quiz->branch_id = $request->branch_id;
         $quiz->save();
 
         $questions = (array_unique($request->questions, SORT_REGULAR));
