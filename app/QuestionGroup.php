@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuestionGroup extends Model
 {
-    protected $fillable = ['title', 'branch_id'];
+    protected $fillable = ['title', 'branch_id', 'year'];
 }

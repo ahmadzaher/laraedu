@@ -9,6 +9,7 @@ class Category extends Model
     protected $fillable = [
         'name',
         'description',
-        'branch_id'
+        'branch_id',
+        'year'
     ];
 }

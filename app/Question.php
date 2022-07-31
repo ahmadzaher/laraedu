@@ -22,7 +22,8 @@ class Question extends Model implements HasMedia
         'group_id',
         'solution',
         'hint',
-        'branch_id'
+        'branch_id',
+        'year'
     ];
 
     use HasMediaTrait;

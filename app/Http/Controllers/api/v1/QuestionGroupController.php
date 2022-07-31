@@ -16,13 +16,15 @@ class QuestionGroupController extends Controller
     public function index(Request $request)
     {
         $branch_id = $request->branch_id;
+        $year = $request->year;
         $search = $request->search;
             $groups = QuestionGroup::latest()->where(function ($query) use ($search){
                 $query->where('title', 'like', '%'.$search.'%');
-            })->where(function ($query) use ($branch_id) {
+            })->where(function ($query) use ($branch_id, $year) {
 
                 if($branch_id != ''){
                     $query->where('question_groups.branch_id', $branch_id);
+                    $query->where('question_groups.year', $year);
                 }
 
             })->paginate($request->per_page);
@@ -37,10 +39,12 @@ class QuestionGroupController extends Controller
     public function all(Request $request)
     {
         $branch_id = $request->branch_id;
-        $sections = QuestionGroup::latest()->where(function ($query) use ($branch_id) {
+        $year = $request->year;
+        $sections = QuestionGroup::latest()->where(function ($query) use ($branch_id, $year) {
 
             if($branch_id != ''){
                 $query->where('question_groups.branch_id', $branch_id);
+                $query->where('question_groups.year', $year);
             }
 
         })->get();
@@ -58,10 +62,12 @@ class QuestionGroupController extends Controller
         $request->validate([
             'title' => ['required', 'string', 'max:255', 'unique:question_groups']
 //            'branch_id' => ['required', 'integer']
+//            'year' => ['required', 'integer']
         ]);
         $question_group = new QuestionGroup([
             'title' => $request->title,
             'branch_id' => $request->branch_id,
+            'year' => $request->year,
 
         ]);
         $question_group->save();
@@ -91,6 +97,7 @@ class QuestionGroupController extends Controller
         $request->validate([
             'title' => ['required', 'string', 'max:255', 'unique:question_groups,title,'.$questionGroup->id],
 //            'branch_id' => ['required', 'integer']
+//            'year' => ['required', 'integer']
         ]);
         if($questionGroup == null){
             return response(['message' => 'Something went wrong!'], 404);
@@ -98,6 +105,7 @@ class QuestionGroupController extends Controller
 
         $questionGroup->title = $request->title;
         $questionGroup->branch_id = $request->branch_id;
+        $questionGroup->year = $request->year;
         $questionGroup->save();
 
         return response($questionGroup, 200);
