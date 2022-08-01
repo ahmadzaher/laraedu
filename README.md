@@ -15,3 +15,5 @@ step #5 php artisan storage:link
 step #6 php artisan passport:client
 
 step #7 php artisan passport:keys
+
+php artisan passport:client --personal

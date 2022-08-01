@@ -18,6 +18,8 @@ class QuestionController extends Controller
     public function index(Request $request)
     {
 
+        $branch_id = $request->branch_id;
+        $year = $request->year;
         $search = $request->search;
         $types = $request->types;
         $groups = $request->groups;
@@ -30,6 +32,12 @@ class QuestionController extends Controller
                         ->orWhere('questions.id', 'like', '%'.$search.'%')
                         ->orWhere('type', 'like', '%'.$search.'%');
 
+                })->where(function ($query) use ($branch_id, $year) {
+
+                    if($branch_id != ''){
+                        $query->where('questions.branch_id', $branch_id);
+                        $query->where('questions.year', $year);
+                    }
                 })->where(function ($query) use ($types) {
 
                     if(is_array($types) && !empty($types)){
@@ -72,6 +80,8 @@ class QuestionController extends Controller
             'answer.*' => ['required'],
             'answers.*.correct' => ['required', 'integer'],
             'question_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+//            'branch_id' => ['required', 'integer']
+//            'year' => ['required', 'integer']
         ]);
         if(is_string($request->answers))
             $request->answers = json_decode($request->answers);
@@ -89,6 +99,8 @@ class QuestionController extends Controller
                 'group_id' => $request->group,
                 'solution' => $request->solution,
                 'hint' => $request->hint,
+                'branch_id' => $request->branch_id,
+                'year' => $request->year,
             ]);
 
             if ($request->type == 'single') {
@@ -126,7 +138,9 @@ class QuestionController extends Controller
                 'content' => $request['content'],
                 'group_id' => $request->group,
                 'solution' => $request->solution,
-                'hint' => $request->hint
+                'hint' => $request->hint,
+                'branch_id' => $request->branch_id,
+                'year' => $request->year,
             ]);
             $question->save();
 
@@ -155,6 +169,8 @@ class QuestionController extends Controller
                 'group_id' => $request->group,
                 'solution' => $request->solution,
                 'hint' => $request->hint,
+                'branch_id' => $request->branch_id,
+                'year' => $request->year,
             ]);
             $question->save();
 
@@ -293,6 +309,8 @@ class QuestionController extends Controller
             $question->group_id = $request->group;
             $question->solution = $request->solution;
             $question->hint = $request->hint;
+            $question->branch_id = $request->branch_id;
+            $question->year = $request->year;
 
             if ($request->type == 'single') {
                 $correct_exists = 0;
@@ -332,6 +350,8 @@ class QuestionController extends Controller
             $question->group_id = $request->group;
             $question->solution = $request->solution;
             $question->hint = $request->hint;
+            $question->branch_id = $request->branch_id;
+            $question->year = $request->year;
 
             $question->save();
             DB::table('answers')->where('question_id', $question->id)->delete();
@@ -363,6 +383,8 @@ class QuestionController extends Controller
             $question->group_id = $request->group;
             $question->solution = $request->solution;
             $question->hint = $request->hint;
+            $question->branch_id = $request->branch_id;
+            $question->year = $request->year;
 
             $question->save();
 

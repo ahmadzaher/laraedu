@@ -43,6 +43,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('userinfo', [AuthController::class, 'edit_profile']);
     Route::namespace('\App\Http\Controllers\api\v1')->group(function() {
         Route::apiResource('quiz', 'QuizController');
+        Route::apiResource('branch', 'BranchController');
+        Route::get('branches', [\App\Http\Controllers\api\v1\BranchController::class, 'all']);
         Route::apiResource('question', 'QuestionController');
         Route::apiResource('category', 'CategoryController');
         Route::get('quizzes/categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
