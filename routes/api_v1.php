@@ -6,6 +6,7 @@ use App\Http\Controllers\api\v1\ForgotPasswordController;
 use App\Http\Controllers\api\v1\ResetPasswordController;
 use App\Http\Controllers\api\v1\QuizController;
 use App\Http\Controllers\api\v1\SettingsController;
+use App\Http\Controllers\api\v1\SummaryController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\api\v1\AuthController;
@@ -76,12 +77,17 @@ Route::middleware('auth:api')->group(function () {
     Route::post('teacher/{id}', [TeacherController::class, 'update']);
     Route::delete('teacher/{id}', [TeacherController::class, 'destroy']);
     // User
-        Route::get('user', [UserController::class, 'getUsers']);
-        Route::get('user/statistics', [UserStatistics::class, 'users']);
-        Route::get('user/{id}', [UserController::class, 'get']);
+    Route::get('user', [UserController::class, 'getUsers']);
+    Route::get('user/statistics', [UserStatistics::class, 'users']);
+    Route::get('user/{id}', [UserController::class, 'get']);
     Route::post('user', [UserController::class, 'store']);
     Route::post('user/{id}', [UserController::class, 'update']);
     Route::delete('user/{id}', [UserController::class, 'destroy']);
 
-
+    // Summary
+    Route::get('summary', [SummaryController::class, 'index']);
+    Route::get('summary/{summary}', [SummaryController::class, 'show']);
+    Route::post('summary', [SummaryController::class, 'store']);
+    Route::put('summary/{summary}', [SummaryController::class, 'update']);
+    Route::delete('summary/{summary}', [SummaryController::class, 'destroy']);
 });
