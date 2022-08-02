@@ -49,7 +49,7 @@ class BranchController extends Controller
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:branches'],
-            'years' => ['required', 'integer']
+            'years' => ['required', 'integer', 'between:1,6']
         ]);
         $branch = new Branch([
             'name' => $request->name,
