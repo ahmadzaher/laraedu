@@ -18,13 +18,10 @@ class Answer extends Model  implements HasMedia
         'correct',
         'content',
     ];
-
-    /**
-     * @throws InvalidManipulation
-     */
+    
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('answer_images')
+        $this->addMediaConversion('answer_image')
             ->width(150)
             ->height(150);
     }
