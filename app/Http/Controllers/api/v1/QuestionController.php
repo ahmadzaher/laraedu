@@ -181,6 +181,36 @@ class QuestionController extends Controller
             ]);
             $answer->save();
         }
+        if ($request->type === 'essay') {
+
+            $question = new Question([
+                'type' => request('type'),
+                'active' => request('active'),
+                'level' => request('level'),
+                'score' => request('score'),
+                'default_time' => request('default_time'),
+                'content' => request('content'),
+                'group_id' => request('group'),
+                'solution' => request('solution'),
+                'hint' => request('hint'),
+                'branch_id' => request('branch_id'),
+                'year' => request('year')
+            ]);
+            $question->save();
+
+            $answer = new Answer([
+                'question_id' => $question->id,
+                'active' => 1,
+                'correct' => 1,
+                'content' => $request->answer
+            ]);
+            $answer->save();
+
+            if (request()->hasFile('answer_img') && request()->file('answer_img')->isValid()) {
+                $answer->addMediaFromRequest('answer_img')
+                    ->toMediaCollection('answer_images');
+            }
+        }
 
 
 
@@ -370,6 +400,40 @@ class QuestionController extends Controller
             $answer->correct = $request->correct;
             $answer->save();
         }
+
+        if (request('type') === 'essay') {
+            $question->type = request('type');
+            $question->active = 1;
+            $question->level = request('level');
+            $question->score = request('score');
+            $question->default_time = request('default_time');
+            $question->content = request('content');
+            $question->group_id = request('group');
+            $question->solution = request('solution');
+            $question->hint = request('hint');
+            $question->branch_id = request('branch_id');
+            $question->year = request('year');
+
+            $question->save();
+
+            Answer::where('question_id', '=', $id)->get()->last()->delete();
+
+            $answer = new Answer([
+                'question_id' => $id,
+                'active' => 1,
+                'correct' => request('correct'),
+                'content' => request('answer')
+            ]);
+            $answer->save();
+
+            if (request()->hasFile('answer_img') && request()->file('answer_img')->isValid()) {
+                $answer->addMediaFromRequest('answer_img')
+                    ->toMediaCollection('answer_images');
+            }
+
+        }
+
+
 
         $question = Question::with('answers')->find($id);
         if (isset($request->delete_question_image)) {
