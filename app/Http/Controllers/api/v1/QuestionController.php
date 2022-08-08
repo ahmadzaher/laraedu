@@ -55,7 +55,14 @@ class QuestionController extends Controller
                     }
                 })->select(['questions.*', 'question_groups.title as group_name'])->paginate($request->per_page);
 
-
+            $questions->each(function ($question) {
+                if ($question->type === 'essay') {
+                    $answers = $question->answers;
+                    $answers->each(function ($answer) {
+                        $answer->answer_image = url($answer->getFirstMediaUrl('answer_images'));
+                    });
+                }   
+            });
 
         return response($questions, 200);
     }

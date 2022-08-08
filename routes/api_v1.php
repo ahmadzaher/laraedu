@@ -87,9 +87,8 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('user/{id}', [UserController::class, 'destroy']);
 
     // Summary
-    Route::get('summary', [SummaryController::class, 'index']);
-    Route::get('summary/{summary}', [SummaryController::class, 'show']);
-    Route::post('summary', [SummaryController::class, 'store']);
-    Route::put('summary/{summary}', [SummaryController::class, 'update']);
-    Route::delete('summary/{summary}', [SummaryController::class, 'destroy']);
+    Route::apiResource('summary', 'SummaryController');
+
+    // Bank
+    Route::apiResource('bank', 'BankController');
 });

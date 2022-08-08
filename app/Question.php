@@ -57,5 +57,10 @@ class Question extends Model implements HasMedia
 
     }
 
+     public function banks()
+    {
+        return $this->belongsToMany(Bank::class,'banks_questions');
+    }
+
 }
 

@@ -11,7 +11,7 @@ class SummaryController extends Controller
     {
         $summaries = Summary::paginate(25);
 
-        $summaries->each(function($summary){
+        $summaries->each(function ($summary) {
             $summary->getMedia();
             $summary->summary_image = url($summary->getFirstMediaUrl('summaries'));
         });
@@ -23,14 +23,14 @@ class SummaryController extends Controller
     {
         request()->validate([
             'name' => 'required|min:3',
-            'teacher_name' => 'min:3',
+            'name_teacher' => 'min:3',
             'description' => 'min:3',
-            'file' => 'required|mimes:pdf,doc,docx'
+            'file' => 'mimes:pdf,doc,docx'
         ]);
 
         $summary  = Summary::create([
             'name' => request('name'),
-            'teacher_name' => request('teacher_name'),
+            'name_teacher' => request('name_teacher'),
             'description' => request('description'),
             'year' => request('year'),
             'branch_id' => request('branch_id')
@@ -59,7 +59,7 @@ class SummaryController extends Controller
             'name' => 'required|min:3',
             'teacher_name' => 'min:3',
             'description' => 'min:3',
-            'file' => 'required|mimes:pdf,doc,docx'
+            'file' => 'mimes:pdf,doc,docx'
         ]);
 
         $summary->update( [
