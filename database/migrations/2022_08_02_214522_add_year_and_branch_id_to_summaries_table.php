@@ -30,7 +30,7 @@ class AddYearAndBranchIdToSummariesTable extends Migration
     {
         Schema::table('summaries', function (Blueprint $table) {
             $table->dropColumn('year');
-            $table->dropForeign('users_branch_id_foreign');
+            $table->dropForeign('summaries_branch_id_foreign');
             $table->dropColumn('branch_id');
         });
     }
