@@ -54,6 +54,8 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('summary', 'SummaryController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);
         Route::post('settings/general', [SettingsController::class, 'update_general_settings']);
+        // Bank
+        Route::apiResource('bank', 'BankController');
     });
 
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
@@ -88,6 +90,4 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user/{id}', [UserController::class, 'update']);
     Route::delete('user/{id}', [UserController::class, 'destroy']);
 
-    // Bank
-    Route::apiResource('bank', 'BankController');
 });
