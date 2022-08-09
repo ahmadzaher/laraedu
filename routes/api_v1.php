@@ -50,6 +50,8 @@ Route::middleware('auth:api')->group(function () {
         Route::get('quizzes/categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
         Route::post('question/{id}', [QuestionController::class, 'update']);
         Route::apiResource('question_groups', 'QuestionGroupController');
+        // Summary
+        Route::apiResource('summary', 'SummaryController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);
         Route::post('settings/general', [SettingsController::class, 'update_general_settings']);
     });
@@ -85,9 +87,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user', [UserController::class, 'store']);
     Route::post('user/{id}', [UserController::class, 'update']);
     Route::delete('user/{id}', [UserController::class, 'destroy']);
-
-    // Summary
-    Route::apiResource('summary', 'SummaryController');
 
     // Bank
     Route::apiResource('bank', 'BankController');
