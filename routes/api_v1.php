@@ -56,6 +56,9 @@ Route::middleware('auth:api')->group(function () {
         Route::post('settings/general', [SettingsController::class, 'update_general_settings']);
         // Bank
         Route::apiResource('bank', 'BankController');
+        // Subject
+        Route::apiResource('subject', 'SubjectController');
+        Route::get('subjects', [\App\Http\Controllers\api\v1\SubjectController::class, 'all']);
     });
 
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');

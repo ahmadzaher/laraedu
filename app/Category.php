@@ -10,6 +10,7 @@ class Category extends Model
         'name',
         'description',
         'branch_id',
+        'subject_id',
         'year'
     ];
 }

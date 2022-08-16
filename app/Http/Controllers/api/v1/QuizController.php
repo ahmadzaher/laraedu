@@ -19,6 +19,7 @@ class QuizController extends Controller
     public function index(Request $request)
     {
         $branch_id = $request->branch_id;
+        $subject_id = $request->subject_id;
         $year = $request->year;
         $search = $request->search;
             $quizzes = Quiz::with('questions')
@@ -26,10 +27,11 @@ class QuizController extends Controller
                 ->latest()->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%'.$search.'%')
                     ->orWhere('quizzes.id', 'like', '%'.$search.'%');
-            })->where(function ($query) use ($branch_id, $year) {
+            })->where(function ($query) use ($branch_id, $subject_id, $year) {
 
                     if($branch_id != ''){
                         $query->where('quizzes.branch_id', $branch_id);
+                        $query->where('quizzes.subject_id', $subject_id);
                         $query->where('quizzes.year', $year);
                     }
 
@@ -41,6 +43,7 @@ class QuizController extends Controller
     public function all(Request $request)
     {
         $branch_id = $request->branch_id;
+        $subject_id = $request->subject_id;
         $year = $request->year;
         $category = $request->category;
         $quizzes = Quiz::with('questions')->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
@@ -52,10 +55,11 @@ class QuizController extends Controller
                 }
                 $query->where('published', '1');
             })
-            ->where(function ($query) use ($branch_id, $year) {
+            ->where(function ($query) use ($branch_id, $subject_id, $year) {
 
                 if($branch_id != ''){
                     $query->where('quizzes.branch_id', $branch_id);
+                    $query->where('quizzes.subject_id', $subject_id);
                     $query->where('quizzes.year', $year);
                 }
 
@@ -94,6 +98,7 @@ class QuizController extends Controller
             'content' => $request->content,
             'category_id' => $request->category,
             'branch_id' => $request->branch_id,
+            'subject_id' => $request->subject_id,
             'year' => $request->year,
 
         ]);
@@ -193,6 +198,7 @@ class QuizController extends Controller
         $quiz->content = $request->content;
         $quiz->category_id = $request->category;
         $quiz->branch_id = $request->branch_id;
+        $quiz->subject_id = $request->subject_id;
         $quiz->year = $request->year;
         $quiz->save();
 

@@ -33,7 +33,8 @@ class SummaryController extends Controller
             'name_teacher' => request('name_teacher'),
             'description' => request('description'),
             'year' => request('year'),
-            'branch_id' => request('branch_id')
+            'branch_id' => request('branch_id'),
+            'subject_id' => request('subject_id'),
         ]);
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {
@@ -67,7 +68,8 @@ class SummaryController extends Controller
             'teacher_name' => request('teacher_name'),
             'description' => request('description'),
             'year' => request('year'),
-            'branch_id' => request('branch_id')
+            'branch_id' => request('branch_id'),
+            'subject_id' => request('subject_id')
         ]);
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {

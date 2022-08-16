@@ -16,15 +16,17 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $branch_id = $request->branch_id;
+        $subject_id = $request->subject_id;
         $year = $request->year;
         $search = $request->search;
             $categories = Category::latest()->where(function ($query) use ($search){
                 $query->where('name', 'like', '%'.$search.'%')
                     ->orWhere('description', 'like', '%'.$search.'%');
-            })->where(function ($query) use ($branch_id, $year) {
+            })->where(function ($query) use ($branch_id, $subject_id, $year) {
 
                 if($branch_id != ''){
                     $query->where('categories.branch_id', $branch_id);
+                    $query->where('categories.subject_id', $subject_id);
                     $query->where('categories.year', $year);
                 }
 
@@ -40,12 +42,14 @@ class CategoryController extends Controller
     public function all(Request $request)
     {
         $branch_id = $request->branch_id;
+        $subject_id = $request->subject_id;
         $year = $request->year;
         $categories = Category::latest()
-            ->where(function ($query) use ($branch_id, $year) {
+            ->where(function ($query) use ($branch_id, $subject_id, $year) {
 
                 if($branch_id != ''){
                     $query->where('categories.branch_id', $branch_id);
+                    $query->where('categories.subject_id', $subject_id);
                     $query->where('categories.year', $year);
                 }
 
@@ -65,13 +69,15 @@ class CategoryController extends Controller
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:categories']
-//            'branch_id' => ['required', 'integer']
+//            'branch_id' => ['required', 'integer'],
+//            'subject_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);
         $category = new Category([
             'name' => $request->name,
             'description' => $request->description,
             'branch_id' => $request->branch_id,
+            'subject_id' => $request->subject_id,
             'year' => $request->year,
 
         ]);
@@ -101,7 +107,8 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:categories,name,'.$category->id],
-//            'branch_id' => ['required', 'integer']
+//            'branch_id' => ['required', 'integer'],
+//            'subject_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);
         if($category == null){
@@ -111,6 +118,7 @@ class CategoryController extends Controller
         $category->name = $request->name;
         $category->description = $request->description;
         $category->branch_id = $request->branch_id;
+        $category->subject_id = $request->subject_id;
         $category->year = $request->year;
         $category->save();
 

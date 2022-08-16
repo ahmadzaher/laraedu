@@ -19,6 +19,7 @@ class Quiz extends Model
         'content',
         'category_id',
         'branch_id',
+        'subject_id',
         'year'
     ];
 
