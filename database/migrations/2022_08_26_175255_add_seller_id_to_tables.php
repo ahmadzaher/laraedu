@@ -82,7 +82,7 @@ class AddSellerIdToTables extends Migration
             $table->dropColumn('seller_id');
         });
         Schema::table('subjects', function (Blueprint $table) {
-            $table->dropForeign('sellers_seller_id_foreign');
+            $table->dropForeign('subjects_seller_id_foreign');
             $table->dropColumn('seller_id');
         });
     }
