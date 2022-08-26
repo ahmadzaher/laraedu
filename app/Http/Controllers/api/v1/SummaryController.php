@@ -35,6 +35,7 @@ class SummaryController extends Controller
             'year' => request('year'),
             'branch_id' => request('branch_id'),
             'subject_id' => request('subject_id'),
+            'seller_id' => request('seller_id'),
         ]);
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {
@@ -69,7 +70,8 @@ class SummaryController extends Controller
             'description' => request('description'),
             'year' => request('year'),
             'branch_id' => request('branch_id'),
-            'subject_id' => request('subject_id')
+            'subject_id' => request('subject_id'),
+            'seller_id' => request('seller_id')
         ]);
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {

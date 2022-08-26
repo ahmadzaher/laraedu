@@ -20,6 +20,7 @@ class Quiz extends Model
         'category_id',
         'branch_id',
         'subject_id',
+        'seller_id',
         'year'
     ];
 

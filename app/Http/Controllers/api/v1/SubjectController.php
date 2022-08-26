@@ -16,15 +16,17 @@ class SubjectController extends Controller
     public function index(Request $request)
     {
         $branch_id = $request->branch_id;
+        $seller_id = $request->seller_id;
         $year = $request->year;
         $search = $request->search;
         $subjects = Subject::latest()->where(function ($query) use ($search){
             $query->where('name', 'like', '%'.$search.'%')
                 ->orWhere('description', 'like', '%'.$search.'%');
-        })->where(function ($query) use ($branch_id, $year) {
+        })->where(function ($query) use ($branch_id, $seller_id, $year) {
 
             if($branch_id != ''){
                 $query->where('subjects.branch_id', $branch_id);
+                $query->where('subjects.seller_id', $seller_id);
                 $query->where('subjects.year', $year);
             }
 
@@ -40,12 +42,14 @@ class SubjectController extends Controller
     public function all(Request $request)
     {
         $branch_id = $request->branch_id;
+        $seller_id = $request->seller_id;
         $year = $request->year;
         $subjects = Subject::latest()
-            ->where(function ($query) use ($branch_id, $year) {
+            ->where(function ($query) use ($branch_id, $seller_id, $year) {
 
                 if($branch_id != ''){
                     $query->where('subjects.branch_id', $branch_id);
+                    $query->where('subjects.seller_id', $seller_id);
                     $query->where('subjects.year', $year);
                 }
 
@@ -65,13 +69,15 @@ class SubjectController extends Controller
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:subjects']
-//            'branch_id' => ['required', 'integer']
+//            'branch_id' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);
         $subject = new Subject([
             'name' => $request->name,
             'description' => $request->description,
             'branch_id' => $request->branch_id,
+            'seller_id' => $request->seller_id,
             'year' => $request->year,
 
         ]);
@@ -101,7 +107,8 @@ class SubjectController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:subjects,name,'.$subject->id],
-//            'branch_id' => ['required', 'integer']
+//            'branch_id' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);
         if($subject == null){
@@ -111,6 +118,7 @@ class SubjectController extends Controller
         $subject->name = $request->name;
         $subject->description = $request->description;
         $subject->branch_id = $request->branch_id;
+        $subject->seller_id = $request->seller_id;
         $subject->year = $request->year;
         $subject->save();
 

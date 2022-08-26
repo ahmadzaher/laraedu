@@ -17,16 +17,18 @@ class CategoryController extends Controller
     {
         $branch_id = $request->branch_id;
         $subject_id = $request->subject_id;
+        $seller_id = $request->seller_id;
         $year = $request->year;
         $search = $request->search;
             $categories = Category::latest()->where(function ($query) use ($search){
                 $query->where('name', 'like', '%'.$search.'%')
                     ->orWhere('description', 'like', '%'.$search.'%');
-            })->where(function ($query) use ($branch_id, $subject_id, $year) {
+            })->where(function ($query) use ($branch_id, $subject_id, $seller_id, $year) {
 
                 if($branch_id != ''){
                     $query->where('categories.branch_id', $branch_id);
                     $query->where('categories.subject_id', $subject_id);
+                    $query->where('categories.seller_id', $seller_id);
                     $query->where('categories.year', $year);
                 }
 
@@ -43,13 +45,15 @@ class CategoryController extends Controller
     {
         $branch_id = $request->branch_id;
         $subject_id = $request->subject_id;
+        $seller_id = $request->seller_id;
         $year = $request->year;
         $categories = Category::latest()
-            ->where(function ($query) use ($branch_id, $subject_id, $year) {
+            ->where(function ($query) use ($branch_id, $subject_id, $seller_id, $year) {
 
                 if($branch_id != ''){
                     $query->where('categories.branch_id', $branch_id);
                     $query->where('categories.subject_id', $subject_id);
+                    $query->where('categories.seller_id', $seller_id);
                     $query->where('categories.year', $year);
                 }
 
@@ -71,6 +75,7 @@ class CategoryController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:categories']
 //            'branch_id' => ['required', 'integer'],
 //            'subject_id' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);
         $category = new Category([
@@ -78,6 +83,7 @@ class CategoryController extends Controller
             'description' => $request->description,
             'branch_id' => $request->branch_id,
             'subject_id' => $request->subject_id,
+            'seller_id' => $request->seller_id,
             'year' => $request->year,
 
         ]);
@@ -109,6 +115,7 @@ class CategoryController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:categories,name,'.$category->id],
 //            'branch_id' => ['required', 'integer'],
 //            'subject_id' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);
         if($category == null){
@@ -119,6 +126,7 @@ class CategoryController extends Controller
         $category->description = $request->description;
         $category->branch_id = $request->branch_id;
         $category->subject_id = $request->subject_id;
+        $category->seller_id = $request->seller_id;
         $category->year = $request->year;
         $category->save();
 

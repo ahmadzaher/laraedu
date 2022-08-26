@@ -24,6 +24,7 @@ class Question extends Model implements HasMedia
         'hint',
         'branch_id',
         'subject_id',
+        'seller_id',
         'year'
     ];
 

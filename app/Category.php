@@ -11,6 +11,7 @@ class Category extends Model
         'description',
         'branch_id',
         'subject_id',
-        'year'
+        'year',
+        'seller_id',
     ];
 }

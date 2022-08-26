@@ -21,6 +21,7 @@ class QuestionController extends Controller
         $branch_id = $request->branch_id;
         $year = $request->year;
         $subject_id = $request->subject_id;
+        $seller_id = $request->seller_id;
         $search = $request->search;
         $types = $request->types;
         $groups = $request->groups;
@@ -33,11 +34,12 @@ class QuestionController extends Controller
                         ->orWhere('questions.id', 'like', '%'.$search.'%')
                         ->orWhere('type', 'like', '%'.$search.'%');
 
-                })->where(function ($query) use ($branch_id, $year, $subject_id) {
+                })->where(function ($query) use ($branch_id, $year, $subject_id, $seller_id) {
 
                     if($branch_id != ''){
                         $query->where('questions.branch_id', $branch_id);
                         $query->where('questions.subject_id', $subject_id);
+                        $query->where('questions.seller_id', $seller_id);
                         $query->where('questions.year', $year);
                     }
                 })->where(function ($query) use ($types) {
@@ -91,6 +93,7 @@ class QuestionController extends Controller
             'question_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
 //            'branch_id' => ['required', 'integer'],
 //            'subject_id' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);
         if(is_string($request->answers))
@@ -111,6 +114,7 @@ class QuestionController extends Controller
                 'hint' => $request->hint,
                 'branch_id' => $request->branch_id,
                 'subject_id' => $request->subject_id,
+                'seller_id' => $request->seller_id,
                 'year' => $request->year,
             ]);
 
@@ -152,6 +156,7 @@ class QuestionController extends Controller
                 'hint' => $request->hint,
                 'branch_id' => $request->branch_id,
                 'subject_id' => $request->subject_id,
+                'seller_id' => $request->seller_id,
                 'year' => $request->year,
             ]);
             $question->save();
@@ -183,6 +188,7 @@ class QuestionController extends Controller
                 'hint' => $request->hint,
                 'branch_id' => $request->branch_id,
                 'subject_id' => $request->subject_id,
+                'seller_id' => $request->seller_id,
                 'year' => $request->year,
             ]);
             $question->save();
@@ -208,6 +214,7 @@ class QuestionController extends Controller
                 'hint' => request('hint'),
                 'branch_id' => request('branch_id'),
                 'subject_id' => request('subject_id'),
+                'seller_id' => request('seller_id'),
                 'year' => request('year')
             ]);
             $question->save();
@@ -327,6 +334,7 @@ class QuestionController extends Controller
             $question->hint = $request->hint;
             $question->branch_id = $request->branch_id;
             $question->subject_id = $request->subject_id;
+            $question->seller_id = $request->seller_id;
             $question->year = $request->year;
 
             if ($request->type == 'single') {
@@ -369,6 +377,7 @@ class QuestionController extends Controller
             $question->hint = $request->hint;
             $question->branch_id = $request->branch_id;
             $question->subject_id = $request->subject_id;
+            $question->seller_id = $request->seller_id;
             $question->year = $request->year;
 
             $question->save();
@@ -403,6 +412,7 @@ class QuestionController extends Controller
             $question->hint = $request->hint;
             $question->branch_id = $request->branch_id;
             $question->subject_id = $request->subject_id;
+            $question->seller_id = $request->seller_id;
             $question->year = $request->year;
 
             $question->save();
@@ -430,6 +440,7 @@ class QuestionController extends Controller
             $question->hint = request('hint');
             $question->branch_id = request('branch_id');
             $question->subject_id = request('subject_id');
+            $question->seller_id = request('seller_id');
             $question->year = request('year');
 
             $question->save();

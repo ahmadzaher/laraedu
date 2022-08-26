@@ -95,7 +95,7 @@ class QuizController extends Controller
             'published' => $request->published,
             'starts_at' => $request->starts_at,
             'ends_at' => $request->ends_at,
-            'content' => $request->content,
+            'content' => $request['content'],
             'category_id' => $request->category,
             'branch_id' => $request->branch_id,
             'subject_id' => $request->subject_id,
@@ -195,7 +195,7 @@ class QuizController extends Controller
         $quiz->published = $request->published;
         $quiz->starts_at = $request->starts_at;
         $quiz->ends_at = $request->ends_at;
-        $quiz->content = $request->content;
+        $quiz->content = $request['content'];
         $quiz->category_id = $request->category;
         $quiz->branch_id = $request->branch_id;
         $quiz->subject_id = $request->subject_id;
