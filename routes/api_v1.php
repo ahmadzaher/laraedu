@@ -59,6 +59,9 @@ Route::middleware('auth:api')->group(function () {
         // Subject
         Route::apiResource('subject', 'SubjectController');
         Route::get('subjects', [\App\Http\Controllers\api\v1\SubjectController::class, 'all']);
+        // Seller
+        Route::apiResource('seller', 'SellerController');
+        Route::get('sellers', [\App\Http\Controllers\api\v1\SellerController::class, 'all']);
     });
 
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
