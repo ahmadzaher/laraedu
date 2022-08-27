@@ -12,6 +12,5 @@ class Category extends Model
         'branch_id',
         'subject_id',
         'year',
-        'seller_id',
     ];
 }
