@@ -20,6 +20,7 @@ class QuizController extends Controller
     {
         $branch_id = $request->branch_id;
         $subject_id = $request->subject_id;
+        $seller_id = $request->seller_id;
         $year = $request->year;
         $search = $request->search;
             $quizzes = Quiz::with('questions')
@@ -27,11 +28,12 @@ class QuizController extends Controller
                 ->latest()->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%'.$search.'%')
                     ->orWhere('quizzes.id', 'like', '%'.$search.'%');
-            })->where(function ($query) use ($branch_id, $subject_id, $year) {
+            })->where(function ($query) use ($branch_id, $subject_id, $year, $seller_id) {
 
                     if($branch_id != ''){
                         $query->where('quizzes.branch_id', $branch_id);
                         $query->where('quizzes.subject_id', $subject_id);
+                        $query->where('questions.seller_id', $seller_id);
                         $query->where('quizzes.year', $year);
                     }
 
@@ -99,6 +101,7 @@ class QuizController extends Controller
             'category_id' => $request->category,
             'branch_id' => $request->branch_id,
             'subject_id' => $request->subject_id,
+            'seller_id' => $request->seller_id,
             'year' => $request->year,
 
         ]);
@@ -199,6 +202,7 @@ class QuizController extends Controller
         $quiz->category_id = $request->category;
         $quiz->branch_id = $request->branch_id;
         $quiz->subject_id = $request->subject_id;
+        $quiz->seller_id = $request->seller_id;
         $quiz->year = $request->year;
         $quiz->save();
 

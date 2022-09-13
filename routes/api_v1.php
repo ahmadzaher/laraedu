@@ -18,6 +18,17 @@ use App\Http\Controllers\api\v1\RoleController;
 use App\Http\Controllers\api\v1\SectionController;
 use App\Http\Controllers\api\v1\ClassController;
 
+
+// ssh access : ssh -p 65002 u526533852@151.106.96.211
+
+// php mysql : https://auth-db437.hstgr.io/index.php?db=u526533852_svu_school
+
+// database name : u526533852_svu_school
+
+// username : u526533852_ahmad_97341s
+
+// password : Khrezaty1@#
+
 Route::fallback(function(){
     return response()->json([
         'message' => 'Not found'], 404);
@@ -54,6 +65,8 @@ Route::middleware('auth:api')->group(function () {
         Route::post('code/generate', [\App\Http\Controllers\api\v1\CodeController::class, 'generate']);
         Route::post('code/charge', [\App\Http\Controllers\api\v1\CodeController::class, 'charge']);
         Route::get('code/check', [\App\Http\Controllers\api\v1\CodeController::class, 'check']);
+        // Transaction
+        Route::post('transaction', [\App\Http\Controllers\api\v1\TransactionController::class, 'store']);
         // Summary
         Route::apiResource('summary', 'SummaryController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);

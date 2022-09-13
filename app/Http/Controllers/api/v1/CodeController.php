@@ -28,7 +28,7 @@ class CodeController extends Controller
     public function generate(Request $request)
     {
         $request->validate([
-            'data.*.code' => ['required'],
+            'data.*.code' => ['required', 'unique:codes'],
         ]);
         foreach ($request->data as $data){
             $code = new Code([
