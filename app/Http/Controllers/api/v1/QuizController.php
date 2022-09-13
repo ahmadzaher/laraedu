@@ -33,7 +33,7 @@ class QuizController extends Controller
                     if($branch_id != ''){
                         $query->where('quizzes.branch_id', $branch_id);
                         $query->where('quizzes.subject_id', $subject_id);
-                        $query->where('questions.seller_id', $seller_id);
+                        $query->where('quizzes.seller_id', $seller_id);
                         $query->where('quizzes.year', $year);
                     }
 
