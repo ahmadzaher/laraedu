@@ -23,14 +23,14 @@ class SummaryController extends Controller
     {
         request()->validate([
             'name' => 'required|min:3',
-            'name_teacher' => 'min:3',
+            'teacher_name' => 'min:3',
             'description' => 'min:3',
             'file' => 'mimes:pdf,doc,docx'
         ]);
 
         $summary  = Summary::create([
             'name' => request('name'),
-            'name_teacher' => request('name_teacher'),
+            'teacher_name' => request('teacher_name'),
             'description' => request('description'),
             'year' => request('year'),
             'branch_id' => request('branch_id'),

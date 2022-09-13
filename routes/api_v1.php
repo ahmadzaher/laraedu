@@ -50,6 +50,10 @@ Route::middleware('auth:api')->group(function () {
         Route::get('quizzes/categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
         Route::post('question/{id}', [QuestionController::class, 'update']);
         Route::apiResource('question_groups', 'QuestionGroupController');
+        // Code
+        Route::post('code/generate', [\App\Http\Controllers\api\v1\CodeController::class, 'generate']);
+        Route::post('code/charge', [\App\Http\Controllers\api\v1\CodeController::class, 'charge']);
+        Route::get('code/check', [\App\Http\Controllers\api\v1\CodeController::class, 'check']);
         // Summary
         Route::apiResource('summary', 'SummaryController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);
