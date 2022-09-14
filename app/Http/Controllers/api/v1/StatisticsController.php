@@ -16,10 +16,11 @@ class StatisticsController extends Controller
         $period = $request->period;
         if(!$period)
             $period = '7 days';
-        $user = auth()->user();
         $current_date = date("Y-m-d");
         $last_seven_day = date('Y-m-d', strtotime("$current_date - $period"));
-
+        if($period == 'all'){
+            $last_seven_day = '2021-01-01';
+        }
         $seven_days_users = DB::select("SELECT COUNT('id') as users, DATE_FORMAT(created_at,'%Y-%m-%d') as created_at FROM `users` WHERE DATE_FORMAT(created_at, '%Y-%m-%d') >= '" . "$last_seven_day' group by DATE_FORMAT(created_at, '%Y-%m-%d')");
         $seven_days_user_chart_label = array();
         $seven_days_user_chart_data = array();
@@ -34,6 +35,20 @@ class StatisticsController extends Controller
                 $seven_days_user_gain = $seven_days_user_gain + $value->users;
             }
         }
+
+
+        return response()->json([
+            'seven_days_user_statistics' => [
+                'seven_days_user_chart_label' => $seven_days_user_chart_label,
+                'seven_days_user_chart_data' => $seven_days_user_chart_data,
+                'seven_days_user_gain' => $seven_days_user_gain,
+            ],
+        ], 200);
+
+
+    }
+
+    public function statistics(){
 
         $number_of_students = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
@@ -56,20 +71,11 @@ class StatisticsController extends Controller
             ->orWhere('roles.slug', null)
             ->count();
         $number_of_subjects = Subject::latest()->count();
-        // return view('home', compact('number_of_staffs', 'number_of_students', 'number_of_teachers', 'number_of_subjects'));
-
-        return response()->json([
-            'seven_days_user_statistics' => [
-                'seven_days_user_chart_label' => $seven_days_user_chart_label,
-                'seven_days_user_chart_data' => $seven_days_user_chart_data,
-                'seven_days_user_gain' => $seven_days_user_gain,
-            ],
+        return response([
             'number_of_staffs' => $number_of_staffs,
             'number_of_students' => $number_of_students,
             'number_of_teachers' => $number_of_teachers,
             'number_of_subjects' => $number_of_subjects
         ], 200);
-
-
     }
 }
