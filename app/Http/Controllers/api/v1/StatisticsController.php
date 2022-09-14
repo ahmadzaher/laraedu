@@ -9,18 +9,22 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class UserStatistics extends Controller
+class StatisticsController extends Controller
 {
-    public function users()
+    public function users(Request $request)
     {
+        $period = $request->period;
+        if(!$period)
+            $period = '7 days';
         $user = auth()->user();
         $current_date = date("Y-m-d");
-        $last_seven_day = date('Y-m-d', strtotime("$current_date - 7 days"));
+        $last_seven_day = date('Y-m-d', strtotime("$current_date - $period"));
 
         $seven_days_users = DB::select("SELECT COUNT('id') as users, DATE_FORMAT(created_at,'%Y-%m-%d') as created_at FROM `users` WHERE DATE_FORMAT(created_at, '%Y-%m-%d') >= '" . "$last_seven_day' group by DATE_FORMAT(created_at, '%Y-%m-%d')");
         $seven_days_user_chart_label = array();
         $seven_days_user_chart_data = array();
         $seven_days_user_gain = 0;
+
         if(!empty($seven_days_users))
         {
             foreach($seven_days_users as $value)

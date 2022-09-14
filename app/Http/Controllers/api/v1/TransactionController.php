@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Quiz;
 use App\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -31,36 +32,55 @@ class TransactionController extends Controller
             'type' => ['required'],
             'material_id' => ['required']
         ]);
-        $user_id = auth()->user();
+        $user = auth()->user();
         if($request->type == 'quiz'){
-            $quiz = Quiz::find($request->material_id);
-            if (!$quiz)
-                return response(['message' => 'Not found'], 404);
-            return response($quiz, 201);
+            $material = Quiz::find($request->material_id);
+            if (!$material)
+                return response(['message' => 'Material not found'], 404);
         }elseif($request->type == 'summary'){
-            $summary = Quiz::find($request->material_id);
-            if (!$summary)
-                return response('Not found', 404);
-            return response($summary, 201);
+            $material = Quiz::find($request->material_id);
+            if (!$material)
+                return response('Material not found', 404);
         }else{
-            return response(['message' => 'Not found'], 404);
+            return response(['message' => 'Type should be quiz or summary'], 422);
         }
-        $transaction = new Transaction([
-
-        ]);
-
-        $t = [
-            'user_id',
-            'quiz_id',
-            'summary_id',
-            'seller_id',
-            'branch_id',
-            'year',
-            'subject_id',
-            'cost',
+        if($user->coins < $material->price){
+            return response(['message' => 'There is no enough money in your account'], 403);
+        }
+        if($material->price == null)
+            $material->price = 0;
+        $material_data = [
+            'user_id' => $user->id,
+            $request->type . '_id' => $material->id,
+            'seller_id' => $material->seller_id,
+            'branch_id' => $material->branch_id,
+            'year' => $material->year,
+            'subject_id' => $material->subject_id,
+            'cost' => $material->price
         ];
-        $transaction->save();
-        return response($request->data, 201);
+        $already_transaction = Transaction::where(array_merge($material_data))->latest()->first();
+        $date_before_6_months = strtotime(Carbon::now());
+
+
+        if($already_transaction){
+            $year1 = date('Y', strtotime($already_transaction->created_at));
+            $year2 = date('Y', $date_before_6_months);
+
+            $month1 = date('m', strtotime($already_transaction->created_at));
+            $month2 = date('m', $date_before_6_months);
+
+            $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
+            if($diff < 6)
+                return response(['message' => 'Already Purchased'], 403);
+        }
+        if ($material->branch_id && $material->year && $material->subject_id && $material->seller_id){
+            $transaction = new Transaction($material_data);
+            $transaction->save();
+            $user->coins = $user->coins - $material->price;
+            $user->save();
+            return response($transaction, 201);
+        }
+        return response(['message' => 'Some thing went wrong!'], 404);
     }
 
     /**

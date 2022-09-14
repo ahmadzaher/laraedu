@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\api\v1\AuthController;
 use App\Http\Controllers\api\v1\UserController;
-use App\Http\Controllers\api\v1\UserStatistics;
+use App\Http\Controllers\api\v1\StatisticsController;
 use App\Http\Controllers\api\v1\StudentController;
 use App\Http\Controllers\api\v1\TeacherController;
 use App\Http\Controllers\api\v1\RoleController;
@@ -107,7 +107,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('teacher/{id}', [TeacherController::class, 'destroy']);
     // User
     Route::get('user', [UserController::class, 'getUsers']);
-    Route::get('user/statistics', [UserStatistics::class, 'users']);
+    Route::get('user/statistics', [StatisticsController::class, 'users']);
     Route::get('user/{id}', [UserController::class, 'get']);
     Route::post('user', [UserController::class, 'store']);
     Route::post('user/{id}', [UserController::class, 'update']);
