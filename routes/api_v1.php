@@ -109,6 +109,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user', [UserController::class, 'getUsers']);
     Route::get('user/statistics', [StatisticsController::class, 'users']);
     Route::get('statistics', [StatisticsController::class, 'statistics']);
+    Route::get('statistics/transactions', [StatisticsController::class, 'transactions']);
+    Route::get('statistics/earnings', [StatisticsController::class, 'earnings']);
+    Route::get('statistics/code', [StatisticsController::class, 'code']);
     Route::get('user/{id}', [UserController::class, 'get']);
     Route::post('user', [UserController::class, 'store']);
     Route::post('user/{id}', [UserController::class, 'update']);

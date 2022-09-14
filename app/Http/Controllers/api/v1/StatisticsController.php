@@ -36,7 +36,6 @@ class StatisticsController extends Controller
             }
         }
 
-
         return response()->json([
             'seven_days_user_statistics' => [
                 'seven_days_user_chart_label' => $seven_days_user_chart_label,
@@ -45,6 +44,109 @@ class StatisticsController extends Controller
             ],
         ], 200);
 
+    }
+    public function transactions(Request $request)
+    {
+        $period = $request->period;
+        if(!$period)
+            $period = '7 days';
+        $current_date = date("Y-m-d");
+        $last_seven_day = date('Y-m-d', strtotime("$current_date - $period"));
+        if($period == 'all'){
+            $last_seven_day = '2021-01-01';
+        }
+        $seven_days = DB::select("SELECT COUNT('id') as transactions, DATE_FORMAT(created_at,'%Y-%m-%d') as created_at FROM `transactions` WHERE DATE_FORMAT(created_at, '%Y-%m-%d') >= '" . "$last_seven_day' group by DATE_FORMAT(created_at, '%Y-%m-%d')");
+        $seven_days_chart_label = array();
+        $seven_days_chart_data = array();
+        $seven_days_gain = 0;
+
+        if(!empty($seven_days))
+        {
+            foreach($seven_days as $value)
+            {
+                array_push($seven_days_chart_label, date("jS M y",strtotime($value->created_at)));
+                array_push($seven_days_chart_data, $value->transactions);
+                $seven_days_gain = $seven_days_gain + $value->transactions;
+            }
+        }
+
+        return response()->json([
+            'seven_days_statistics' => [
+                'seven_days_chart_label' => $seven_days_chart_label,
+                'seven_days_chart_data' => $seven_days_chart_data,
+                'seven_days_gain' => $seven_days_gain,
+            ],
+        ], 200);
+
+    }
+
+
+    public function earnings(Request $request)
+    {
+        $period = $request->period;
+        if(!$period)
+            $period = '7 days';
+        $current_date = date("Y-m-d");
+        $last_seven_day = date('Y-m-d', strtotime("$current_date - $period"));
+        if($period == 'all'){
+            $last_seven_day = '2021-01-01';
+        }
+        $seven_days = DB::select("SELECT SUM(cost) as transactions, DATE_FORMAT(created_at,'%Y-%m-%d') as created_at FROM `transactions` WHERE DATE_FORMAT(created_at, '%Y-%m-%d') >= '" . "$last_seven_day' group by DATE_FORMAT(created_at, '%Y-%m-%d')");
+        $seven_days_chart_label = array();
+        $seven_days_chart_data = array();
+        $seven_days_gain = 0;
+
+        if(!empty($seven_days))
+        {
+            foreach($seven_days as $value)
+            {
+                array_push($seven_days_chart_label, date("jS M y",strtotime($value->created_at)));
+                array_push($seven_days_chart_data, $value->transactions);
+                $seven_days_gain = $seven_days_gain + $value->transactions;
+            }
+        }
+
+        return response()->json([
+            'seven_days_statistics' => [
+                'seven_days_chart_label' => $seven_days_chart_label,
+                'seven_days_chart_data' => $seven_days_chart_data,
+                'seven_days_gain' => $seven_days_gain,
+            ],
+        ], 200);
+
+    }
+    public function code(Request $request)
+    {
+        $period = $request->period;
+        if(!$period)
+            $period = '7 days';
+        $current_date = date("Y-m-d");
+        $last_seven_day = date('Y-m-d', strtotime("$current_date - $period"));
+        if($period == 'all'){
+            $last_seven_day = '2021-01-01';
+        }
+        $seven_days = DB::select("SELECT COUNT('id') as code, DATE_FORMAT(created_at,'%Y-%m-%d') as created_at FROM `codes` WHERE DATE_FORMAT(created_at, '%Y-%m-%d') >= '" . "$last_seven_day' group by DATE_FORMAT(created_at, '%Y-%m-%d')");
+        $seven_days_chart_label = array();
+        $seven_days_chart_data = array();
+        $seven_days_gain = 0;
+
+        if(!empty($seven_days))
+        {
+            foreach($seven_days as $value)
+            {
+                array_push($seven_days_chart_label, date("jS M y",strtotime($value->created_at)));
+                array_push($seven_days_chart_data, $value->code);
+                $seven_days_gain = $seven_days_gain + $value->code;
+            }
+        }
+
+        return response()->json([
+            'seven_days_statistics' => [
+                'seven_days_chart_label' => $seven_days_chart_label,
+                'seven_days_chart_data' => $seven_days_chart_data,
+                'seven_days_gain' => $seven_days_gain,
+            ],
+        ], 200);
 
     }
 
