@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
+use App\Role;
 use App\Rules\Nospaces;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -33,7 +35,11 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
 
+        $role = Role::Where(['slug' => 'student'])->get();
+        $user->roles()->attach($role);
+
         $token = $user->createToken('Laravel8PassportAuth')->accessToken;
+        $this->middleware('register_counter');
 
         return response()->json(['token' => $token], 200);
     }
@@ -51,6 +57,9 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only($login_type, 'password'))) {
+            $this->middleware('login_counter');
+            if(\auth()->user()->hasRole('student'))
+                DB::table('oauth_access_tokens')->where('user_id', auth()->user()->id)->delete();
             $token = auth()->user()->createToken('Laravel8PassportAuth')->accessToken;
             return response()->json(['token' => $token], 200);
         } else {

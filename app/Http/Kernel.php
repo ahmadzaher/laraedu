@@ -68,5 +68,8 @@ class Kernel extends HttpKernel
         'frontendActive' => \App\Http\Middleware\FrontendActiveMiddleware::class,
         'localization' => \App\Http\Middleware\localization::class,
         'api_version' => \App\Http\Middleware\APIVersion::class,
+        'login_counter' => \App\Http\Middleware\LoginCounter::class,
+        'traffic_counter' => \App\Http\Middleware\TrafficCounter::class,
+        'register_counter' => \App\Http\Middleware\RegisterCounter::class,
     ];
 }

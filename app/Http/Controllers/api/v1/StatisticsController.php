@@ -4,7 +4,10 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Subject;
+use App\Traffic;
+use App\Transaction;
 use App\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -145,6 +148,97 @@ class StatisticsController extends Controller
                 'seven_days_chart_label' => $seven_days_chart_label,
                 'seven_days_chart_data' => $seven_days_chart_data,
                 'seven_days_gain' => $seven_days_gain,
+            ],
+        ], 200);
+
+    }
+
+    public function main(Request $request)
+    {
+        $year = $request->year;
+        $month = $request->month;
+        if(!$year)
+            $year = date('Y');
+        if(!$month)
+            $month = date('m');
+        $transactions = Transaction::select([DB::raw('count(id) as transaction'), 'created_at'])->whereYear('created_at', $year)->whereMonth('created_at', $month)
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->get();
+        $traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'traffic')->whereYear('created_at', $year)->whereMonth('created_at', $month)
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->get();
+        $login_traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'login')->whereYear('created_at', $year)->whereMonth('created_at', $month)
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->get();
+        $register_traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'register')->whereYear('created_at', $year)->whereMonth('created_at', $month)
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->get();
+        $register_traffic_data = $traffic_data = $login_traffic_data = $transactions_data = array();
+        $register_traffic_gain = $traffic_gain = $login_traffic_gain = $transactions_gain = 0;
+        $labels = array();
+        $number_days_in_month = cal_days_in_month(CAL_GREGORIAN,$month,$year);
+        if(!empty($transactions))
+        {
+            for($i = 1; $i <= $number_days_in_month; $i++)
+            {
+                array_push($labels, date("jS M y",strtotime("$year-$month-$i")));
+                $isset_transaction = $isset_traffic = $isset_login_traffic = $isset_register_traffic = false;
+                foreach ($transactions as $value) {
+                    if(date('m', strtotime($value->created_at)) == $i){
+                        array_push($transactions_data, $value->transaction);
+                        $transactions_gain = $transactions_gain + $value->transaction;
+                        $isset_transaction = true;
+                    }
+                }
+                foreach ($traffic as $value) {
+                    if(date('m', strtotime($value->created_at)) == $i){
+                        array_push($traffic_data, $value->traffic);
+                        $traffic_gain = $traffic_gain + $value->traffic;
+                        $isset_traffic = true;
+                    }
+                }
+                foreach ($login_traffic as $value) {
+                    if(date('m', strtotime($value->created_at)) == $i){
+                        array_push($login_traffic_data, $value->traffic);
+                        $login_traffic_gain = $login_traffic_gain + $value->traffic;
+                        $isset_traffic = true;
+                    }
+                }
+                foreach ($register_traffic as $value) {
+                    if(date('m', strtotime($value->created_at)) == $i){
+                        array_push($register_traffic_data, $value->traffic);
+                        $register_traffic_gain = $register_traffic_gain + $value->traffic;
+                        $isset_traffic = true;
+                    }
+                }
+                if(!$isset_transaction)
+                    array_push($transactions_data, 0);
+
+                if(!$isset_traffic)
+                    array_push($traffic_data, 0);
+
+                if(!$isset_login_traffic)
+                    array_push($login_traffic_data, 0);
+
+                if(!$isset_register_traffic)
+                    array_push($register_traffic_data, 0);
+
+            }
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'transactions' => [
+                'data' => $transactions_data,
+                'gain' => $transactions_gain,
+            ],
+            'traffic' => [
+                'data' => $traffic_data,
+                'gain' => $traffic_gain,
+            ],
+            'login_traffic' => [
+                'data' => $login_traffic_data,
+                'gain' => $login_traffic_gain,
+            ],
+            'register_traffic' => [
+                'data' => $register_traffic_data,
+                'gain' => $register_traffic_gain,
             ],
         ], 200);
 
