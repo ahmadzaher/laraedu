@@ -240,6 +240,7 @@ class StatisticsController extends Controller
                 'data' => $register_traffic_data,
                 'gain' => $register_traffic_gain,
             ],
+            'number_of_days_in_month' => $number_days_in_month
         ], 200);
 
     }
