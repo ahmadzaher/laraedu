@@ -157,51 +157,85 @@ class StatisticsController extends Controller
     {
         $year = $request->year;
         $month = $request->month;
+        $day = $request->day;
         if(!$year)
             $year = date('Y');
         if(!$month)
             $month = date('m');
-        $transactions = Transaction::select([DB::raw('count(id) as transaction'), 'created_at'])->whereYear('created_at', $year)->whereMonth('created_at', $month)
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->get();
-        $traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'traffic')->whereYear('created_at', $year)->whereMonth('created_at', $month)
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->get();
-        $login_traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'login')->whereYear('created_at', $year)->whereMonth('created_at', $month)
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->get();
-        $register_traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'register')->whereYear('created_at', $year)->whereMonth('created_at', $month)
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->get();
+        $transactions = Transaction::select([DB::raw('count(id) as transaction'), 'created_at'])->whereYear('created_at', $year)->whereMonth('created_at', $month)->where(function ($query) use ($day){
+            if($day)
+                $query->whereDay('created_at', $day);
+        });
+        if($day)
+            $transactions->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %h')"));
+        else
+            $transactions->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"));
+        $transactions = $transactions->get();
+        $traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'traffic')->whereYear('created_at', $year)->whereMonth('created_at', $month)->where(function ($query) use ($day){
+            if($day)
+                $query->whereDay('created_at', $day);
+        });
+        if($day)
+            $traffic->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %h')"));
+        else
+            $traffic->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"));
+        $traffic = $traffic->get();
+        $login_traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'login')->whereYear('created_at', $year)->whereMonth('created_at', $month)->where(function ($query) use ($day){
+            if($day)
+                $query->whereDay('created_at', $day);
+        });
+        if($day)
+            $login_traffic->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %h')"));
+        else
+            $login_traffic->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"));
+        $login_traffic = $login_traffic->get();
+        $register_traffic = Traffic::select([DB::raw('count(id) as traffic'), 'created_at'])->where('type', 'register')->whereYear('created_at', $year)->whereMonth('created_at', $month)->where(function ($query) use ($day){
+            if($day)
+                $query->whereDay('created_at', $day);
+        });
+        if($day)
+            $register_traffic->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %h')"));
+        else
+            $register_traffic->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"));
+        $register_traffic = $register_traffic->get();
         $register_traffic_data = $traffic_data = $login_traffic_data = $transactions_data = array();
         $register_traffic_gain = $traffic_gain = $login_traffic_gain = $transactions_gain = 0;
         $labels = array();
         $number_days_in_month = cal_days_in_month(CAL_GREGORIAN,$month,$year);
+        $number = $day ? 23 : $number_days_in_month;
         if(!empty($transactions))
         {
-            for($i = 1; $i <= $number_days_in_month; $i++)
+            for($i = $day ? 0 : 1; $i <= $number; $i++)
             {
-                array_push($labels, date("jS M y",strtotime("$year-$month-$i")));
+                $label = date("jS M y",strtotime("$year-$month-$i"));
+                if($day){
+                    $label = $i < 10 ? '0' . "$i:00" : "$i:00";
+                }
+                array_push($labels, $label);
                 $isset_transaction = $isset_traffic = $isset_login_traffic = $isset_register_traffic = false;
                 foreach ($transactions as $value) {
-                    if(date('j', strtotime($value->created_at)) == $i){
+                    if(date($day ? 'H' : 'j', strtotime($value->created_at)) == $i){
                         array_push($transactions_data, $value->transaction);
                         $transactions_gain = $transactions_gain + $value->transaction;
                         $isset_transaction = true;
                     }
                 }
                 foreach ($traffic as $value) {
-                    if(date('j', strtotime($value->created_at)) == $i){
+                    if(date($day ? 'H' : 'j', strtotime($value->created_at)) == $i){
                         array_push($traffic_data, $value->traffic);
                         $traffic_gain = $traffic_gain + $value->traffic;
                         $isset_traffic = true;
                     }
                 }
                 foreach ($login_traffic as $value) {
-                    if(date('j', strtotime($value->created_at)) == $i){
+                    if(date($day ? 'H' : 'j', strtotime($value->created_at)) == $i){
                         array_push($login_traffic_data, $value->traffic);
                         $login_traffic_gain = $login_traffic_gain + $value->traffic;
                         $isset_login_traffic = true;
                     }
                 }
                 foreach ($register_traffic as $value) {
-                    if(date('j', strtotime($value->created_at)) == $i){
+                    if(date($day ? 'H' : 'j', strtotime($value->created_at)) == $i){
                         array_push($register_traffic_data, $value->traffic);
                         $register_traffic_gain = $register_traffic_gain + $value->traffic;
                         $isset_register_traffic = true;
