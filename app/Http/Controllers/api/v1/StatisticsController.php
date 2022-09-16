@@ -180,31 +180,31 @@ class StatisticsController extends Controller
                 array_push($labels, date("jS M y",strtotime("$year-$month-$i")));
                 $isset_transaction = $isset_traffic = $isset_login_traffic = $isset_register_traffic = false;
                 foreach ($transactions as $value) {
-                    if(date('d', strtotime($value->created_at)) == $i){
+                    if(date('j', strtotime($value->created_at)) == $i){
                         array_push($transactions_data, $value->transaction);
                         $transactions_gain = $transactions_gain + $value->transaction;
                         $isset_transaction = true;
                     }
                 }
                 foreach ($traffic as $value) {
-                    if(date('d', strtotime($value->created_at)) == $i){
+                    if(date('j', strtotime($value->created_at)) == $i){
                         array_push($traffic_data, $value->traffic);
                         $traffic_gain = $traffic_gain + $value->traffic;
                         $isset_traffic = true;
                     }
                 }
                 foreach ($login_traffic as $value) {
-                    if(date('d', strtotime($value->created_at)) == $i){
+                    if(date('j', strtotime($value->created_at)) == $i){
                         array_push($login_traffic_data, $value->traffic);
                         $login_traffic_gain = $login_traffic_gain + $value->traffic;
-                        $isset_traffic = true;
+                        $isset_login_traffic = true;
                     }
                 }
                 foreach ($register_traffic as $value) {
-                    if(date('d', strtotime($value->created_at)) == $i){
+                    if(date('j', strtotime($value->created_at)) == $i){
                         array_push($register_traffic_data, $value->traffic);
                         $register_traffic_gain = $register_traffic_gain + $value->traffic;
-                        $isset_traffic = true;
+                        $isset_register_traffic = true;
                     }
                 }
                 if(!$isset_transaction)
