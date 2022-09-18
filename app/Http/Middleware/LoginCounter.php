@@ -16,7 +16,10 @@ class LoginCounter
      */
     public function handle($request, Closure $next)
     {
-        $traffic = new Traffic(['type' => 'login']);
+        $traffic = new Traffic([
+            'user_id' => auth()->user()->id,
+            'type' => 'login'
+        ]);
         $traffic->save();
         return $next($request);
     }

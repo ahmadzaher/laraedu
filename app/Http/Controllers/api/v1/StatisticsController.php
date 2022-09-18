@@ -279,6 +279,18 @@ class StatisticsController extends Controller
 
     }
 
+    public function latest_users()
+    {
+        $users = User::latest()->limit(6)
+            ->select([
+                'users.*',
+                DB::raw("(select count(id) from traffic where user_id = users.id AND type='traffic')  as traffic_count"),
+                DB::raw("(select max(created_at) from traffic where user_id = users.id AND type='login') as last_login"),
+            ])
+            ->get();
+        return response($users);
+    }
+
     public function statistics(){
 
         $number_of_students = User::leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')

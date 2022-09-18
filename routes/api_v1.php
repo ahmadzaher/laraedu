@@ -33,8 +33,8 @@ Route::fallback(function(){
     return response()->json([
         'message' => 'Not found'], 404);
 });
-Route::post('register', [AuthController::class, 'register'])->middleware('register_counter');
-Route::post('login', [AuthController::class, 'login'])->middleware('login_counter');
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 Route::get('settings/general', [SettingsController::class, 'general_settings']);
 
 Route::post('password/forgot-password', [ForgotPasswordController::class, 'forgot'])->name('passwords.sent');
@@ -113,6 +113,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('statistics/earnings', [StatisticsController::class, 'earnings']);
     Route::get('statistics/code', [StatisticsController::class, 'code']);
     Route::get('statistics/main', [StatisticsController::class, 'main']);
+    Route::get('statistics/latest_users', [StatisticsController::class, 'latest_users']);
     Route::get('user/{id}', [UserController::class, 'get']);
     Route::post('user', [UserController::class, 'store']);
     Route::post('user/{id}', [UserController::class, 'update']);

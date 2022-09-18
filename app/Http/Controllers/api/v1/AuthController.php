@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Role;
 use App\Rules\Nospaces;
+use App\Traffic;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,11 @@ class AuthController extends Controller
         $user->roles()->attach($role);
 
         $token = $user->createToken('Laravel8PassportAuth')->accessToken;
-        $this->middleware('register_counter');
+        $traffic = new Traffic([
+            'user_id' => auth()->user()->id,
+            'type' => 'register'
+        ]);
+        $traffic->save();
 
         return response()->json(['token' => $token], 200);
     }
@@ -57,7 +62,11 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only($login_type, 'password'))) {
-            $this->middleware('login_counter');
+            $traffic = new Traffic([
+                'user_id' => auth()->user()->id,
+                'type' => 'login'
+            ]);
+            $traffic->save();
             if(\auth()->user()->hasRole('student'))
                 DB::table('oauth_access_tokens')->where('user_id', auth()->user()->id)->delete();
             $token = auth()->user()->createToken('Laravel8PassportAuth')->accessToken;
