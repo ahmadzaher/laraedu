@@ -41,7 +41,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('Laravel8PassportAuth')->accessToken;
         $traffic = new Traffic([
-            'user_id' => auth()->user()->id,
+            'user_id' => $user->id,
             'type' => 'register'
         ]);
         $traffic->save();
@@ -67,8 +67,9 @@ class AuthController extends Controller
                 'type' => 'login'
             ]);
             $traffic->save();
-            if(\auth()->user()->hasRole('student'))
-                DB::table('oauth_access_tokens')->where('user_id', auth()->user()->id)->delete();
+            // Student can sign in with only one device
+//            if(\auth()->user()->hasRole('student'))
+//                DB::table('oauth_access_tokens')->where('user_id', auth()->user()->id)->delete();
             $token = auth()->user()->createToken('Laravel8PassportAuth')->accessToken;
             return response()->json(['token' => $token], 200);
         } else {
