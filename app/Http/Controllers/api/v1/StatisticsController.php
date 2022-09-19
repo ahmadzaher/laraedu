@@ -294,7 +294,7 @@ class StatisticsController extends Controller
             $avatar = $staff->getFirstMediaUrl('avatars', 'thumb') != null ? url($staff->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
 
             $users[$key]['avatar'] = $avatar;
-            $users[$key]['last_login'] = Carbon::parse($users[$key]['last_login'])->diffForHumans();
+            $users[$key]['last_login'] =  $users[$key]['last_login'] ? Carbon::parse($users[$key]['last_login'])->diffForHumans() : 'Never';
             unset($users[$key]['media']);
         }
         return response($users);
