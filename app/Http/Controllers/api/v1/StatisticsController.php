@@ -288,6 +288,14 @@ class StatisticsController extends Controller
                 DB::raw("(select max(created_at) from traffic where user_id = users.id AND type='login') as last_login"),
             ])
             ->get();
+
+        foreach($users as $key => $staff)
+        {
+            $avatar = $staff->getFirstMediaUrl('avatars', 'thumb') != null ? url($staff->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg');
+
+            $users[$key]['avatar'] = $avatar;
+            unset($users[$key]['media']);
+        }
         return response($users);
     }
 
