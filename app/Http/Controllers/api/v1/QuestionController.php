@@ -450,7 +450,7 @@ class QuestionController extends Controller
             $answer = new Answer([
                 'question_id' => $id,
                 'active' => 1,
-                'correct' => request('correct'),
+                'correct' => 1,
                 'content' => request('answer')
             ]);
             $answer->save();
