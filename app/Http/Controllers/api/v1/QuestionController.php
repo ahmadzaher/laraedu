@@ -274,6 +274,13 @@ class QuestionController extends Controller
         {
             $question->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
         }
+
+        if ($question->type === 'essay') {
+            $answers = $question->answers;
+            $answers->each(function ($answer) {
+                $answer->answer_image = url($answer->getFirstMediaUrl('answer_images'));
+            });
+        }
         unset($question->media);
         return Response($question, 200);
     }
@@ -454,6 +461,9 @@ class QuestionController extends Controller
                 'content' => request('answer')
             ]);
             $answer->save();
+            if (isset($request->delete_essay_image)) {
+                $question->clearMediaCollection('answer_images');
+            }
 
             if (request()->hasFile('answer_img') && request()->file('answer_img')->isValid()) {
                 $answer->addMediaFromRequest('answer_img')
