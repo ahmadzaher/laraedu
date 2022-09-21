@@ -278,7 +278,8 @@ class QuestionController extends Controller
         if ($question->type === 'essay') {
             $answers = $question->answers;
             $answers->each(function ($answer) {
-                $answer->answer_image = url($answer->getFirstMediaUrl('answer_images'));
+                if($answer->getFirstMediaUrl('answer_images'))
+                    $answer->answer_image = url($answer->getFirstMediaUrl('answer_images'));
             });
         }
         unset($question->media);
