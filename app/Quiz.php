@@ -17,7 +17,8 @@ class Quiz extends Model
         'branch_id',
         'subject_id',
         'seller_id',
-        'year'
+        'year',
+        'price'
     ];
 
     public function questions() {
