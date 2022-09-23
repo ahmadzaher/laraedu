@@ -8,14 +8,10 @@ class Quiz extends Model
 {
     protected $fillable = [
         'title',
-        'meta_title',
-        'slug',
         'summary',
         'type',
         'score',
         'published',
-        'starts_at',
-        'ends_at',
         'content',
         'category_id',
         'branch_id',
@@ -23,12 +19,6 @@ class Quiz extends Model
         'seller_id',
         'year'
     ];
-
-    public function quiz_metas() {
-
-        return $this->hasMany(QuizMeta::class);
-
-    }
 
     public function questions() {
 

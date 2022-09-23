@@ -5,7 +5,6 @@ namespace App\Http\Controllers\api\v1;
 use App\Answer;
 use App\Http\Controllers\Controller;
 use App\Quiz;
-use App\QuizMeta;
 use App\Question;
 use Illuminate\Http\Request;
 
@@ -80,25 +79,19 @@ class QuizController extends Controller
     {
         $request->validate([
             'title' => ['required', 'string', 'max:255', 'unique:quizzes'],
-            'meta_title' => ['required', 'string', 'max:255', 'unique:quizzes'],
-            'slug' => ['required', 'string', 'max:255', 'unique:quizzes'],
-            'type' => ['required', 'max:255'],
+            'type' => ['required', 'integer', 'min:1', 'max:3'],
             'score' => ['required', 'max:255'],
             'published' => ['required', 'max:255'],
-            'category' => ['required', 'integer'],
+            'category' => ['integer'],
         ]);
         $quiz = new Quiz([
             'title' => $request->title,
-            'meta_title' => $request->meta_title,
-            'slug' => $request->slug,
             'summary' => $request->summary,
             'type' => $request->type,
             'score' => $request->score,
             'published' => $request->published,
-            'starts_at' => $request->starts_at,
-            'ends_at' => $request->ends_at,
             'content' => $request['content'],
-            'category_id' => $request->category,
+            'category_id' => $request->category ? $request->category : null,
             'branch_id' => $request->branch_id,
             'subject_id' => $request->subject_id,
             'seller_id' => $request->seller_id,
@@ -106,20 +99,9 @@ class QuizController extends Controller
 
         ]);
         $quiz->save();
-        if(!empty($request->meta))
-        foreach ($request->meta as $key => $content)
-        {
-            $quiz_meta = new QuizMeta([
-                'quiz_id' => $quiz->id,
-                'key' => $key,
-                'content' => $content
-            ]);
-            $quiz_meta->save();
-        }
         $questions = (array_unique($request->questions, SORT_REGULAR));
 
         $quiz->questions()->sync($questions);
-        $quiz->quiz_metas = QuizMeta::where('quiz_id', '=', $quiz->id)->get();
 
         return response($quiz, 201);
     }
@@ -177,9 +159,7 @@ class QuizController extends Controller
     {
         $request->validate([
             'title' => ['required', 'string', 'max:255', 'unique:quizzes,title,'.$quiz->id],
-            'meta_title' => ['required', 'string', 'max:255', 'unique:quizzes,meta_title,'.$quiz->id],
-            'slug' => ['required', 'string', 'max:255', 'unique:quizzes,slug,'.$quiz->id],
-            'type' => ['required', 'max:255'],
+            'type' => ['required', 'integer', 'min:1', 'max:3'],
             'score' => ['required', 'max:255'],
             'published' => ['required', 'max:255'],
             'category' => ['required', 'integer'],
@@ -190,16 +170,12 @@ class QuizController extends Controller
         }
 
         $quiz->title = $request->title;
-        $quiz->meta_title = $request->meta_title;
-        $quiz->slug = $request->slug;
         $quiz->summary = $request->summary;
         $quiz->type = $request->type;
         $quiz->score = $request->score;
         $quiz->published = $request->published;
-        $quiz->starts_at = $request->starts_at;
-        $quiz->ends_at = $request->ends_at;
         $quiz->content = $request['content'];
-        $quiz->category_id = $request->category;
+        $quiz->category_id = $request->category ? $request->category : null;
         $quiz->branch_id = $request->branch_id;
         $quiz->subject_id = $request->subject_id;
         $quiz->seller_id = $request->seller_id;
