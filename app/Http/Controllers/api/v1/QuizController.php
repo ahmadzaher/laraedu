@@ -162,7 +162,7 @@ class QuizController extends Controller
             'type' => ['required', 'integer', 'min:1', 'max:3'],
             'score' => ['max:255'],
             'published' => ['required', 'max:255'],
-            'category' => ['required', 'integer'],
+            'category' => ['integer'],
             'questions' => ['required']
         ]);
         if($quiz == null){
