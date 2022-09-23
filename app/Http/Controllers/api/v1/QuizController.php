@@ -80,7 +80,7 @@ class QuizController extends Controller
         $request->validate([
             'title' => ['required', 'string', 'max:255', 'unique:quizzes'],
             'type' => ['required', 'integer', 'min:1', 'max:3'],
-            'score' => ['required', 'max:255'],
+            'score' => ['max:255'],
             'published' => ['required', 'max:255'],
             'category' => ['integer'],
         ]);
@@ -160,7 +160,7 @@ class QuizController extends Controller
         $request->validate([
             'title' => ['required', 'string', 'max:255', 'unique:quizzes,title,'.$quiz->id],
             'type' => ['required', 'integer', 'min:1', 'max:3'],
-            'score' => ['required', 'max:255'],
+            'score' => ['max:255'],
             'published' => ['required', 'max:255'],
             'category' => ['required', 'integer'],
             'questions' => ['required']
