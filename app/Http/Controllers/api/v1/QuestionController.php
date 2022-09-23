@@ -182,7 +182,7 @@ class QuestionController extends Controller
                 'score' => $request->score,
                 'default_time' => $request->default_time,
                 'content' => $request['content'],
-                'group_id' => $request->group,
+                'group_id' => $request->group ? $request->group : null,
                 'solution' => $request->solution,
                 'hint' => $request->hint,
                 'branch_id' => $request->branch_id,
@@ -335,7 +335,7 @@ class QuestionController extends Controller
             $question->score = $request->score;
             $question->default_time = $request->default_time;
             $question->content = $request['content'];
-            $question->group_id = $request->group;
+            $question->group_id = $request->group ? $request->group : null;
             $question->solution = $request->solution;
             $question->hint = $request->hint;
             $question->branch_id = $request->branch_id;
