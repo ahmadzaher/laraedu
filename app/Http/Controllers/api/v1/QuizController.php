@@ -22,9 +22,9 @@ class QuizController extends Controller
         $seller_id = $request->seller_id;
         $year = $request->year;
         $search = $request->search;
-            $quizzes = Quiz::with('questions')
-                ->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
-                ->latest()->where(function ($query) use ($search) {
+            $quizzes = Quiz::leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
+                ->latest()
+                ->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%'.$search.'%')
                     ->orWhere('quizzes.id', 'like', '%'.$search.'%');
             })->where(function ($query) use ($branch_id, $subject_id, $year, $seller_id) {
@@ -47,7 +47,8 @@ class QuizController extends Controller
         $subject_id = $request->subject_id;
         $year = $request->year;
         $category = $request->category;
-        $quizzes = Quiz::with('questions')->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
+        $quizzes = Quiz::where('published', 1)
+            ->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
             ->latest()
             ->where(function ($query) use ($category) {
 
@@ -114,7 +115,7 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
-        $questions = Question::with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
+        $questions = Question::with('answers')->where('active', 1)->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
             return $query->where('id', '=', $quiz->id);
         })->get();
         foreach ($questions as $key => $question) {
@@ -133,7 +134,8 @@ class QuizController extends Controller
     public function get($id)
     {
         $quiz = Quiz::find($id);
-        $questions = Question::with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
+        $questions = Question::where('active', 1)
+        ->with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
             return $query->where('id', '=', $quiz->id);
         })->get();
         foreach ($questions as $key => $question) {
