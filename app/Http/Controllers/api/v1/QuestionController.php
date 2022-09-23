@@ -81,7 +81,6 @@ class QuestionController extends Controller
     {
         $request->validate([
             'type' => ['required', 'max:255'],
-            'group' => ['integer'],
             'level' => ['required', 'integer'],
             'score' => ['required'],
             'default_time' => ['required'],
@@ -314,7 +313,6 @@ class QuestionController extends Controller
     {
         $request->validate([
             'type' => ['required', 'max:255'],
-            'group' => ['integer'],
             'level' => ['required', 'integer'],
             'score' => ['required'],
             'default_time' => ['required'],
