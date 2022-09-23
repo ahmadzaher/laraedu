@@ -84,7 +84,7 @@ class QuizController extends Controller
             'score' => ['max:255'],
             'published' => ['required', 'max:255'],
             'category' => ['integer'],
-            'price' => ['price']
+            'price' => ['required']
         ]);
         $quiz = new Quiz([
             'title' => $request->title,
@@ -168,7 +168,7 @@ class QuizController extends Controller
             'published' => ['required', 'max:255'],
             'category' => ['integer'],
             'questions' => ['required'],
-            'price' => ['price']
+            'price' => ['required']
         ]);
         if($quiz == null){
             return response(['message' => 'Something went wrong!'], 404);
