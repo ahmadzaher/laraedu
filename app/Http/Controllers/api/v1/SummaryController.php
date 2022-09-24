@@ -4,19 +4,69 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Summary;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SummaryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $summaries = Summary::paginate(25);
+//        $summaries = Summary::paginate(25);
+//
+//        $summaries->each(function ($summary) {
+//            $summary->getMedia();
+//            $summary->summary_image = url($summary->getFirstMediaUrl('summaries'));
+//        });
+//
+//        return Response($summaries);
 
+
+        $branch_id = $request->branch_id;
+        $subject_id = $request->subject_id;
+        $seller_id = $request->seller_id;
+        $year = $request->year;
+        $search = $request->search;
+        $summaries = Summary::latest()
+            ->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('id', 'like', '%'.$search.'%');
+            })->where(function ($query) use ($branch_id, $subject_id, $year, $seller_id) {
+
+                if($branch_id != ''){
+                    $query->where('summaries.branch_id', $branch_id);
+                    $query->where('summaries.subject_id', $subject_id);
+                    $query->where('summaries.seller_id', $seller_id);
+                    $query->where('summaries.year', $year);
+                }
+
+            })->select(['summaries.*'])->paginate($request->per_page);
         $summaries->each(function ($summary) {
             $summary->getMedia();
-            $summary->summary_image = url($summary->getFirstMediaUrl('summaries'));
+            $summary->summary_file = $summary->getFirstMediaUrl('summaries') ? url($summary->getFirstMediaUrl('summaries')) : '';
         });
 
-        return Response($summaries);
+        return response($summaries, 200);
+    }
+
+    public function all(Request $request)
+    {
+        $branch_id = $request->branch_id;
+        $subject_id = $request->subject_id;
+        $year = $request->year;
+        $summaries = Summary::where('published', 1)
+            ->select(['summaries.*', DB::raw("(SELECT COUNT('id') FROM `transactions` WHERE transactions.summary_id = summaries.id AND transactions.user_id = ".$request->user()->id.") as is_purchased ")])
+            ->where(function ($query) use ($branch_id, $subject_id, $year) {
+
+                if($branch_id != ''){
+                    $query->where('summaries.branch_id', $branch_id);
+                    $query->where('summaries.subject_id', $subject_id);
+                    $query->where('summaries.year', $year);
+                }
+
+            })
+            ->latest()
+            ->get();
+        return response($summaries, 200);
     }
 
     public function store()
@@ -25,7 +75,7 @@ class SummaryController extends Controller
             'name' => 'required|min:3',
             'teacher_name' => 'min:3',
             'description' => 'min:3',
-            'file' => 'mimes:pdf,doc,docx'
+            'file' => 'mimes:pdf'
         ]);
 
         $summary  = Summary::create([
@@ -36,6 +86,7 @@ class SummaryController extends Controller
             'branch_id' => request('branch_id'),
             'subject_id' => request('subject_id'),
             'seller_id' => request('seller_id'),
+            'price' => request('price')
         ]);
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {
@@ -46,11 +97,23 @@ class SummaryController extends Controller
         return Response($summary, 201);
     }
 
-    public function show(Summary $summary)
+    public function show(Summary $summary, Request $request)
     {
         $summary->getMedia();
 
-        $summary->summary_image = url($summary->getFirstMediaUrl('summaries'));
+        $summary->summary_file = $summary->getFirstMediaUrl('summaries') ? url($summary->getFirstMediaUrl('summaries')) : '';
+
+        return Response($summary);
+    }
+
+    public function student_show(Summary $summary, Request $request)
+    {
+
+        if(!$summary->purchasedBy($request->user()))
+            return response(['message' => 'Not Purchased'], 403);
+        $summary->getMedia();
+
+        $summary->summary_file = $summary->getFirstMediaUrl('summaries') ? url($summary->getFirstMediaUrl('summaries')) : '';
 
         return Response($summary);
     }
@@ -61,7 +124,7 @@ class SummaryController extends Controller
             'name' => 'required|min:3',
             'teacher_name' => 'min:3',
             'description' => 'min:3',
-            'file' => 'mimes:pdf,doc,docx'
+            'file' => 'mimes:pdf'
         ]);
 
         $summary->update( [
@@ -71,7 +134,8 @@ class SummaryController extends Controller
             'year' => request('year'),
             'branch_id' => request('branch_id'),
             'subject_id' => request('subject_id'),
-            'seller_id' => request('seller_id')
+            'seller_id' => request('seller_id'),
+            'price' => request('price')
         ]);
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {

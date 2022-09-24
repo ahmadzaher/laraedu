@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Quiz;
 use App\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
 {
@@ -46,17 +47,8 @@ class QuizController extends Controller
         $branch_id = $request->branch_id;
         $subject_id = $request->subject_id;
         $year = $request->year;
-        $category = $request->category;
         $quizzes = Quiz::where('published', 1)
-            ->leftJoin('categories', 'categories.id', '=', 'quizzes.category_id')
-            ->latest()
-            ->where(function ($query) use ($category) {
-
-                if($category != ''){
-                    $query->where('category_id', $category);
-                }
-                $query->where('published', '1');
-            })
+            ->select(['quizzes.*', DB::raw("(SELECT COUNT('id') FROM `transactions` WHERE transactions.quiz_id = quizzes.id AND transactions.user_id = ".$request->user()->id.") as is_purchased ")])
             ->where(function ($query) use ($branch_id, $subject_id, $year) {
 
                 if($branch_id != ''){
@@ -66,7 +58,8 @@ class QuizController extends Controller
                 }
 
             })
-            ->select(['quizzes.*', 'categories.name as category_name'])->get();
+            ->latest('quizzes.created_at')
+            ->get();
         return response($quizzes, 200);
     }
 
@@ -127,15 +120,17 @@ class QuizController extends Controller
         return Response($quiz, 200);
     }
 
+
     /**
      * Display the specified resource.
      *
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function get($id)
+    public function student_show(Quiz $quiz, Request $request)
     {
-        $quiz = Quiz::find($id);
+        if(!$quiz->purchasedBy($request->user()))
+            return response(['message' => 'Not Purchased'], 403);
         $questions = Question::where('active', 1)
         ->with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
             return $query->where('id', '=', $quiz->id);

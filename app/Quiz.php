@@ -26,4 +26,14 @@ class Quiz extends Model
         return $this->belongsToMany(Question::class,'quizzes_questions');
 
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function purchasedBy(User $user)
+    {
+        return $this->transactions->contains('user_id', $user->id);
+    }
 }

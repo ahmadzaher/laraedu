@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Quiz;
+use App\Summary;
 use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -38,9 +39,9 @@ class TransactionController extends Controller
             if (!$material)
                 return response(['message' => 'Material not found'], 404);
         }elseif($request->type == 'summary'){
-            $material = Quiz::find($request->material_id);
+            $material = Summary::find($request->material_id);
             if (!$material)
-                return response('Material not found', 404);
+                return response(['message' => 'Material not found'], 404);
         }else{
             return response(['message' => 'Type should be quiz or summary'], 422);
         }

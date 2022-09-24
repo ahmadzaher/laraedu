@@ -24,4 +24,14 @@ class Summary extends Model implements HasMedia
         $this->addMediaCollection('summaries')
             ->acceptsMimeTypes(['application/pdf', 'application/msword']);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function purchasedBy(User $user)
+    {
+        return $this->transactions->contains('user_id', $user->id);
+    }
 }

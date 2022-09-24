@@ -44,10 +44,22 @@ Route::post('facebook', [AuthController::class, 'facebook']);
 
 Route::middleware('auth:api')->group(function () {
     // Student quiz
-    Route::middleware('role:student')->group(function() {
+    Route::middleware('role:student')->prefix('student')->group(function(){
+        // Branches
+        Route::get('branches', [\App\Http\Controllers\api\v1\BranchController::class, 'all']);
+        // Subjects
+        Route::get('subjects', [\App\Http\Controllers\api\v1\SubjectController::class, 'all']);
+        // Summaries
+        Route::get('summaries', [\App\Http\Controllers\api\v1\SummaryController::class, 'all']);
+        Route::get('summary/{summary}', [\App\Http\Controllers\api\v1\SummaryController::class, 'student_show']);
+        // Quizzes
         Route::get('quizzes', [\App\Http\Controllers\api\v1\QuizController::class, 'all']);
-        Route::get('student/quiz/{id}', [\App\Http\Controllers\api\v1\QuizController::class, 'get']);
+        Route::get('quiz/{quiz}', [\App\Http\Controllers\api\v1\QuizController::class, 'student_show']);
         Route::get('categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
+        // Charge account
+        Route::post('code/charge', [\App\Http\Controllers\api\v1\CodeController::class, 'charge']);
+        // Transaction
+        Route::post('transaction', [\App\Http\Controllers\api\v1\TransactionController::class, 'store']);
     });
     // User Profile
     Route::get('userinfo', [AuthController::class, 'userinfo'])->middleware('traffic_counter');
@@ -65,8 +77,6 @@ Route::middleware('auth:api')->group(function () {
         Route::post('code/generate', [\App\Http\Controllers\api\v1\CodeController::class, 'generate']);
         Route::post('code/charge', [\App\Http\Controllers\api\v1\CodeController::class, 'charge']);
         Route::get('code/check', [\App\Http\Controllers\api\v1\CodeController::class, 'check']);
-        // Transaction
-        Route::post('transaction', [\App\Http\Controllers\api\v1\TransactionController::class, 'store']);
         // Summary
         Route::apiResource('summary', 'SummaryController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);
