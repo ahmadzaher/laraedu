@@ -121,7 +121,7 @@ class QuizController extends Controller
             return $query->where('id', '=', $quiz->id);
         })->get();
         foreach ($questions as $key => $question) {
-            $questions[$key]->group_name = $question->group->title;
+            $questions[$key]->group_name = is_object($question->group) ? $question->group->title : '';
         }
         $quiz->questions = $questions;
         return Response($quiz, 200);
