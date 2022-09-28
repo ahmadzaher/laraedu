@@ -18,7 +18,8 @@ class Quiz extends Model
         'subject_id',
         'seller_id',
         'year',
-        'price'
+        'price',
+        'percentage'
     ];
 
     public function questions() {

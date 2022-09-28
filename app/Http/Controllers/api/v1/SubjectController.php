@@ -42,6 +42,8 @@ class SubjectController extends Controller
         $branch_id = $request->branch_id;
         $year = $request->year;
         $subjects = Subject::latest()
+            ->withCount('quizzes')
+            ->withCount('summaries')
             ->where(function ($query) use ($branch_id, $year) {
 
                 if($branch_id != ''){

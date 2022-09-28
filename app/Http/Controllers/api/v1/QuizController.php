@@ -77,7 +77,8 @@ class QuizController extends Controller
             'score' => ['max:255'],
             'published' => ['required', 'max:255'],
             'category' => ['integer'],
-            'price' => ['required']
+            'price' => ['required|integer'],
+            'percentage' => ['required', 'integer']
         ]);
         $quiz = new Quiz([
             'title' => $request->title,
@@ -91,7 +92,8 @@ class QuizController extends Controller
             'subject_id' => $request->subject_id,
             'seller_id' => $request->seller_id,
             'year' => $request->year,
-            'price' => $request->price
+            'price' => $request->price,
+            'percentage' => $request->percentage
 
         ]);
         $quiz->save();
@@ -163,7 +165,7 @@ class QuizController extends Controller
             'published' => ['required', 'max:255'],
             'category' => ['integer'],
             'questions' => ['required'],
-            'price' => ['required']
+            'price' => ['required', 'integer']
         ]);
         if($quiz == null){
             return response(['message' => 'Something went wrong!'], 404);
@@ -181,6 +183,7 @@ class QuizController extends Controller
         $quiz->seller_id = $request->seller_id;
         $quiz->year = $request->year;
         $quiz->price = $request->price;
+        $quiz->percentage = $request->percentage;
         $quiz->save();
 
         $questions = (array_unique($request->questions, SORT_REGULAR));

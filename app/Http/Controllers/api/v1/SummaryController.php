@@ -66,6 +66,10 @@ class SummaryController extends Controller
             })
             ->latest()
             ->get();
+        $summaries->each(function ($summary) {
+            $summary->getMedia();
+            $summary->summary_file = $summary->getFirstMediaUrl('summaries') ? url($summary->getFirstMediaUrl('summaries')) : '';
+        });
         return response($summaries, 200);
     }
 
@@ -75,7 +79,9 @@ class SummaryController extends Controller
             'name' => 'required|min:3',
             'teacher_name' => 'min:3',
             'description' => 'min:3',
-            'file' => 'mimes:pdf'
+            'file' => 'mimes:pdf',
+            'percentage' => 'required|integer',
+            'price' => 'required|integer'
         ]);
 
         $summary  = Summary::create([
@@ -86,7 +92,8 @@ class SummaryController extends Controller
             'branch_id' => request('branch_id'),
             'subject_id' => request('subject_id'),
             'seller_id' => request('seller_id'),
-            'price' => request('price')
+            'price' => request('price'),
+            'percentage' => request('percentage')
         ]);
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {
@@ -118,13 +125,15 @@ class SummaryController extends Controller
         return Response($summary);
     }
 
-    public function update( Summary $summary)
+    public function update(Summary $summary)
     {
         request()->validate([
             'name' => 'required|min:3',
             'teacher_name' => 'min:3',
             'description' => 'min:3',
-            'file' => 'mimes:pdf'
+            'file' => 'mimes:pdf',
+            'percentage' => 'required|integer',
+            'price' => 'required|integer'
         ]);
 
         $summary->update( [
@@ -135,7 +144,8 @@ class SummaryController extends Controller
             'branch_id' => request('branch_id'),
             'subject_id' => request('subject_id'),
             'seller_id' => request('seller_id'),
-            'price' => request('price')
+            'price' => request('price'),
+            'percentage' => request('percentage')
         ]);
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {
