@@ -98,6 +98,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorised'], 401);
         }
         $user = Socialite::driver('facebook')->stateless()->userFromToken($token);
+        $user_exist = User::where('email', $user->email)->first();
         $user = User::firstOrCreate([
             'email' => $user->email
         ], [
@@ -105,8 +106,19 @@ class AuthController extends Controller
             'name' => $user->name != null ? $user->name : $user->nickname,
             'password' => Hash::make(Str::random(24))
         ]);
-        // return $user->password;
+
+        if(!$user_exist)
+        {
+            $role = Role::Where(['slug' => 'student'])->get();
+            $user->roles()->attach($role);
+        }
+
         $token = $user->createToken('Laravel8PassportAuth')->accessToken;
+        $traffic = new Traffic([
+            'user_id' => $user->id,
+            'type' => $user_exist ? 'login' : 'register'
+        ]);
+        $traffic->save();
         return response()->json(['token' => $token], 200);
 
     }

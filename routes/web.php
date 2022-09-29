@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
@@ -30,6 +31,12 @@ Route::group(['middleware' => 'frontendActive'], function() {
 //Dashboard
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+// Facebook login
+
+Route::get('facebook/redirect', [LoginController::class, 'facebook'])->name('facebook.login');
+Route::get('facebook/callback', [LoginController::class, 'facebookCallback']);
 
 
 //User routes

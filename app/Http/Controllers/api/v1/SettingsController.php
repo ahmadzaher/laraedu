@@ -17,6 +17,8 @@ class SettingsController extends Controller
             'app_name' => option('app_name'),
             'app_logo' => option('app_logo'),
             'app_favicon' => option('app_favicon'),
+            'facebook_client_id' => option('facebook_client_id'),
+            'facebook_client_secret' => option('facebook_client_secret')
         ];
         return response()->json($settings, 200);
     }
@@ -57,6 +59,8 @@ class SettingsController extends Controller
         option(['default_language' => $request->default_language]);
         option(['default_direction' => $request->default_direction]);
         option(['app_name' => $request->app_name]);
+        option(['facebook_client_id' => $request->facebook_client_id]);
+        option(['facebook_client_secret' => $request->facebook_client_secret]);
         return $this->general_settings();
     }
 }

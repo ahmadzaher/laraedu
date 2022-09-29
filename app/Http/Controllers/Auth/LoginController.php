@@ -78,6 +78,8 @@ class LoginController extends Controller
     public function facebookCallback()
     {
         $user = Socialite::driver('facebook')->user();
+        return redirect('/login')->with('token', $user->token);
+        dd($user);
         $user_from_facebook = User::firstOrCreate([
             'email' => $user->email
         ], [
