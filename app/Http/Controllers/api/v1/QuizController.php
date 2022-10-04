@@ -47,14 +47,17 @@ class QuizController extends Controller
         $branch_id = $request->branch_id;
         $subject_id = $request->subject_id;
         $year = $request->year;
+        $type = $request->type;
         $quizzes = Quiz::where('published', 1)
             ->select(['quizzes.*', DB::raw("(SELECT COUNT('id') FROM `transactions` WHERE transactions.quiz_id = quizzes.id AND transactions.user_id = ".$request->user()->id.") as is_purchased ")])
-            ->where(function ($query) use ($branch_id, $subject_id, $year) {
+            ->where(function ($query) use ($branch_id, $subject_id, $year, $type) {
 
                 if($branch_id != ''){
                     $query->where('quizzes.branch_id', $branch_id);
                     $query->where('quizzes.subject_id', $subject_id);
                     $query->where('quizzes.year', $year);
+                    $type = $type == 'quiz' ? 1 : ( $type == 'bank' ? 2 : 3 );
+                    $query->where('quizzes.type', $type);
                 }
 
             })
