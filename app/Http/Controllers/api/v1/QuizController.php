@@ -80,7 +80,7 @@ class QuizController extends Controller
             'score' => ['max:255'],
             'published' => ['required', 'max:255'],
             'category' => ['integer'],
-            'price' => ['required|integer'],
+            'price' => ['required', 'integer'],
             'percentage' => ['required', 'integer']
         ]);
         $quiz = new Quiz([
