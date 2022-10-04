@@ -36,6 +36,7 @@ class SettingsController extends Controller
             'google_client_id' => option('google_client_id'),
             'google_client_secret' => option('google_client_secret'),
             'privacy_policy' => option('privacy_policy'),
+            'usage_policy' => option('usage_policy'),
             'app_version' => option('app_version'),
             'app_disabled' => option('app_disabled'),
         ];
@@ -97,6 +98,7 @@ class SettingsController extends Controller
         option(['google_client_id' => $request->google_client_id]);
         option(['google_client_secret' => $request->google_client_secret]);
         option(['privacy_policy' => $request->privacy_policy]);
+        option(['usage_policy' => $request->usage_policy]);
         option(['app_version' => $request->app_version]);
         option(['app_disabled' => $request->app_disabled]);
         return $this->general_settings();

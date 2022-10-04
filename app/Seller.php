@@ -8,6 +8,7 @@ class Seller extends Model
 {
     protected $fillable = [
         'name',
-        'location'
+        'location',
+        'phone_number'
     ];
 }

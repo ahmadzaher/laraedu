@@ -18,7 +18,8 @@ class SellerController extends Controller
         $search = $request->search;
         $sellers = Seller::latest()->where(function ($query) use ($search){
             $query->where('name', 'like', '%'.$search.'%')
-                ->orWhere('location', 'like', '%'.$search.'%');
+                ->orWhere('location', 'like', '%'.$search.'%')
+                ->orWhere('phone_number', 'like', '%'.$search.'%');
         })->paginate($request->per_page);
         return response($sellers, 200);
     }
@@ -44,11 +45,14 @@ class SellerController extends Controller
     {
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:subjects']
+            'name' => ['required', 'string', 'max:255', 'unique:subjects'],
+            'location' => ['string', 'max:255'],
+            'phone_number' => ['string', 'max:255']
         ]);
         $seller = new Seller([
             'name' => $request->name,
             'location' => $request->location,
+            'phone_number' => $request->phone_number
         ]);
         $seller->save();
         return response($seller, 201);
@@ -76,6 +80,8 @@ class SellerController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:subjects,name,'.$seller->id],
+            'location' => ['string', 'max:255'],
+            'phone_number' => ['string', 'max:255']
         ]);
         if($seller == null){
             return response(['message' => 'Something went wrong!'], 404);
@@ -83,6 +89,7 @@ class SellerController extends Controller
 
         $seller->name = $request->name;
         $seller->location = $request->location;
+        $seller->phone_number = $request->phone_number;
         $seller->save();
 
         return response($seller, 200);
