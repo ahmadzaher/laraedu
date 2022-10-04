@@ -2,16 +2,22 @@
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Support\Facades\Config;
 
-$db = new DB;
-$db->addConnection(array(
-    'driver'    => env('DB_CONNECTION'),
-    'host'      => env('DB_HOST'),
-    'database'  => env('DB_DATABASE'),
-    'username'  => env('DB_USERNAME'),
-    'password'  => env('DB_PASSWORD'),
-));
-$db->setAsGlobal();
-$db->bootEloquent();
+
+
+function get_service_option($option_name)
+{
+    $db = new DB;
+    $db->addConnection(array(
+        'driver'    => env('DB_CONNECTION'),
+        'host'      => env('DB_HOST'),
+        'database'  => env('DB_DATABASE'),
+        'username'  => env('DB_USERNAME'),
+        'password'  => env('DB_PASSWORD'),
+    ));
+    $db->setAsGlobal();
+    $db->bootEloquent();
+    return $db::table('options')->where('key', $option_name)->first()->value;
+}
 
 return [
 
@@ -44,14 +50,14 @@ return [
     ],
 
     'facebook' => [
-        'client_id' => str_replace('"', '', $db::table('options')->where('key', 'facebook_client_id')->first()->value),
-        'client_secret' => str_replace('"', '', $db::table('options')->where('key', 'facebook_client_secret')->first()->value),
+        'client_id' => str_replace('"', '', get_service_option('facebook_client_id')),
+        'client_secret' => str_replace('"', '', get_service_option('facebook_client_secret')),
         'redirect' => env('FACEBOOK_REDIRECT_URL'),
     ],
 
     'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'client_id' => get_service_option('google_client_id'),
+        'client_secret' => get_service_option('google_client_secret'),
         'redirect' => env('GOOGLE_REDIRECT_URL'),
     ],
 
