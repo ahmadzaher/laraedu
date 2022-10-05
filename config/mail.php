@@ -10,5 +10,9 @@ return [
     'password' => env('MAIL_PASSWORD'),
     'sendmail' => '/usr/sbin/sendmail -bs',
     'pretend' => false,
+    'markdown' => [
+        'default' => 'markdown',
+        'paths' => [resource_path('views/vendor/mail')]
+    ],
 
 ];

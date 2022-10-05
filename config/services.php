@@ -4,19 +4,22 @@ use Illuminate\Support\Facades\Config;
 
 
 
-function get_service_option($option_name)
+if(!function_exists('get_service_option'))
 {
-    $db = new DB;
-    $db->addConnection(array(
-        'driver'    => env('DB_CONNECTION'),
-        'host'      => env('DB_HOST'),
-        'database'  => env('DB_DATABASE'),
-        'username'  => env('DB_USERNAME'),
-        'password'  => env('DB_PASSWORD'),
-    ));
-    $db->setAsGlobal();
-    $db->bootEloquent();
-    return $db::table('options')->where('key', $option_name)->first()->value;
+    function get_service_option($option_name)
+    {
+        $db = new DB;
+        $db->addConnection(array(
+            'driver'    => env('DB_CONNECTION'),
+            'host'      => env('DB_HOST'),
+            'database'  => env('DB_DATABASE'),
+            'username'  => env('DB_USERNAME'),
+            'password'  => env('DB_PASSWORD'),
+        ));
+        $db->setAsGlobal();
+        $db->bootEloquent();
+        return $db::table('options')->where('key', $option_name)->first()->value;
+    }
 }
 
 return [

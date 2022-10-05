@@ -17,7 +17,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\frontend;
 
-Auth::routes(['register' => false]);
+Auth::routes(['verify' => true]);
 
 Route::get('/', function () {
 //    echo env('APP_URL') . '/build'; exit;

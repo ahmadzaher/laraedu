@@ -44,7 +44,7 @@ Route::post('facebook', [AuthController::class, 'facebook']);
 
 Route::middleware('auth:api')->group(function () {
     // Student quiz
-    Route::middleware('role:student')->prefix('student')->group(function(){
+    Route::middleware(['role:student'])->prefix('student')->group(function(){
         // Branches
         Route::get('branches', [\App\Http\Controllers\api\v1\BranchController::class, 'all']);
         // Subjects
