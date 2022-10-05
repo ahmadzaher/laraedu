@@ -46,10 +46,11 @@ class PasswordReset extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->subject('طلب إعادة تعيين كلمة المرور')
             ->greeting('مرحبا!')
             ->salutation('تحياتي, <br>'.option('app_name'))
             ->line('أنت تتلقى هذا البريد الإلكتروني لأننا تلقينا طلب إعادة تعيين كلمة المرور لحسابك.') // Here are the lines you can safely override
-            ->action('استرجاع كلمة الدخول', url('password/reset', $this->token))
+            ->action('استرجاع كلمة المرور', url('password/reset', $this->token))
             ->line('إذا لم تطلب إعادة تعيين كلمة المرور ، فلا داعي لاتخاذ أي إجراء آخر.');
     }
 

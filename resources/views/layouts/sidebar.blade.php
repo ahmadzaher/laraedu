@@ -7,7 +7,7 @@
         <ul class="nav nav-pills flex-column mb-auto">
 
             <li class="sidebarCollapse mb-2">
-                <a href="#user" data-toggle="collapse" aria-expanded="false" class="arrow-toggle {{ Request::is('profile') ? 'active' : '' }} nav-link link-dark">
+                <a href="#user" data-toggle="collapse" aria-expanded="false" class="arrow-toggle nav-link link-dark">
                     @auth
                         <div class="form-group d-flex justify-content-around align-items-center">
                             <img width="70px" src="{{ Auth::user()->getFirstMediaUrl('avatars', 'thumb') ? url(Auth::user()->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg')  }}" alt="avatar" class="avatar rounded img-responsive mr-1">
@@ -18,9 +18,9 @@
                 <ul class="collapse lisst-unstyled {{ Request::is('profile') ? 'show' : '' }} p-0 m-1" id="user">
                     <li class="">
 
-                        <a class="nav-link {{ Request::is('profile') ? 'active' : '' }} link-dark ml-2" href="{{ route('profile.edit') }}" >
-                            {{ __('Profile') }}
-                        </a>
+{{--                        <a class="nav-link {{ Request::is('profile') ? 'active' : '' }} link-dark ml-2" href="{{ route('profile.edit') }}" >--}}
+{{--                            {{ __('Profile') }}--}}
+{{--                        </a>--}}
                     </li>
                     <li>
 

@@ -26,5 +26,5 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'https://edu-technology.net/dashboard';
+    protected $redirectTo = '/dashboard';
 }

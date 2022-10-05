@@ -41,7 +41,7 @@
 
 {{-- Salutation --}}
 @if (! empty($salutation))
-{{ $salutation }}
+{!! $salutation !!}
 @else
 @lang('Regards'),<br>
 {{ config('app.name') }}
@@ -51,8 +51,8 @@
 @isset($actionText)
 @slot('subcopy')
 @lang(
-    "If you’re having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
-    'into your web browser:',
+    "اذا كانت لديك مشكلة في الضغط على هذا الزر \":actionText\" , انسخ الرابط التالي\n".
+    'الى المتصفح لديك:',
     [
         'actionText' => $actionText,
     ]
