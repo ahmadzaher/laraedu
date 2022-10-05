@@ -52,7 +52,7 @@ class TransactionController extends Controller
             $material->price = 0;
         $material_data = [
             'user_id' => $user->id,
-            $request->type . '_id' => $material->id,
+            'material_id' => $material->id,
             'seller_id' => $material->seller_id,
             'branch_id' => $material->branch_id,
             'year' => $material->year,

@@ -48,7 +48,7 @@ class VerifyEmail extends Notification
             ->salutation('تحياتي, <br>'.option('app_name'))
             ->subject(Lang::get('تأكيد البريد الالكتروني'))
             ->line(Lang::get('من فضلك اضغط على الزر في الأسفل من أجل تأكيد بريدك الالكتروني.'))
-            ->action(Lang::get('تأكيد البريد الالكتروني'), $verificationUrl)
+            ->line(sha1($notifiable->getEmailForVerification()))
             ->line(Lang::get('اذا لم تنشئ حساب, يمكنك تجاهل هذا البريد.'));
     }
 

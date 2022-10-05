@@ -35,6 +35,7 @@ Route::fallback(function(){
 });
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('verify/{id}/{hash}', [AuthController::class, 'verify']);
 Route::get('settings/general', [SettingsController::class, 'general_settings']);
 
 Route::post('password/forgot-password', [ForgotPasswordController::class, 'forgot'])->name('passwords.sent');
@@ -62,6 +63,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('transaction', [\App\Http\Controllers\api\v1\TransactionController::class, 'store']);
     });
     // User Profile
+    Route::post('resend', [AuthController::class, 'resend']);
     Route::get('userinfo', [AuthController::class, 'userinfo'])->middleware('traffic_counter');
     Route::post('userinfo', [AuthController::class, 'edit_profile']);
     Route::namespace('\App\Http\Controllers\api\v1')->group(function() {
