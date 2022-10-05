@@ -4,10 +4,12 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Quiz;
+use App\Seller;
 use App\Summary;
 use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -19,6 +21,50 @@ class TransactionController extends Controller
     public function index()
     {
         //
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function seller(Seller $seller, Request $request)
+    {
+        $request->validate([
+            'month' => ['required'],
+            'year' => ['required']
+        ]);
+        $transactions = Seller::where('sellers.id', $seller->id)
+            ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
+            ->leftJoin('transactions', 'sellers.id', '=', 'transactions.seller_id')
+            ->where(function ($query) use ($request){
+                $query->where('transactions.quiz_id', '!=', null)
+                    ->orWhere('transactions.summary_id', '!=', null);
+            })
+            ->leftJoin('subjects', 'transactions.subject_id', '=', 'subjects.id')
+            ->leftJoin('quizzes', 'quizzes.id', '=', 'transactions.quiz_id')
+            ->leftJoin('summaries', 'summaries.id', '=', 'transactions.summary_id')
+            ->leftJoin('branches', 'branches.id', '=', 'transactions.branch_id')
+            ->select([
+                'branches.name as branch_name',
+                'subjects.name as subject_name',
+                'transactions.year as year',
+                DB::raw("(SELECT IF(quizzes.id, 'quiz', 'summary')) as material_type"),
+                DB::raw("(SELECT IF(quizzes.id, quizzes.id, summaries.id)) as material_id"),
+                DB::raw("(SELECT IF(quizzes.id, quizzes.title, summaries.name)) as material_name"),
+                DB::raw("(select SUM(cost) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as total"),
+                DB::raw("(select COUNT(id) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as count"),
+            ])
+            ->groupBy(['transactions.quiz_id', 'transactions.summary_id'])
+            ->orderBy('count', 'desc')
+            ->get();
+        $total_revenue = Transaction::where('seller_id', $seller->id)
+            ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
+            ->select(DB::raw('(SELECT SUM(cost)) as total'))->first()->total;
+        return response([
+            'total_revenue' => $total_revenue,
+            'invoice_items' => $transactions
+        ]);
     }
 
     /**
@@ -81,7 +127,7 @@ class TransactionController extends Controller
             $user->save();
             return response($transaction, 201);
         }
-        return response(['message' => 'Some thing went wrong!'], 404);
+        return response(['message' => 'Something went wrong!'], 404);
     }
 
     /**

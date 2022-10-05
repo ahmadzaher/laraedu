@@ -91,6 +91,8 @@ Route::middleware('auth:api')->group(function () {
         // Seller
         Route::apiResource('seller', 'SellerController');
         Route::get('sellers', [\App\Http\Controllers\api\v1\SellerController::class, 'all']);
+        // Seller Transactions
+        Route::get('transactions/seller/{seller}', [\App\Http\Controllers\api\v1\TransactionController::class, 'seller']);
     });
 
     Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
