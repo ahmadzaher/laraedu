@@ -64,13 +64,18 @@ class TransactionController extends Controller
         $total_payment = Transaction::where('transactions.seller_id', $seller->id)
             ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
             ->select(DB::raw('(SELECT SUM(cost)) as total'))->first()->total;
+
         $total_revenue = Transaction::where('transactions.seller_id', $seller->id)
+            ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
+            ->leftJoin('subjects', 'transactions.subject_id', '=', 'subjects.id')
             ->leftJoin('quizzes', 'quizzes.id', '=', 'transactions.quiz_id')
             ->leftJoin('summaries', 'summaries.id', '=', 'transactions.summary_id')
-            ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
-            ->select(DB::raw('(SELECT (
-                SUM(cost) * (SELECT IF(quizzes.id, quizzes.percentage, summaries.percentage) / 100)
-            )) as total'))->first()->total;
+            ->select([
+                'summaries.id as s_id',
+                DB::raw("(SELECT IF(quizzes.id, quizzes.percentage, summaries.percentage)) as material_percentage"),
+                DB::raw('(SELECT (cost * material_percentage / 100)) as total'),
+            ])->get();
+        $total_revenue = collect($total_revenue)->sum('total');
         return response([
             'total_payment' => $total_payment,
             'total_revenue' => $total_revenue,
