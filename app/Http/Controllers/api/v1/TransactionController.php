@@ -53,6 +53,7 @@ class TransactionController extends Controller
                 DB::raw("(SELECT IF(quizzes.id, 'quiz', 'summary')) as material_type"),
                 DB::raw("(SELECT IF(quizzes.id, quizzes.id, summaries.id)) as material_id"),
                 DB::raw("(SELECT IF(quizzes.id, quizzes.percentage, summaries.percentage)) as material_percentage"),
+                DB::raw("(SELECT IF(quizzes.id, quizzes.price, summaries.price)) as material_cost"),
                 DB::raw("(select COUNT(id) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as count"),
                 DB::raw("(select SUM(cost) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as total"),
                 DB::raw("(select (SUM(cost) * (material_percentage / 100)) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as net"),
