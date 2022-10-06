@@ -51,17 +51,27 @@ class TransactionController extends Controller
                 'transactions.year as year',
                 DB::raw("(SELECT IF(quizzes.id, 'quiz', 'summary')) as material_type"),
                 DB::raw("(SELECT IF(quizzes.id, quizzes.id, summaries.id)) as material_id"),
+                DB::raw("(SELECT IF(quizzes.id, quizzes.percentage, summaries.percentage)) as material_percentage"),
                 DB::raw("(SELECT IF(quizzes.id, quizzes.title, summaries.name)) as material_name"),
-                DB::raw("(select SUM(cost) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as total"),
                 DB::raw("(select COUNT(id) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as count"),
+                DB::raw("(select SUM(cost) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as total"),
+                DB::raw("(select (SUM(cost) * (material_percentage / 100)) from transactions where seller_id = sellers.id AND transactions.subject_id = subjects.id AND (transactions.quiz_id = quizzes.id OR transactions.summary_id = summaries.id) AND year(`transactions`.`created_at`) = '".$request->year."' AND month(`transactions`.`created_at`) = '".$request->month."') as net"),
             ])
             ->groupBy(['transactions.quiz_id', 'transactions.summary_id'])
             ->orderBy('count', 'desc')
             ->get();
-        $total_revenue = Transaction::where('seller_id', $seller->id)
+        $total_payment = Transaction::where('transactions.seller_id', $seller->id)
             ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
             ->select(DB::raw('(SELECT SUM(cost)) as total'))->first()->total;
+        $total_revenue = Transaction::where('transactions.seller_id', $seller->id)
+            ->leftJoin('quizzes', 'quizzes.id', '=', 'transactions.quiz_id')
+            ->leftJoin('summaries', 'summaries.id', '=', 'transactions.summary_id')
+            ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
+            ->select(DB::raw('(SELECT (
+                SUM(cost) * (SELECT IF(quizzes.id, quizzes.percentage, summaries.percentage) / 100)
+            )) as total'))->first()->total;
         return response([
+            'total_payment' => $total_payment,
             'total_revenue' => $total_revenue,
             'invoice_items' => $transactions
         ]);
