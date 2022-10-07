@@ -15,6 +15,7 @@ class SettingsController extends Controller
             'default_language' => option('default_language'),
             'default_direction' => option('default_direction'),
             'app_name' => option('app_name'),
+            'company_name' => option('company_name'),
             'app_logo' => option('app_logo'),
             'app_favicon' => option('app_favicon'),
             'facebook_client_id' => option('facebook_client_id'),
@@ -50,6 +51,7 @@ class SettingsController extends Controller
             'default_language' => ['required', 'max:255'],
             'default_direction' => ['required', 'max:255'],
             'app_name' => ['required', 'max:255'],
+            'company_name' => ['required', 'max:255'],
             'app_logo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'app_favicon' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
@@ -79,6 +81,7 @@ class SettingsController extends Controller
         option(['default_language' => $request->default_language]);
         option(['default_direction' => $request->default_direction]);
         option(['app_name' => $request->app_name]);
+        option(['company_name' => $request->company_name]);
         option(['facebook_client_id' => $request->facebook_client_id]);
         option(['facebook_client_secret' => $request->facebook_client_secret]);
         option(['receive_email_to' => $request->receive_email_to]);

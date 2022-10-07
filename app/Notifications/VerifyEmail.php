@@ -12,6 +12,22 @@ use Illuminate\Support\Facades\URL;
 class VerifyEmail extends Notification
 {
     /**
+     * The password reset token.
+     *
+     * @var string
+     */
+    public $token;
+
+    /**
+     * Create a new notification instance.
+     *
+     * @return void
+     */
+    public function __construct($token)
+    {
+        $this->token = $token;
+    }
+    /**
      * The callback that should be used to build the mail message.
      *
      * @var \Closure|null
@@ -48,7 +64,7 @@ class VerifyEmail extends Notification
             ->salutation('تحياتي, <br>'.option('app_name'))
             ->subject(Lang::get('تأكيد البريد الالكتروني'))
             ->line(Lang::get('من فضلك اضغط على الزر في الأسفل من أجل تأكيد بريدك الالكتروني.'))
-            ->line(sha1($notifiable->getEmailForVerification()))
+            ->line($this->token)
             ->line(Lang::get('اذا لم تنشئ حساب, يمكنك تجاهل هذا البريد.'));
     }
 

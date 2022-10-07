@@ -33,8 +33,13 @@ class AuthController extends Controller
             'email' => $request->email,
             'number' => $request->phone_number,
             'username' => $request->username,
-            'password' => bcrypt($request->password)
+            'password' => bcrypt($request->password),
+            'is_activated' => 0
         ]);
+
+        $user['link'] = Str::random(6);
+        DB::table('users_activation')->insert(['id_user'=>$user['id'],'token'=>$user['link']]);
+        $user->sendEmailCodeVerificationNotification($user['link']);
 
         $role = Role::Where(['slug' => 'student'])->get();
         $user->roles()->attach($role);
@@ -49,27 +54,44 @@ class AuthController extends Controller
         return response()->json(['token' => $token], 200);
     }
 
-    public function verify($user_id, Request $request) {
+    /**
 
-        if (!$request->hasValidSignature()) {
-            return response()->json(["message" => "Invalid/Expired url provided."], 401);
+     * Check for user Activation Code
+
+     *
+
+     */
+
+    public function userActivation($token)
+    {
+        $check = DB::table('users_activation')->where('token',$token)->first();
+        if(!is_null($check)){
+            $user = User::find($check->id_user);
+
+            if(!$user || $user->id != auth()->user()->id)
+                return response(['message' => 'Something went wrong.'], 403);
+
+            if($user->hasVerifiedEmail()){
+                return response(['message' => 'User are already activated.'], 403);
+            }else{
+                $user->markEmailAsVerified();
+                DB::table('users_activation')->where('token',$token)->delete();
+                return response(['message' => 'User activated successfully.']);
+            }
         }
-        $user = User::findOrFail($user_id);
-
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
-            return response()->json(["message" => "Email verification link sent on your email id"]);
-        }
-
-        return response()->json(["message" => "Something went wrong!"]);
+        return response(['message' => 'Your token is invalid.'], 403);
     }
 
+
     public function resend() {
-        if (auth()->user()->hasVerifiedEmail()) {
-            return response()->json(["message" => "Email already verified."], 400);
+        $user = auth()->user();
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(["message" => "Email already verified."], 403);
         }
 
-        auth()->user()->sendEmailVerificationNotification();
+        $user['link'] = Str::random(6);
+        DB::table('users_activation')->insert(['id_user'=>$user['id'],'token'=>$user['link']]);
+        $user->sendEmailCodeVerificationNotification($user['link']);
 
         return response()->json(["message" => "Email verification link sent on your email id"]);
     }
@@ -193,6 +215,7 @@ class AuthController extends Controller
             'email' => $user->email,
             'username' => $user->username,
             'name' => $user->name,
+            'is_verified' => $user->email_verified_at ? true : false,
             'coins' => $user->coins,
             'direction' => $user->direction,
             'language' => $user->language,

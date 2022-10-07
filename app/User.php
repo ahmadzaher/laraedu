@@ -36,12 +36,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     /**
      * Send the email notification.
      *
-     * @param  string  $token
      * @return void
      */
-    public function sendEmailVerificationNotification()
+    public function sendEmailCodeVerificationNotification($token)
     {
-        $this->notify(new VerifyEmail); // my notification
+        $this->notify(new VerifyEmail($token)); // my notification
     }
 
     public function registerMediaConversions(Media $media = null)
@@ -67,7 +66,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'branch_id',
         'subject_id',
         'year',
-        'coins'
+        'coins',
+        'is_activated'
     ];
 
     /**
