@@ -31,11 +31,11 @@ class TransactionController extends Controller
     public function seller(Seller $seller, Request $request)
     {
         $request->validate([
-            'month' => ['required'],
-            'year' => ['required']
+            'invoice_month' => ['required'],
+            'invoice_year' => ['required']
         ]);
         $transactions = Seller::where('sellers.id', $seller->id)
-            ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
+            ->whereYear('transactions.created_at', $request->invoice_year)->whereMonth('transactions.created_at', $request->invoice_month)
             ->leftJoin('transactions', 'sellers.id', '=', 'transactions.seller_id')
             ->where(function ($query) use ($request){
                 $query->where('transactions.quiz_id', '!=', null)
@@ -62,11 +62,11 @@ class TransactionController extends Controller
             ->orderBy('count', 'desc')
             ->get();
         $total_payment = Transaction::where('transactions.seller_id', $seller->id)
-            ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
+            ->whereYear('transactions.created_at', $request->invoice_year)->whereMonth('transactions.created_at', $request->invoice_month)
             ->select(DB::raw('(SELECT SUM(cost)) as total'))->first()->total;
 
         $total_revenue = Transaction::where('transactions.seller_id', $seller->id)
-            ->whereYear('transactions.created_at', $request->year)->whereMonth('transactions.created_at', $request->month)
+            ->whereYear('transactions.created_at', $request->invoice_year)->whereMonth('transactions.created_at', $request->invoice_month)
             ->leftJoin('subjects', 'transactions.subject_id', '=', 'subjects.id')
             ->leftJoin('quizzes', 'quizzes.id', '=', 'transactions.quiz_id')
             ->leftJoin('summaries', 'summaries.id', '=', 'transactions.summary_id')
@@ -79,7 +79,14 @@ class TransactionController extends Controller
         return response([
             'total_payment' => $total_payment,
             'total_revenue' => $total_revenue,
-            'invoice_items' => $transactions
+            'invoice_items' => $transactions,
+            'seller_information' => $seller,
+            'company_information' => [
+                'app_name' => option('app_name'),
+                'company_name' => option('company_name'),
+                'phone_number' => option('phone_number'),
+                'email' => option('email'),
+            ],
         ]);
     }
 
