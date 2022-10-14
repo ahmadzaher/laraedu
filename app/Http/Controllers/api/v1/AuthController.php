@@ -97,6 +97,32 @@ class AuthController extends Controller
     }
 
     /**
+     * Change password
+     */
+
+    public function change_password(Request $request)
+    {
+        $this->validate($request, [
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'old_password' => ['required', 'string', 'min:8'],
+        ]);
+        $login_type = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL )
+            ? 'email'
+            : 'username';
+        $request->merge([
+            $login_type => $request->input('login')
+        ]);
+        $user = auth()->user();
+        if (Hash::check($request->old_password, $user->password)) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+            return response()->json(['message' => 'Password changed successfully!'], 200);
+        } else {
+            return response()->json(['error' => 'Unauthorised'], 403);
+        }
+    }
+
+    /**
      * Login Req
      */
     public function login(Request $request)

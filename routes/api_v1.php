@@ -64,6 +64,7 @@ Route::middleware('auth:api')->group(function () {
     // User Profile
     Route::post('user/activation/{token}', [AuthController::class, 'userActivation']);
     Route::post('resend', [AuthController::class, 'resend']);
+    Route::post('password/change', [AuthController::class, 'change_password']);
     Route::get('userinfo', [AuthController::class, 'userinfo'])->middleware('traffic_counter');
     Route::post('userinfo', [AuthController::class, 'edit_profile']);
     Route::namespace('\App\Http\Controllers\api\v1')->group(function() {
