@@ -121,7 +121,7 @@ class TransactionController extends Controller
             $material->price = 0;
         $material_data = [
             'user_id' => $user->id,
-            'material_id' => $material->id,
+            $request->type . '_id' => $material->id,
             'seller_id' => $material->seller_id,
             'branch_id' => $material->branch_id,
             'year' => $material->year,
@@ -148,6 +148,7 @@ class TransactionController extends Controller
             $transaction->save();
             $user->coins = $user->coins - $material->price;
             $user->save();
+            $transaction->material_id = $transaction[$request->type . '_id'];
             return response($transaction, 201);
         }
         return response(['message' => 'Something went wrong!'], 404);
