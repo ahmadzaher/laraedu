@@ -228,6 +228,7 @@ class QuestionController extends Controller
 
             if (request()->hasFile('answer_img') && request()->file('answer_img')->isValid()) {
                 $answer->addMediaFromRequest('answer_img')
+                    ->usingFileName(sha1(request('answer_img')))
                     ->toMediaCollection('answer_images');
             }
         }

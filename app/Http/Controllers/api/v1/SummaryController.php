@@ -98,6 +98,7 @@ class SummaryController extends Controller
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {
             $summary->addMediaFromRequest('file')
+                ->usingFileName(sha1(request('file')))
                 ->toMediaCollection('summaries');
         }
 
