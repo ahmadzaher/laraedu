@@ -148,6 +148,9 @@ class SummaryController extends Controller
             'price' => request('price'),
             'percentage' => request('percentage')
         ]);
+        if (isset($request->delete_file)) {
+            $summary->clearMediaCollection('summaries');
+        }
 
         if (request()->hasFile('file') && request()->file('file')->isValid()) {
             $summary->clearMediaCollection('summaries');
