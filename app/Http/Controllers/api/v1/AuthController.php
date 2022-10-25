@@ -177,7 +177,8 @@ class AuthController extends Controller
         ], [
             'username' => $user->email,
             'name' => $user->name != null ? $user->name : $user->nickname,
-            'password' => Hash::make(Str::random(24))
+            'is_verified' => true,
+            'password' => Hash::make(Str::random(24)),
         ]);
 
         if(!$user_exist)
