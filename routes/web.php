@@ -27,6 +27,7 @@ Auth::routes(['verify' => true]);
 //Dashboard
 Route::get('/dashboard', 'HomeController@index')->middleware('verified')->name('dashboard');
 Route::get('/', 'HomeController@index')->middleware('verified')->name('home');
+Route::get('/excel', 'ExcelController@index')->name('test');
 Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
 
 
