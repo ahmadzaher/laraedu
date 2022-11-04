@@ -84,6 +84,8 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('summary', 'SummaryController');
         Route::get('questions/groups', [QuestionGroupController::class, 'all']);
         Route::post('settings/general', [SettingsController::class, 'update_general_settings']);
+        // Import Questions
+        Route::post('questions/import', [\App\Http\Controllers\api\v1\QuestionController::class, 'import']);
         // Bank
         Route::apiResource('bank', 'BankController');
         // Subject

@@ -107,12 +107,16 @@ class QuestionsExport implements FromCollection, WithStrictNullComparison, WithC
             $new_question->answer_4 = '';
             $new_question->answer_5 = '';
             $new_question->answer_6 = '';
-            $new_question->correct = '1';
+            $new_question->correct = '0';
             $answers = $question->answers;
             // set the answers
             $answers->each(function ($answer, $key) use ($new_question) {
                 //                    dd($answer);
                 $answer_heading = 'answer_' . ( $key + 1 );
+                if ($answer->correct)
+                {
+                    $new_question->correct = $key + 1;
+                }
                 $new_question->$answer_heading = $answer->content;
             });
             $new_question->solution = $question->solution;

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\QuestionsImport;
 
 class QuestionController extends Controller
 {
@@ -69,6 +71,31 @@ class QuestionController extends Controller
             });
 
         return response($questions, 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'branch_id' => ['required', 'integer'],
+            'subject_id' => ['required', 'integer'],
+            'seller_id' => ['required', 'integer'],
+            'year' => ['required', 'integer'],
+            'file' => 'mimes:xlsx',
+        ]);
+        $group_id = $request->group_id;
+        $branch_id = $request->branch_id;
+        $year = $request->year;
+        $subject_id = $request->subject_id;
+        $seller_id = $request->seller_id;
+        Excel::import(new QuestionsImport($branch_id, $year, $subject_id, $seller_id, $group_id), $request->file);
+
+        return response(['message' => 'Imported Successfully!']);
     }
 
     /**
