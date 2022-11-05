@@ -32,9 +32,9 @@ class QuestionController extends Controller
             $questions = Question::with('answers')
                 ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
                 ->latest()->where(function ($query) use ($search) {
-                    $query->where('content', 'like', ' %'.$search.'% ')
-                        ->orWhere('questions.id', 'like', ' %'.$search.'% ')
-                        ->orWhere('type', 'like', ' %'.$search.'% ');
+                    $query->where('content', 'like', ' '.$search.' ')
+                        ->orWhere('questions.id', 'like', ' '.$search.' ')
+                        ->orWhere('type', 'like', ' '.$search.' ');
 
                 })->where(function ($query) use ($branch_id, $year, $subject_id, $seller_id) {
 
