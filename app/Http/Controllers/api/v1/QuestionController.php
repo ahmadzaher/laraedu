@@ -24,7 +24,7 @@ class QuestionController extends Controller
         $year = $request->year;
         $subject_id = $request->subject_id;
         $seller_id = $request->seller_id;
-        $search = ' ' . $request->search . ' ';
+        $search = $request->search;
         $types = $request->types;
         $groups = $request->groups;
         $difficulties = $request->difficulties;
@@ -32,11 +32,9 @@ class QuestionController extends Controller
             $questions = Question::with('answers')
                 ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
                 ->latest()->where(function ($query) use ($search) {
-                    if(trim($search) != ''){
-                        $query->where('content', 'like', '%'.$search.'%')
-                            ->orWhere('questions.id', 'like', '%'.$search.'%')
-                            ->orWhere('type', 'like', '%'.$search.'%');
-                    }
+                    $query->where('content', 'like', '%'.$search.'%')
+                        ->orWhere('questions.id', 'like', '%'.$search.'%')
+                        ->orWhere('type', 'like', '%'.$search.'%');
 
                 })->where(function ($query) use ($branch_id, $year, $subject_id, $seller_id) {
 
