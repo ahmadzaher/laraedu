@@ -85,7 +85,7 @@ class QuestionsImport implements ToCollection, WithStartRow
                         $answer = new Answer([
                             'question_id' => $question->id,
                             'active' => 1,
-                            'correct' => $row[8] == $i,
+                            'correct' => $row[8] == $i - 1,
                             'content' => $row[$i]
                         ]);
                         $answer->save();
