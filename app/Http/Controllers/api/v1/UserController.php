@@ -29,8 +29,8 @@ class UserController extends Controller
                     ->orWhere('users.number', 'like', '%'.$search.'%');
 
                 if($branch_id != ''){
-                    $query->where('subjects.branch_id', $branch_id);
-                    $query->where('subjects.year', $year);
+                    $query->where('users.branch_id', $branch_id);
+                    $query->where('users.year', $year);
                 }
             })
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
