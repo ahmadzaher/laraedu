@@ -16,12 +16,14 @@ class UserController extends Controller
         $search = $request->search;
         $branch_id = $request->branch_id;
         $year = $request->year;
+        $seller_id = $request->seller_id;
         $data = User::latest()
-            ->where(function ($query) use ($search, $branch_id, $year) {
+            ->where(function ($query) use ($search, $branch_id, $year, $seller_id) {
 
                 if ($branch_id != '') {
                     $query->where('users.branch_id', $branch_id);
                     $query->where('users.year', $year);
+                    $query->where('users.seller_id', $seller_id);
                 }
             })
             ->where(function ($query) {
@@ -100,7 +102,8 @@ class UserController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
 //            'branch_id' => ['required', 'integer'],
-//            'year' => ['required', 'integer']
+//            'year' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
         ]);
         $user = new User([
             'name' => $request->name,
@@ -112,6 +115,7 @@ class UserController extends Controller
             'number' => $request->phone_number,
             'branch_id' => $request->branch_id,
             'year' => $request->year,
+            'seller_id' => $request->seller_id,
             'is_activated' => 0
         ]);
         $user->save();
@@ -193,6 +197,7 @@ class UserController extends Controller
         $user->language =  $request->language;
         $user->email =  $request->email;
         $user->branch_id = $request->branch_id;
+        $user->seller_id = $request->seller_id;
         $user->year = $request->year;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
