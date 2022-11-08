@@ -17,17 +17,19 @@ class UserController extends Controller
         $branch_id = $request->branch_id;
         $year = $request->year;
         $data = User::latest()
+            ->where(function ($query) use ($search, $branch_id, $year) {
+
+                if ($branch_id != '') {
+                    $query->where('users.branch_id', $branch_id);
+                    $query->where('users.year', $year);
+                }
+            })
             ->where(function ($query) {
                 $query->where('roles.slug', '!=', 'student')
                     ->where('roles.slug', '!=', 'teacher')
                     ->orWhere('roles.slug', null);
             })
-            ->where(function ($query) use ($search, $branch_id, $year) {
-
-                if($branch_id != ''){
-                    $query->where('users.branch_id', $branch_id);
-                    $query->where('users.year', $year);
-                }
+            ->where(function ($query) use ($search) {
                 $query->where('users.name', 'like', '%'.$search.'%')
                     ->orWhere('users.email', 'like', '%'.$search.'%')
                     ->orWhere('users.username', 'like', '%'.$search.'%')
