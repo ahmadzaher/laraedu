@@ -23,15 +23,15 @@ class UserController extends Controller
                     ->orWhere('roles.slug', null);
             })
             ->where(function ($query) use ($search, $branch_id, $year) {
-                $query->where('users.name', 'like', '%'.$search.'%')
-                    ->orWhere('users.email', 'like', '%'.$search.'%')
-                    ->orWhere('users.username', 'like', '%'.$search.'%')
-                    ->orWhere('users.number', 'like', '%'.$search.'%');
 
                 if($branch_id != ''){
                     $query->where('users.branch_id', $branch_id);
                     $query->where('users.year', $year);
                 }
+                $query->where('users.name', 'like', '%'.$search.'%')
+                    ->orWhere('users.email', 'like', '%'.$search.'%')
+                    ->orWhere('users.username', 'like', '%'.$search.'%')
+                    ->orWhere('users.number', 'like', '%'.$search.'%');
             })
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
