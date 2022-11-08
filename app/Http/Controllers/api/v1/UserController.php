@@ -87,7 +87,7 @@ class UserController extends Controller
             'language' => $user->language,
             'name' => $user->name,
             'phone_number' => $user->number,
-            'avatar' => $avatar
+            'avatar' => $avatar,
         ], 200);
 
     }
@@ -112,6 +112,7 @@ class UserController extends Controller
             'number' => $request->phone_number,
             'branch_id' => $request->branch_id,
             'year' => $request->year,
+            'is_activated' => 0
         ]);
         $user->save();
         if (isset($request->avatar)) {
