@@ -14,18 +14,24 @@ class UserController extends Controller
     public function getUsers(Request $request)
     {
         $search = $request->search;
-
+        $branch_id = $request->branch_id;
+        $year = $request->year;
         $data = User::latest()
             ->where(function ($query) {
                 $query->where('roles.slug', '!=', 'student')
                     ->where('roles.slug', '!=', 'teacher')
                     ->orWhere('roles.slug', null);
             })
-            ->where(function ($query) use ($search) {
+            ->where(function ($query) use ($search, $branch_id, $year) {
                 $query->where('users.name', 'like', '%'.$search.'%')
                     ->orWhere('users.email', 'like', '%'.$search.'%')
                     ->orWhere('users.username', 'like', '%'.$search.'%')
                     ->orWhere('users.number', 'like', '%'.$search.'%');
+
+                if($branch_id != ''){
+                    $query->where('subjects.branch_id', $branch_id);
+                    $query->where('subjects.year', $year);
+                }
             })
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
@@ -91,6 +97,8 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users', 'min:8', new Nospaces],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+//            'branch_id' => ['required', 'integer'],
+//            'year' => ['required', 'integer']
         ]);
         $user = new User([
             'name' => $request->name,
@@ -100,6 +108,8 @@ class UserController extends Controller
             'language' => $request->language,
             'password' => Hash::make($request->password),
             'number' => $request->phone_number,
+            'branch_id' => $request->branch_id,
+            'year' => $request->year,
         ]);
         $user->save();
         if (isset($request->avatar)) {
@@ -162,6 +172,8 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$id, 'min:8', new Nospaces],
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'password' => ['string', 'min:8', 'confirmed', 'nullable'],
+//            'branch_id' => ['required', 'integer'],
+//            'year' => ['required', 'integer']
         ]);
         $user = User::find($id);
 
@@ -177,6 +189,8 @@ class UserController extends Controller
         $user->direction =  $request->direction;
         $user->language =  $request->language;
         $user->email =  $request->email;
+        $user->branch_id = $request->branch_id;
+        $user->year = $request->year;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
 
