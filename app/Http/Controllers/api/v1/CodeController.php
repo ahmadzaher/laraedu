@@ -34,7 +34,7 @@ class CodeController extends Controller
         foreach ($request->data as $data){
             $code = new Code([
                 'code' => $data['code'],
-                'price' => $data['price']
+                'price' => $data['price'] ? $data['price'] : 5000
             ]);
             $code->save();
         }
