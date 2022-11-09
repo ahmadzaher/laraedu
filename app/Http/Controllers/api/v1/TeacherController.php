@@ -95,7 +95,6 @@ class TeacherController extends Controller
 
     public function store(Request $request)
     {
-        return response()->json($request);
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
