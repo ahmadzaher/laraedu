@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Role;
 use App\Rules\Nospaces;
 use App\User;
 use Illuminate\Http\Request;
@@ -123,6 +124,9 @@ class UserController extends Controller
         $roles = $request->roles;
         $user->roles()->attach($roles);
 
+        $role = Role::Where(['slug' => 'staff'])->get();
+        $user->roles()->attach($role);
+
         $user_roles = [];
 
         $user_permissions = [];
@@ -237,6 +241,10 @@ class UserController extends Controller
                 $user_permissions[] = $permission_data;
             }
         }
+
+
+        $role = Role::Where(['slug' => 'staff'])->get();
+        $user->roles()->attach($role);
 
         $avatar = $user->getFirstMediaUrl('avatars', 'thumb') ? url($user->getFirstMediaUrl('avatars', 'thumb')) : url('/images/avatar.jpg') ;
 
