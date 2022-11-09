@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithStartRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
 
 class QuestionsImport implements ToCollection, WithStartRow
 {
@@ -39,24 +38,24 @@ class QuestionsImport implements ToCollection, WithStartRow
             '*.8' => 'required',
         ])->validate();
 
-        $answer_found = $correct_found = false;
         foreach ($rows as $key => $row) {
+            $answer_found = $correct_found = false;
             for ($i = 2; $i <= 7; $i++) {
                 if ($row[$i] != null) {
                     $answer_found = true;
-                    if ($row[8] == $i)
+                    if ($row[8] == $i - 1)
                         $correct_found = true;
                 }
             }
-        }
-        if(!$answer_found || !$correct_found ){
-            if (!$answer_found)
-                $error = 'No answer found in raw [ ' . $key . ' ]';
-            else
-                $error = 'No correct found in raw [ ' . $key . ' ]';
-            header('Content-Type: application/json');
-            header('HTTP/1.1 422 Unprocessable Entity', TRUE, 422);
-            echo json_encode(['message' => "The given data was invalid.", 'errors' => ['answers' => [$error]] ]); exit;
+            if(!$answer_found || !$correct_found ){
+                if (!$answer_found)
+                    $error = 'No answer found in raw [ ' . $key . ' ]';
+                else
+                    $error = 'No correct found in raw [ ' . $key . ' ]';
+                header('Content-Type: application/json');
+                header('HTTP/1.1 422 Unprocessable Entity', TRUE, 422);
+                echo json_encode(['message' => "The given data was invalid.", 'errors' => ['answers' => [$error]] ]); exit;
+            }
         }
         foreach ($rows as $row)
         {

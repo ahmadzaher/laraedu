@@ -85,8 +85,9 @@ class QuestionController extends Controller
             'branch_id' => ['required', 'integer'],
             'subject_id' => ['required', 'integer'],
             'seller_id' => ['required', 'integer'],
+            'group_id' => ['required', 'integer'],
             'year' => ['required', 'integer'],
-            'file' => 'mimes:xlsx',
+            'file' => ['required', 'mimes:xlsx'],
         ]);
         $group_id = $request->group_id;
         $branch_id = $request->branch_id;
