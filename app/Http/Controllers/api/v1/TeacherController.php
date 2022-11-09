@@ -15,10 +15,19 @@ class TeacherController extends Controller
     public function getUsers(Request $request)
     {
         $search = $request->search;
+        $branch_id = $request->branch_id;
+        $seller_id = $request->seller_id;
         $data = User::latest()
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
             ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
+            ->where(function ($query) use ($branch_id, $seller_id) {
+
+                if ($branch_id != '') {
+                    $query->where('users.branch_id', $branch_id);
+                    $query->where('users.seller_id', $seller_id);
+                }
+            })
             ->where('roles.slug', '=', 'teacher')
             ->where(function ($query) use ($search) {
                 $query->where('users.name', 'like', '%'.$search.'%')
@@ -95,6 +104,9 @@ class TeacherController extends Controller
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
 //            'section' => ['required'],
 //            'class' => ['required'],
+//            'branch_id' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
+//            'subject_id' => ['required', 'integer'],
         ]);
         $user = new User([
             'name' => $request->name,
@@ -104,6 +116,9 @@ class TeacherController extends Controller
             'language' => $request->language,
             'password' => Hash::make($request->password),
             'number' => $request->phone_number,
+            'branch_id' => $request->branch_id,
+            'subject_id' => $request->subject_id,
+            'seller_id' => $request->seller_id,
 
         ]);
         $user->save();
@@ -126,6 +141,9 @@ class TeacherController extends Controller
             'direction' => $user->direction,
             'language' => $user->language,
             'phone_number' => $user->number,
+            'branch_id' => $user->branch_id,
+            'subject_id' => $user->subject_id,
+            'seller_id' => $user->seller_id,
             'avatar' => $avatar
         ], 200);
 
@@ -138,6 +156,9 @@ class TeacherController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$id, 'min:8', new Nospaces],
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'password' => ['string', 'min:8', 'confirmed', 'nullable'],
+//            'branch_id' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
+//            'subject_id' => ['required', 'integer'],
         ]);
         $user = User::find($id);
         if($user == null){
@@ -151,6 +172,9 @@ class TeacherController extends Controller
         $user->username = $request->username;
         $user->email = $request->email;
         $user->number = $request->phone_number;
+        $user->branch_id = $request->branch_id;
+        $user->subject_id = $request->subject_id;
+        $user->seller_id = $request->seller_id;
         if(isset($request->password))
             $user->password = Hash::make($request->password);
         $user->save();
@@ -180,7 +204,10 @@ class TeacherController extends Controller
             'direction' => $user->direction,
             'language' => $user->language,
             'phone_number' => $user->number,
-            'avatar' => $avatar
+            'avatar' => $avatar,
+            'branch_id' => $user->branch_id,
+            'subject_id' => $user->subject_id,
+            'seller_id' => $user->seller_id,
         ], 200);
     }
 

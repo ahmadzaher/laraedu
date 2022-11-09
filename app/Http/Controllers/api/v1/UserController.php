@@ -18,7 +18,7 @@ class UserController extends Controller
         $branch_id = $request->branch_id;
         $seller_id = $request->seller_id;
         $data = User::latest()
-            ->where(function ($query) use ($search, $branch_id, $seller_id) {
+            ->where(function ($query) use ($branch_id, $seller_id) {
 
                 if ($branch_id != '') {
                     $query->where('users.branch_id', $branch_id);
@@ -164,6 +164,8 @@ class UserController extends Controller
             'language' => $user->language,
             'phone_number' => $user->number,
             'avatar' => $avatar,
+            'branch_id' => $user->branch_id,
+            'seller_id' => $user->seller_id,
             'roles' => $user_roles,
             'permissions' => $user_permissions
         ], 200);
@@ -180,6 +182,7 @@ class UserController extends Controller
             'avatar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'password' => ['string', 'min:8', 'confirmed', 'nullable'],
 //            'branch_id' => ['required', 'integer'],
+//            'seller_id' => ['required', 'integer'],
         ]);
         $user = User::find($id);
 
@@ -258,6 +261,8 @@ class UserController extends Controller
             'direction' => $user->direction,
             'language' => $user->language,
             'roles' => $user_roles,
+            'branch_id' => $user->branch_id,
+            'seller_id' => $user->seller_id,
             'permissions' => $user_permissions
         ], 200);
     }
