@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\BranchMiddleware;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'branch' => \App\Http\Middleware\BranchMiddleware::class,
         'frontendActive' => \App\Http\Middleware\FrontendActiveMiddleware::class,
         'localization' => \App\Http\Middleware\localization::class,
         'api_version' => \App\Http\Middleware\APIVersion::class,

@@ -67,7 +67,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('password/change', [AuthController::class, 'change_password']);
     Route::get('userinfo', [AuthController::class, 'userinfo'])->middleware('traffic_counter');
     Route::post('userinfo', [AuthController::class, 'edit_profile']);
-    Route::namespace('\App\Http\Controllers\api\v1')->group(function() {
+    Route::namespace('\App\Http\Controllers\api\v1')->middleware('branch')->group(function() {
         Route::apiResource('quiz', 'QuizController');
         Route::apiResource('branch', 'BranchController');
         Route::get('branches', [\App\Http\Controllers\api\v1\BranchController::class, 'all']);

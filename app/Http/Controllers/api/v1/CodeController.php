@@ -29,10 +29,12 @@ class CodeController extends Controller
     {
         $request->validate([
             'data.*.code' => ['required', 'unique:codes'],
+            'data.*.price' => ['required'],
         ]);
         foreach ($request->data as $data){
             $code = new Code([
                 'code' => $data['code'],
+                'price' => $data['price']
             ]);
             $code->save();
         }
