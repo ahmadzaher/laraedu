@@ -65,6 +65,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'language',
         'branch_id',
         'subject_id',
+        'seller_id',
         'year',
         'coins',
         'is_activated'
