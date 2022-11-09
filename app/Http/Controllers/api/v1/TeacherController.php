@@ -119,6 +119,7 @@ class TeacherController extends Controller
             'branch_id' => $request->branch_id,
             'subject_id' => $request->subject_id,
             'seller_id' => $request->seller_id,
+            'is_activated' => 0
 
         ]);
         $user->save();
