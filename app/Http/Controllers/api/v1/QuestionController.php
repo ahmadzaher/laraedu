@@ -81,7 +81,7 @@ class QuestionController extends Controller
      */
     public function import(Request $request)
     {
-        return response($request->files);
+        return response($request);
         $request->validate([
             'branch_id' => ['required', 'integer'],
             'subject_id' => ['required', 'integer'],
