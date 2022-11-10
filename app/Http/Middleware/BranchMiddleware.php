@@ -21,6 +21,7 @@ class BranchMiddleware
             $_REQUEST['seller_id'] = $user->seller_id;
         }elseif($user->hasRole('teacher')){
             $_REQUEST['branch_id'] = $user->branch_id;
+            $_REQUEST['year'] = $user->year;
             $_REQUEST['seller_id'] = $user->seller_id;
             $_REQUEST['subject_id'] = $user->subject_id;
         }
