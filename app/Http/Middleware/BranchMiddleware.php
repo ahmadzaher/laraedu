@@ -19,11 +19,21 @@ class BranchMiddleware
         if($user->hasRole('staff')){
             $_REQUEST['branch_id'] = $user->branch_id;
             $_REQUEST['seller_id'] = $user->seller_id;
+            $request->merge([
+                'branch_id' => $user->branch_id,
+                'seller_id' => $user->seller_id
+            ]);
         }elseif($user->hasRole('teacher')){
             $_REQUEST['branch_id'] = $user->branch_id;
             $_REQUEST['year'] = $user->year;
             $_REQUEST['seller_id'] = $user->seller_id;
             $_REQUEST['subject_id'] = $user->subject_id;
+            $request->merge([
+                'branch_id' => $user->branch_id,
+                'seller_id' => $user->seller_id,
+                'year' => $user->year,
+                'subject_id' => $user->subject_id
+            ]);
         }
         return $next($request);
     }
