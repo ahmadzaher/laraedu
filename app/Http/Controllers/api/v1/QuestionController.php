@@ -81,7 +81,6 @@ class QuestionController extends Controller
      */
     public function import(Request $request)
     {
-        return response($request);
         $request->validate([
             'branch_id' => ['required', 'integer'],
             'subject_id' => ['required', 'integer'],
@@ -90,7 +89,6 @@ class QuestionController extends Controller
             'year' => ['required', 'integer'],
             'file' => ['required', 'mimes:xlsx|xls'],
         ]);
-
         $group_id = $request->group_id;
         $branch_id = $request->branch_id;
         $year = $request->year;
