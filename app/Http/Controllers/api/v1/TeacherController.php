@@ -16,16 +16,18 @@ class TeacherController extends Controller
     {
         $search = $request->search;
         $branch_id = $request->branch_id;
+        $year = $request->year;
         $seller_id = $request->seller_id;
         $subject_id = $request->subject_id;
         $data = User::latest()
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
             ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
-            ->where(function ($query) use ($branch_id, $seller_id, $subject_id) {
+            ->where(function ($query) use ($branch_id, $seller_id, $subject_id, $year) {
 
                 if ($branch_id != '') {
                     $query->where('users.branch_id', $branch_id);
+                    $query->where('users.year', $year);
                     $query->where('users.seller_id', $seller_id);
                     $query->where('users.subject_id', $subject_id);
                 }
@@ -107,6 +109,7 @@ class TeacherController extends Controller
 //            'section' => ['required'],
 //            'class' => ['required'],
 //            'branch_id' => ['required', 'integer'],
+//            'year' => ['required', 'integer'],
 //            'seller_id' => ['required', 'integer'],
 //            'subject_id' => ['required', 'integer'],
         ]);
@@ -119,6 +122,7 @@ class TeacherController extends Controller
             'password' => Hash::make($request->password),
             'number' => $request->phone_number,
             'branch_id' => $request->branch_id,
+            'year' => $request->year,
             'subject_id' => $request->subject_id,
             'seller_id' => $request->seller_id,
             'is_activated' => 0
@@ -145,6 +149,7 @@ class TeacherController extends Controller
             'language' => $user->language,
             'phone_number' => $user->number,
             'branch_id' => $user->branch_id,
+            'year' => $user->year,
             'subject_id' => $user->subject_id,
             'seller_id' => $user->seller_id,
             'avatar' => $avatar
@@ -162,6 +167,7 @@ class TeacherController extends Controller
 //            'branch_id' => ['required', 'integer'],
 //            'seller_id' => ['required', 'integer'],
 //            'subject_id' => ['required', 'integer'],
+//            'year' => ['required', 'integer'],
         ]);
         $user = User::find($id);
         if($user == null){
@@ -176,6 +182,7 @@ class TeacherController extends Controller
         $user->email = $request->email;
         $user->number = $request->phone_number;
         $user->branch_id = $request->branch_id;
+        $user->year = $request->year;
         $user->subject_id = $request->subject_id;
         $user->seller_id = $request->seller_id;
         if(isset($request->password))
@@ -209,6 +216,7 @@ class TeacherController extends Controller
             'phone_number' => $user->number,
             'avatar' => $avatar,
             'branch_id' => $user->branch_id,
+            'year' => $user->year,
             'subject_id' => $user->subject_id,
             'seller_id' => $user->seller_id,
         ], 200);
