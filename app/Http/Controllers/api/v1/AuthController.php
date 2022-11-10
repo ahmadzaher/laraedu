@@ -244,7 +244,7 @@ class AuthController extends Controller
             'name' => $user->name,
             'is_verified' => $user->email_verified_at ? true : false,
             'coins' => $user->coins,
-            'branch_id', $user->branch_id,
+            'branch_id' => $user->branch_id,
             'year' => $user->year,
             'seller_id' => $user->seller_id,
             'subject_id' => $user->subject_id,
