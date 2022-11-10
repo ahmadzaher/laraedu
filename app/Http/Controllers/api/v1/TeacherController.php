@@ -17,15 +17,17 @@ class TeacherController extends Controller
         $search = $request->search;
         $branch_id = $request->branch_id;
         $seller_id = $request->seller_id;
+        $subject_id = $request->subject_id;
         $data = User::latest()
             ->leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')
             ->leftJoin('roles', 'roles.id', '=', 'users_roles.role_id')
             ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
-            ->where(function ($query) use ($branch_id, $seller_id) {
+            ->where(function ($query) use ($branch_id, $seller_id, $subject_id) {
 
                 if ($branch_id != '') {
                     $query->where('users.branch_id', $branch_id);
                     $query->where('users.seller_id', $seller_id);
+                    $query->where('users.subject_id', $subject_id);
                 }
             })
             ->where('roles.slug', '=', 'teacher')
