@@ -106,6 +106,14 @@ Route::middleware('auth:api')->group(function () {
         Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
         Route::get('section/list', [SectionController::class, 'getSections'])->middleware('can:view-section');
 
+        // statistics
+        Route::get('user/statistics', [StatisticsController::class, 'users']);
+        Route::get('statistics', [StatisticsController::class, 'statistics']);
+        Route::get('statistics/transactions', [StatisticsController::class, 'transactions']);
+        Route::get('statistics/earnings', [StatisticsController::class, 'earnings']);
+        Route::get('statistics/code', [StatisticsController::class, 'code']);
+        Route::get('statistics/main', [StatisticsController::class, 'main']);
+        Route::get('statistics/latest_users', [StatisticsController::class, 'latest_users']);
         // Role
         Route::middleware('role:superadmin')->group(function () {
             Route::get('role/list', [RoleController::class, 'getRoles']);
@@ -134,13 +142,6 @@ Route::middleware('auth:api')->group(function () {
         Route::post('teacher/{id}', [TeacherController::class, 'update']);
         Route::delete('teacher/{id}', [TeacherController::class, 'destroy']);
 
-        Route::get('user/statistics', [StatisticsController::class, 'users']);
-        Route::get('statistics', [StatisticsController::class, 'statistics']);
-        Route::get('statistics/transactions', [StatisticsController::class, 'transactions']);
-        Route::get('statistics/earnings', [StatisticsController::class, 'earnings']);
-        Route::get('statistics/code', [StatisticsController::class, 'code']);
-        Route::get('statistics/main', [StatisticsController::class, 'main']);
-        Route::get('statistics/latest_users', [StatisticsController::class, 'latest_users']);
     });
 
 

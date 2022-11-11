@@ -22,7 +22,7 @@ class StatisticsController extends Controller
         $current_date = date("Y-m-d");
         $last_seven_day = date('Y-m-d', strtotime("$current_date - $period"));
         if($period == 'all'){
-            $last_seven_day = '2021-01-01';
+            $last_seven_day = '2022-11-01';
         }
         $seven_days_users = DB::select("SELECT COUNT('id') as users, DATE_FORMAT(created_at,'%Y-%m-%d') as created_at FROM `users` WHERE DATE_FORMAT(created_at, '%Y-%m-%d') >= '" . "$last_seven_day' group by DATE_FORMAT(created_at, '%Y-%m-%d')");
         $seven_days_user_chart_label = array();
