@@ -105,6 +105,7 @@ class BranchController extends Controller
      */
     public function destroy(Branch $branch)
     {
+        $this->middleware('superadmin');
         $branch->delete();
         return response(['msg' => 'Deleted Successfully!'], 200);
     }

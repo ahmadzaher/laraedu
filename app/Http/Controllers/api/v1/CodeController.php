@@ -57,9 +57,9 @@ class CodeController extends Controller
         $user = User::find($user->id);
         $code = Code::where('code', $request->code)->first();
         if(!$code)
-            return response(['msg' => 'Incorrect code!'], 404);
+            return response(['message' => 'Incorrect code!'], 404);
         if($code->activated)
-            return response(['msg' => 'Code is already activated'], 403);
+            return response(['message' => 'Code is already activated'], 403);
 
         $code->activated = 1;
         $code->user_id = $user->id;

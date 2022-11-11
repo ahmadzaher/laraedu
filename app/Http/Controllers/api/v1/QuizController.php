@@ -204,6 +204,7 @@ class QuizController extends Controller
      */
     public function destroy(Quiz $quiz)
     {
+        $this->middleware('superadmin');
         $quiz->delete();
         return response(['message' => 'Quiz Deleted Successfully!'], 200);
     }

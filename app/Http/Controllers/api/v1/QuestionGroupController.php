@@ -127,6 +127,7 @@ class QuestionGroupController extends Controller
      */
     public function destroy(QuestionGroup $questionGroup)
     {
+        $this->middleware('superadmin');
         $questionGroup->delete();
         return response(['msg' => 'Deleted Successfully!'], 200);
     }

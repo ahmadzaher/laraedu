@@ -133,6 +133,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $this->middleware('superadmin');
         $category->delete();
         return response(['msg' => 'Deleted Successfully!'], 200);
     }

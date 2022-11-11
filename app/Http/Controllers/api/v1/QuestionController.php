@@ -359,7 +359,7 @@ class QuestionController extends Controller
                 return Response(['msg' => 'No Answers'], 422);
 
             $question->type = $request->type;
-            $question->active = 1;
+            $question->active = $request->active;
             $question->level = $request->level;
             $question->score = $request->score;
             $question->default_time = $request->default_time;
@@ -402,7 +402,7 @@ class QuestionController extends Controller
             if (!is_array($request->answer))
                 return Response(['msg' => 'Answer is required'], 422);
             $question->type = $request->type;
-            $question->active = 1;
+            $question->active = $request->active;
             $question->level = $request->level;
             $question->score = $request->score;
             $question->default_time = $request->default_time;
@@ -437,7 +437,7 @@ class QuestionController extends Controller
 
 
             $question->type = $request->type;
-            $question->active = 1;
+            $question->active = $request->active;
             $question->level = $request->level;
             $question->score = $request->score;
             $question->default_time = $request->default_time;
@@ -465,7 +465,7 @@ class QuestionController extends Controller
 
         if (request('type') === 'essay') {
             $question->type = request('type');
-            $question->active = 1;
+            $question->active = $request->active;
             $question->level = request('level');
             $question->score = request('score');
             $question->default_time = request('default_time');
