@@ -204,7 +204,8 @@ class QuizController extends Controller
      */
     public function destroy(Quiz $quiz)
     {
-        $this->middleware('role:superadmin');
+        if(!auth()->user()->hasRole('superadmin'))
+            abort(403);
         $quiz->delete();
         return response(['message' => 'Quiz Deleted Successfully!'], 200);
     }

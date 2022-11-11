@@ -127,7 +127,8 @@ class QuestionGroupController extends Controller
      */
     public function destroy(QuestionGroup $questionGroup)
     {
-        $this->middleware('role:superadmin');
+        if(!auth()->user()->hasRole('superadmin'))
+            abort(403);
         $questionGroup->delete();
         return response(['msg' => 'Deleted Successfully!'], 200);
     }
