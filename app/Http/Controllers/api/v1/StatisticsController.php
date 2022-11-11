@@ -155,7 +155,7 @@ class StatisticsController extends Controller
 
     public function main(Request $request)
     {
-        $year = $request->year;
+        $year = $request->statistics_year;
         $month = $request->month;
         $day = $request->day;
         if(!$year)
