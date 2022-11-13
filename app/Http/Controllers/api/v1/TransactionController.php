@@ -30,6 +30,10 @@ class TransactionController extends Controller
      */
     public function seller(Seller $seller, Request $request)
     {
+
+        if(!$request->user()->hasRole('superadmin')){
+            $seller = Seller::find($request->user()->seller_id);
+        }
         $request->validate([
             'invoice_month' => ['required'],
             'invoice_year' => ['required']

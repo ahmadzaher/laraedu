@@ -45,6 +45,8 @@ Route::post('facebook', [AuthController::class, 'facebook']);
 Route::get('code/check', [\App\Http\Controllers\api\v1\CodeController::class, 'check']);
 
 Route::middleware('auth:api')->group(function () {
+    // Branches
+    Route::get('branches', [\App\Http\Controllers\api\v1\BranchController::class, 'all']);
     // Student quiz
     Route::middleware(['role:student'])->prefix('student')->group(function(){
         // Branches
@@ -72,12 +74,12 @@ Route::middleware('auth:api')->group(function () {
     Route::middleware(['role:teacher|superadmin|staff', 'branch'])->group(function () {
         Route::namespace('\App\Http\Controllers\api\v1')->group(function() {
             Route::apiResource('quiz', 'QuizController');
-            Route::get('branches', [\App\Http\Controllers\api\v1\BranchController::class, 'all']);
             Route::apiResource('question', 'QuestionController');
             Route::apiResource('category', 'CategoryController');
             Route::get('quizzes/categories', [\App\Http\Controllers\api\v1\CategoryController::class, 'all']);
             Route::post('question/{id}', [QuestionController::class, 'update']);
             Route::apiResource('question_groups', 'QuestionGroupController');
+            Route::get('sellers', [\App\Http\Controllers\api\v1\SellerController::class, 'all']);
             Route::middleware('role:superadmin')->group(function () {
                 Route::apiResource('branch', 'BranchController');
                 // Code
@@ -85,7 +87,6 @@ Route::middleware('auth:api')->group(function () {
                 Route::post('code/charge', [\App\Http\Controllers\api\v1\CodeController::class, 'charge']);
                 // Seller
                 Route::apiResource('seller', 'SellerController');
-                Route::get('sellers', [\App\Http\Controllers\api\v1\SellerController::class, 'all']);
                 // Settings
                 Route::post('settings/general', [SettingsController::class, 'update_general_settings']);
             });

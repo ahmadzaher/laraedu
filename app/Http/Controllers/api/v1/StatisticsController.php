@@ -156,16 +156,24 @@ class StatisticsController extends Controller
     public function main(Request $request)
     {
         $year = $request->statistics_year;
+        $where_branch = $request->branch;
+        $where_year = $request->year;
         $month = $request->month;
         $day = $request->day;
         if(!$year)
             $year = date('Y');
         if(!$month)
             $month = date('m');
-        $transactions = Transaction::select([DB::raw('count(id) as transaction'), 'created_at'])->whereYear('created_at', $year)->whereMonth('created_at', $month)->where(function ($query) use ($day){
-            if($day)
-                $query->whereDay('created_at', $day);
-        });
+        $transactions = Transaction::select([DB::raw('count(id) as transaction'), 'created_at'])
+            ->whereYear('created_at', $year)->whereMonth('created_at', $month)
+            ->where(function ($query) use ($day, $where_branch, $where_year){
+                if($day)
+                    $query->whereDay('created_at', $day);
+                if(!auth()->user()->hasRole('superadmin')){
+                    $query->where('transactions.branch_id', $where_branch);
+                    $query->where('transactions.year', $where_year);
+                }
+            });
         if($day)
             $transactions->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %h')"));
         else
