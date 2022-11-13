@@ -96,7 +96,8 @@ class QuizController extends Controller
             'seller_id' => $request->seller_id,
             'year' => $request->year,
             'price' => $request->price,
-            'percentage' => $request->percentage
+            'percentage' => $request->percentage,
+            'random' => $request->random
 
         ]);
         $quiz->save();
@@ -136,10 +137,17 @@ class QuizController extends Controller
     {
         if(!$quiz->purchasedBy($request->user()))
             return response(['message' => 'Not Purchased'], 403);
-        $questions = Question::where('active', 1)
-        ->with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
-            return $query->where('id', '=', $quiz->id);
-        })->get();
+        if($quiz->random){
+            $questions = Question::where('active', 1)->inRandomOrder()
+                ->with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
+                    return $query->where('id', '=', $quiz->id);
+                })->get();
+        }else{
+            $questions = Question::where('active', 1)
+                ->with('answers')->with('group')->whereHas('quizzes', function ($query) use ($quiz) {
+                    return $query->where('id', '=', $quiz->id);
+                })->get();
+        }
         foreach ($questions as $key => $question) {
             $questions[$key]->group_name = $question->group->title;
 
@@ -148,6 +156,7 @@ class QuizController extends Controller
                 $questions[$key]->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
             }
         }
+        unset($quiz->transactions);
         $quiz->questions = $questions;
         return Response($quiz, 200);
     }
@@ -178,6 +187,7 @@ class QuizController extends Controller
         $quiz->summary = $request->summary;
         $quiz->type = $request->type;
         $quiz->score = $request->score;
+        $quiz->random = $request->random;
         $quiz->published = $request->published;
         $quiz->content = $request['content'];
         $quiz->category_id = $request->category ? $request->category : null;

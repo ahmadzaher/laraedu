@@ -19,7 +19,8 @@ class Quiz extends Model
         'seller_id',
         'year',
         'price',
-        'percentage'
+        'percentage',
+        'random'
     ];
 
     public function questions() {
