@@ -130,21 +130,13 @@ class TransactionController extends Controller
             'branch_id' => $material->branch_id,
             'year' => $material->year,
             'subject_id' => $material->subject_id,
-            'cost' => $material->price
         ];
         $already_transaction = Transaction::where(array_merge($material_data))->latest()->first();
-        $date_before_6_months = strtotime(Carbon::now());
+        $material_data['cost'] = $material->price;
 
 
         if($already_transaction){
-            $year1 = date('Y', strtotime($already_transaction->created_at));
-            $year2 = date('Y', $date_before_6_months);
-
-            $month1 = date('m', strtotime($already_transaction->created_at));
-            $month2 = date('m', $date_before_6_months);
-
-            $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
-            if($diff < 6)
+            if(!$already_transaction->deleted)
                 return response(['message' => 'Already Purchased'], 403);
         }
         if ($material->branch_id && $material->year && $material->subject_id && $material->seller_id){
@@ -190,5 +182,23 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction)
     {
         //
+    }
+
+    public function delete_branch_transactions(Request $request)
+    {
+        $request->validate([
+            'branch_id' => ['required'],
+        ]);
+        Transaction::where('branch_id', $request->branch_id)->update(['deleted' => 1]);
+        return response(['message' => 'Deleted Successfully!'], 200);
+    }
+
+    public function rollback_delete_branch_transactions(Request $request)
+    {
+        $request->validate([
+            'branch_id' => ['required'],
+        ]);
+        Transaction::where('branch_id', $request->branch_id)->update(['deleted' => 0]);
+        return response(['message' => 'Rolled back Successfully!'], 200);
     }
 }

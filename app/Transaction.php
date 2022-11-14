@@ -15,5 +15,6 @@ class Transaction extends Model
         'year',
         'subject_id',
         'cost',
+        'deleted'
     ];
 }

@@ -137,11 +137,15 @@ Route::middleware('auth:api')->group(function () {
         });
 
         // Teacher
-        Route::get('teacher', [TeacherController::class, 'getUsers']);
-        Route::get('teacher/{id}', [TeacherController::class, 'get']);
-        Route::post('teacher', [TeacherController::class, 'store']);
-        Route::post('teacher/{id}', [TeacherController::class, 'update']);
-        Route::delete('teacher/{id}', [TeacherController::class, 'destroy']);
+        Route::middleware('role:superadmin|staff')->group(function () {
+            Route::delete('transactions/delete', [\App\Http\Controllers\api\v1\TransactionController::class, 'delete_branch_transactions']);
+            Route::put('transactions/delete/rollback', [\App\Http\Controllers\api\v1\TransactionController::class, 'rollback_delete_branch_transactions']);
+            Route::get('teacher', [TeacherController::class, 'getUsers']);
+            Route::get('teacher/{id}', [TeacherController::class, 'get']);
+            Route::post('teacher', [TeacherController::class, 'store']);
+            Route::post('teacher/{id}', [TeacherController::class, 'update']);
+            Route::delete('teacher/{id}', [TeacherController::class, 'destroy']);
+        });
 
     });
 
