@@ -55,7 +55,7 @@ class SummaryController extends Controller
         $year = $request->year;
         $summaries = Summary::where('published', 1)
             ->leftJoin('sellers', 'sellers.id', '=', 'summaries.seller_id')
-            ->select(['summaries.*', 'sellers.name as seller_name', DB::raw("(SELECT COUNT('id') FROM `transactions` WHERE transactions.summary_id = summaries.id AND transactions.user_id = ".$request->user()->id.") as is_purchased ")])
+            ->select(['summaries.*', 'sellers.name as seller_name', DB::raw("(SELECT COUNT('id') FROM `transactions` WHERE transactions.summary_id = summaries.id AND transactions.deleted = 0 AND transactions.user_id = ".$request->user()->id.") as is_purchased ")])
             ->where(function ($query) use ($branch_id, $subject_id, $year) {
 
                 if($branch_id != ''){
