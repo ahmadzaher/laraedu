@@ -64,7 +64,8 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-
+        if(!auth()->user()->hasRole('superadmin'))
+            abort(403);
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:subjects']
 //            'branch_id' => ['required', 'integer'],
@@ -101,6 +102,8 @@ class SubjectController extends Controller
      */
     public function update(Request $request, Subject $subject)
     {
+        if(!auth()->user()->hasRole('superadmin'))
+            abort(403);
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:subjects,name,'.$subject->id],
 //            'branch_id' => ['required', 'integer'],
@@ -127,6 +130,8 @@ class SubjectController extends Controller
      */
     public function destroy(Subject $subject)
     {
+        if(!auth()->user()->hasRole('superadmin'))
+            abort(403);
         $subject->delete();
         return response(['msg' => 'Deleted Successfully!'], 200);
     }
