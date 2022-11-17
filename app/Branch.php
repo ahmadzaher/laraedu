@@ -9,6 +9,7 @@ class Branch extends Model
     protected $fillable = [
         'name',
         'years',
-        'description'
+        'description',
+        'study_type'
     ];
 }

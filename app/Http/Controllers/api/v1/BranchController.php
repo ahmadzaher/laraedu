@@ -49,7 +49,8 @@ class BranchController extends Controller
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:branches'],
-            'years' => ['required', 'integer', 'between:1,6']
+            'years' => ['required', 'integer', 'between:1,6'],
+            'study_type' => ['required']
         ]);
         $branch = new Branch([
             'name' => $request->name,
@@ -83,7 +84,8 @@ class BranchController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:branches,name,'.$branch->id],
-            'years' => ['required', 'integer'],
+//            'years' => ['required', 'integer'],
+            'study_type' => ['required', 'integer']
         ]);
         if($branch == null){
             return response(['message' => 'Something went wrong!'], 404);
@@ -91,7 +93,8 @@ class BranchController extends Controller
 
         $branch->name = $request->name;
         $branch->description = $request->description;
-        $branch->years = $request->years;
+//        $branch->years = $request->years;
+        $branch->study_type = $request->study_type;
         $branch->save();
 
         return response($branch, 200);
