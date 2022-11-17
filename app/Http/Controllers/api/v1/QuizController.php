@@ -150,7 +150,7 @@ class QuizController extends Controller
                 })->get();
         }
         foreach ($questions as $key => $question) {
-            $questions[$key]->group_name = $question->group->title;
+            $questions[$key]->group_name = $question->group ? $question->group->title : '';
 
             if ( $question->getFirstMediaUrl('question_images', 'question_image') )
             {
