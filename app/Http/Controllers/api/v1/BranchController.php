@@ -55,6 +55,7 @@ class BranchController extends Controller
         $branch = new Branch([
             'name' => $request->name,
             'years' => $request->years,
+            'study_type' => $request->study_type,
             'description' => $request->description
 
         ]);
