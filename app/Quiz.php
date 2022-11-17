@@ -36,6 +36,6 @@ class Quiz extends Model
 
     public function purchasedBy(User $user)
     {
-        return $this->transactions->contains('user_id', $user->id) && !$this->transactions[0]->deleted;
+        return $this->transactions->contains('user_id', $user->id);
     }
 }
