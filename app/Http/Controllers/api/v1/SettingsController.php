@@ -75,8 +75,7 @@ class SettingsController extends Controller
                 if ($request->file($file)->isValid()) {
                     $files = Storage::allFiles('public/images/'.$file);
                     Storage::delete($files);
-                    $extension = $request->$file->extension();
-                    $request->$file->storeAs('/public/images/'.$file, $file.".".$extension);
+                    $request->$file->storeAs('/public/images/'.$file, $request->$file->getClientOriginalName());
                     option([$file => env('APP_URL') . '/public/storage/images/'.$file . '/' . $request->$file->getClientOriginalName()]);
                 }
             }
