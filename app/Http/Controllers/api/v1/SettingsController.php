@@ -17,6 +17,7 @@ class SettingsController extends Controller
             'app_name' => option('app_name'),
             'company_name' => option('company_name'),
             'app_logo' => option('app_logo'),
+            'app_light_logo' => option('app_light_logo'),
             'app_favicon' => option('app_favicon'),
             'receive_email_to' => option('receive_email_to'),
             'number_of_working_hours' => option('number_of_working_hours'),
@@ -56,6 +57,7 @@ class SettingsController extends Controller
             'app_name' => ['required', 'max:255'],
             'company_name' => ['required', 'max:255'],
             'app_logo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'app_light_logo' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'app_favicon' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($request->delete_logo){
@@ -63,12 +65,17 @@ class SettingsController extends Controller
             Storage::delete($files);
             option(['app_logo' => '']);
         }
+        if ($request->delete_light_logo){
+            $files = Storage::allFiles('public/images/light_logo');
+            Storage::delete($files);
+            option(['light_logo' => '']);
+        }
         if ($request->delete_favicon){
             $files = Storage::allFiles('public/images/app_favicon');
             Storage::delete($files);
             option(['app_favicon' => '']);
         }
-        $files = ['app_logo', 'app_favicon'];
+        $files = ['app_logo', 'app_light_logo', 'app_favicon'];
         foreach ($files as $file)
         {
             if ($request->hasFile($file)) {
