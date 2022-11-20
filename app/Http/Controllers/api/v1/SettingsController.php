@@ -9,7 +9,7 @@ use League\Flysystem\Filesystem;
 
 class SettingsController extends Controller
 {
-    public function general_settings()
+    public function general_settings(Request $request)
     {
         $settings = [
             'default_language' => option('default_language'),
@@ -18,8 +18,6 @@ class SettingsController extends Controller
             'company_name' => option('company_name'),
             'app_logo' => option('app_logo'),
             'app_favicon' => option('app_favicon'),
-            'facebook_client_id' => option('facebook_client_id'),
-            'facebook_client_secret' => option('facebook_client_secret'),
             'receive_email_to' => option('receive_email_to'),
             'number_of_working_hours' => option('number_of_working_hours'),
             'phone_number' => option('phone_number'),
@@ -34,13 +32,18 @@ class SettingsController extends Controller
             'linkedin_url' => option('linkedin_url'),
             'pinterest_url' => option('pinterest_url'),
             'instagram_url' => option('instagram_url'),
-            'google_client_id' => option('google_client_id'),
-            'google_client_secret' => option('google_client_secret'),
             'privacy_policy' => option('privacy_policy'),
             'usage_policy' => option('usage_policy'),
             'app_version' => option('app_version'),
             'app_disabled' => option('app_disabled'),
         ];
+        if(auth('api')->user())
+            if(auth('api')->user()->hasRole('superadmin')){
+                $settings['google_client_id'] = option('google_client_id');
+                $settings['google_client_secret'] = option('google_client_secret');
+                $settings['facebook_client_id'] = option('facebook_client_id');
+                $settings['facebook_client_secret'] = option('facebook_client_secret');
+            }
         return response()->json($settings, 200);
     }
 
@@ -74,16 +77,21 @@ class SettingsController extends Controller
                     Storage::delete($files);
                     $extension = $request->$file->extension();
                     $request->$file->storeAs('/public/images/'.$file, $file.".".$extension);
-                    option([$file => env('APP_URL') . '/public/storage/images/'.$file . '/' . $file . '.' . $extension]);
+                    option([$file => env('APP_URL') . '/public/storage/images/'.$file . '/' . $request->$file->getClientOriginalName()]);
                 }
             }
         }
+        if(auth('api')->user())
+            if(auth('api')->user()->hasRole('superadmin')){
+                option(['facebook_client_id' => $request->facebook_client_id]);
+                option(['facebook_client_secret' => $request->facebook_client_secret]);
+                option(['google_client_id' => $request->google_client_id]);
+                option(['google_client_secret' => $request->google_client_secret]);
+            }
         option(['default_language' => $request->default_language]);
         option(['default_direction' => $request->default_direction]);
         option(['app_name' => $request->app_name]);
         option(['company_name' => $request->company_name]);
-        option(['facebook_client_id' => $request->facebook_client_id]);
-        option(['facebook_client_secret' => $request->facebook_client_secret]);
         option(['receive_email_to' => $request->receive_email_to]);
         option(['number_of_working_hours' => $request->number_of_working_hours]);
         option(['phone_number' => $request->phone_number]);
@@ -98,12 +106,10 @@ class SettingsController extends Controller
         option(['linkedin_url' => $request->linkedin_url]);
         option(['pinterest_url' => $request->pinterest_url]);
         option(['instagram_url' => $request->instagram_url]);
-        option(['google_client_id' => $request->google_client_id]);
-        option(['google_client_secret' => $request->google_client_secret]);
         option(['privacy_policy' => $request->privacy_policy]);
         option(['usage_policy' => $request->usage_policy]);
         option(['app_version' => $request->app_version]);
         option(['app_disabled' => $request->app_disabled]);
-        return $this->general_settings();
+        return $this->general_settings($request);
     }
 }

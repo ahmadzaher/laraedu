@@ -41,6 +41,7 @@ Route::post('password/forgot-password', [ForgotPasswordController::class, 'forgo
 Route::post('password/reset', [ResetPasswordController::class, 'sendResetResponse'])->name('passwords.reset');
 
 Route::post('facebook', [AuthController::class, 'facebook']);
+Route::post('google', [AuthController::class, 'google']);
 
 Route::get('code/check', [\App\Http\Controllers\api\v1\CodeController::class, 'check']);
 

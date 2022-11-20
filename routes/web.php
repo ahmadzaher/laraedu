@@ -1,21 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\ClassController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SectionController;
-use App\Http\Controllers\SubjectController;;
-use App\Http\Controllers\exam\ExamController;
-use App\Http\Controllers\exam\ExamGradeController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\frontend;
 
 Auth::routes(['verify' => true]);
 
@@ -35,6 +22,11 @@ Route::get('/home', 'HomeController@index')->middleware('verified')->name('home'
 
 Route::get('facebook/redirect', [LoginController::class, 'facebook'])->name('facebook.login');
 Route::get('facebook/callback', [LoginController::class, 'facebookCallback']);
+
+// Google login
+
+Route::get('google/redirect', [LoginController::class, 'google'])->name('google.login');
+Route::get('google/callback', [LoginController::class, 'googleCallback']);
 
 //
 ////User routes

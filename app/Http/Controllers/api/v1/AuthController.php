@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Role;
 use App\Rules\Nospaces;
 use App\Traffic;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
@@ -72,7 +73,7 @@ class AuthController extends Controller
                 return response(['message' => 'Something went wrong.'], 403);
 
             if($user->hasVerifiedEmail()){
-                return response(['message' => 'User are already activated.'], 403);
+                return response(['message' => 'User has already activated.'], 403);
             }else{
                 $user->markEmailAsVerified();
                 DB::table('users_activation')->where('token',$token)->delete();
@@ -150,6 +151,42 @@ class AuthController extends Controller
         }
     }
 
+    public function google(Request $request)
+    {
+        $token = $request->token;
+        try {
+            $user = Socialite::driver('google')->stateless()->userFromToken($token);
+        } catch (ClientException $exception) {
+            return response()->json(['error' => 'Unauthorised'], 401);
+        }
+
+        $user_exist = User::where('email', $user->email)->first();
+        $user = User::firstOrCreate([
+            'email' => $user->email
+        ], [
+            'username' => $user->email,
+            'name' => $user->name != null ? $user->name : $user->nickname,
+            'is_verified' => true,
+            'is_activated' => 0,
+            'password' => Hash::make(Str::random(24)),
+        ]);
+
+        if(!$user_exist)
+        {
+            $role = Role::Where(['slug' => 'student'])->get();
+            $user->roles()->attach($role);
+        }
+
+        $token = $user->createToken('Laravel8PassportAuth')->accessToken;
+        $traffic = new Traffic([
+            'user_id' => $user->id,
+            'type' => $user_exist ? 'login' : 'register'
+        ]);
+        $traffic->save();
+        return response()->json(['token' => $token], 200);
+
+    }
+
     public function facebook(Request $request)
     {
         $token = $request->token;
@@ -178,6 +215,7 @@ class AuthController extends Controller
             'username' => $user->email,
             'name' => $user->name != null ? $user->name : $user->nickname,
             'is_verified' => true,
+            'is_activated' => 0,
             'password' => Hash::make(Str::random(24)),
         ]);
 
