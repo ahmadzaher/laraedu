@@ -68,7 +68,7 @@ class SettingsController extends Controller
         if ($request->delete_light_logo){
             $files = Storage::allFiles('public/images/light_logo');
             Storage::delete($files);
-            option(['light_logo' => '']);
+            option(['app_light_logo' => '']);
         }
         if ($request->delete_favicon){
             $files = Storage::allFiles('public/images/app_favicon');
