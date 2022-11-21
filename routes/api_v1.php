@@ -65,6 +65,8 @@ Route::middleware('auth:api')->group(function () {
         Route::post('code/charge', [\App\Http\Controllers\api\v1\CodeController::class, 'charge']);
         // Transaction
         Route::post('transaction', [\App\Http\Controllers\api\v1\TransactionController::class, 'store']);
+        // Feedback
+        Route::post('feedback', [\App\Http\Controllers\api\v1\FeedbackController::class, 'store']);
     });
     // User Profile
     Route::post('user/activation/{token}', [AuthController::class, 'userActivation']);
@@ -90,6 +92,8 @@ Route::middleware('auth:api')->group(function () {
                 Route::apiResource('seller', 'SellerController');
                 // Settings
                 Route::post('settings/general', [SettingsController::class, 'update_general_settings']);
+                // Feedback
+                Route::apiResource('feedback', 'FeedbackController');
             });
             // Summary
             Route::apiResource('summary', 'SummaryController');

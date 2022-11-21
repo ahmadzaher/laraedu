@@ -43,6 +43,13 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         $this->notify(new VerifyEmail($token)); // my notification
     }
 
+
+
+    public function sendFeedbackNotification($text)
+    {
+        $this->notify(new \App\Notifications\Feedback($text)); // my notification
+    }
+
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')
