@@ -332,7 +332,7 @@ class AuthController extends Controller
 
         foreach($user->roles as $role){
             if($role->slug == 'student' or $role->slug == 'teacher'){
-                return redirect('/user')->with('warning', 'Something went Wrong');
+                break;
             }
             $user_roles[] = [
                 'id' => $role->id,
