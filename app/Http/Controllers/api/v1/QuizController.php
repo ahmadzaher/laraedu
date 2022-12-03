@@ -158,12 +158,12 @@ class QuizController extends Controller
             }
         }
         $questions->each(function ($question) {
-            if ($question->type === 'essay') {
-                $answers = $question->answers;
-                $answers->each(function ($answer) {
+            $answers = $question->answers;
+            $answers->each(function ($answer) {
+                $answer->answer_image = null;
+                if($answer->getFirstMediaUrl('answer_images'))
                     $answer->answer_image = url($answer->getFirstMediaUrl('answer_images'));
-                });
-            }
+            });
         });
         unset($quiz->transactions);
         $quiz->questions = $questions;
