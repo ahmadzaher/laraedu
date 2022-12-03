@@ -157,6 +157,14 @@ class QuizController extends Controller
                 $questions[$key]->question_image = url($question->getFirstMediaUrl('question_images', 'question_image'));
             }
         }
+        $questions->each(function ($question) {
+            if ($question->type === 'essay') {
+                $answers = $question->answers;
+                $answers->each(function ($answer) {
+                    $answer->answer_image = url($answer->getFirstMediaUrl('answer_images'));
+                });
+            }
+        });
         unset($quiz->transactions);
         $quiz->questions = $questions;
         return Response($quiz, 200);
