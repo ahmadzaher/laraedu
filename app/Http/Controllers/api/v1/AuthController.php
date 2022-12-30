@@ -38,10 +38,6 @@ class AuthController extends Controller
             'is_activated' => 0
         ]);
 
-        $user['link'] = Str::random(6);
-        DB::table('users_activation')->insert(['id_user'=>$user['id'],'token'=>$user['link']]);
-        $user->sendEmailCodeVerificationNotification($user['link']);
-
         $role = Role::Where(['slug' => 'student'])->get();
         $user->roles()->attach($role);
 
@@ -51,6 +47,10 @@ class AuthController extends Controller
             'type' => 'register'
         ]);
         $traffic->save();
+
+        $user['link'] = Str::random(6);
+        DB::table('users_activation')->insert(['id_user'=>$user['id'],'token'=>$user['link']]);
+        $user->sendEmailCodeVerificationNotification($user['link']);
 
         return response()->json(['token' => $token], 200);
     }
