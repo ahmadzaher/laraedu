@@ -67,7 +67,7 @@ class SubjectController extends Controller
         if(!auth()->user()->hasRole('superadmin'))
             abort(403);
         $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:subjects']
+            'name' => ['required', 'string', 'max:255']
 //            'branch_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);
@@ -105,7 +105,7 @@ class SubjectController extends Controller
         if(!auth()->user()->hasRole('superadmin'))
             abort(403);
         $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:subjects,name,'.$subject->id],
+            'name' => ['required', 'string', 'max:255'],
 //            'branch_id' => ['required', 'integer'],
 //            'year' => ['required', 'integer']
         ]);

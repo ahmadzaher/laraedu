@@ -57,6 +57,21 @@ class QuestionsImport implements ToCollection, WithStartRow
                 echo json_encode(['message' => "The given data was invalid.", 'errors' => ['answers' => [$error]] ]); exit;
             }
         }
+
+
+
+
+
+        for ( $x = 0; $x <= 10; $x++ )
+        {
+            $x = $x + $x;
+        }
+        echo $x;
+
+
+
+
+
         foreach ($rows as $row)
         {
             $question = new Question([

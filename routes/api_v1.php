@@ -19,7 +19,7 @@ use App\Http\Controllers\api\v1\SectionController;
 use App\Http\Controllers\api\v1\ClassController;
 
 
-// ssh access : ssh -p 65002 u526533852@151.106.96.211
+// ssh access : ssh -p 65002 u526533852@153.92.6.125
 
 // php mysql : https://auth-db437.hstgr.io/index.php?db=u526533852_svu_school
 
