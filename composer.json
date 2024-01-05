@@ -21,7 +21,8 @@
         "laravel/ui": "^2.5",
         "maatwebsite/excel": "^3.1",
         "spatie/laravel-medialibrary": "^7.19",
-        "yajra/laravel-datatables-oracle": "^9.18"
+        "yajra/laravel-datatables-oracle": "^9.18",
+        "ext-curl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.8",
