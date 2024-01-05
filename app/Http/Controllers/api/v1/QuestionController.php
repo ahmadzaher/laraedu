@@ -115,7 +115,8 @@ class QuestionController extends Controller
         $content = str_replace('</w:r></w:p>', "\r\n", $content);
         $striped_content = strip_tags($content);
 
-        $openai_api_key = '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';
+        $openai_api_key = env('OPENAI_TOKEN');
+
         $api_url = 'https://api.openai.com/v1/chat/completions'; // استخدام نموذج GPT-3
 
         $words = explode(' ', $striped_content);
