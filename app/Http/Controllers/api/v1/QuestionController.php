@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\QuestionsImport;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class QuestionController extends Controller
 {
@@ -72,6 +73,161 @@ class QuestionController extends Controller
 
         return response($questions, 200);
     }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function generate(Request $request)
+    {
+
+        $request->validate([
+            'branch_id' => ['required', 'integer'],
+            'subject_id' => ['required', 'integer'],
+            'seller_id' => ['required', 'integer'],
+            'group_id' => ['required', 'integer'],
+            'year' => ['required', 'integer'],
+            'file' => ['required'],
+        ]);
+        $striped_content = '';
+        $content = '';
+
+        $zip = zip_open($request->file);
+
+        if (!$zip || is_numeric($zip)) return false;
+
+        while ($zip_entry = zip_read($zip)) {
+
+            if (zip_entry_open($zip, $zip_entry) == FALSE) continue;
+
+            if (zip_entry_name($zip_entry) != "word/document.xml") continue;
+
+            $content .= zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
+
+            zip_entry_close($zip_entry);
+        }// end while
+
+        zip_close($zip);
+
+        $content = str_replace('</w:r></w:p></w:tc><w:tc>', " ", $content);
+        $content = str_replace('</w:r></w:p>', "\r\n", $content);
+        $striped_content = strip_tags($content);
+
+        $openai_api_key = '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';
+        $api_url = 'https://api.openai.com/v1/chat/completions'; // استخدام نموذج GPT-3
+
+
+        $data = array(
+            'model' => 'gpt-3.5-turbo',
+            'temperature' => 0.1,
+            "messages" => [
+                [
+                    "role" => "system",
+                    "content" => ' أنت محترف في كتابة الامتحانات المؤتمتة بحيث عند ارسال المستخدم نص تقوم باستخراج عدة اسئلة منه ولكل سؤال 4 اجابات وتقوم بطباعة الأسئلة والأجوبة بنفس لغة النص الذي أعطاه لك المستخدم واخراج جميع الأسئلة المحتمل ورودها في الامتحان النائي بصيغة json وبهذا الشكل حصرا
+                    {
+"questions": [
+    {
+        "type": "single",
+        "active": 1,
+        "level": "1",
+        "score": "1",
+        "default_time": "50",
+        "content": "كم عدد الطلاب",
+        "answers": [
+            {
+                "question_id": null,
+                "active": 1,
+                "correct": "0",
+                "content": "طالبان"
+            },
+            {
+                "question_id": null,
+                "active": 1,
+                "correct": "1",
+                "content": "ثلاثة طلاب"
+            }
+        ]
+    }
+]}
+بحيث تكون القيمة correct هي 1 في حال كانت الاجابة صحيحة ويجب وضع السؤال الصحيح بمكان مختلف ضمن المصفوفة في كل مرة ويجب عدم الخروج عن النص المكتوب أبدا ويجب عدم انهاء الجواب حتى اكمال المصفوفة '
+                ],
+                [
+                    "role" => "user",
+                    "content" => $striped_content
+                ]
+            ]
+        );
+
+        $headers = array(
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $openai_api_key,
+        );
+
+        $ch = curl_init($api_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+
+        curl_close($ch);
+
+        $decoded_response = json_decode($response, true);
+// النص المولد
+        $generated_text = json_decode($decoded_response['choices'][0]['message']['content']);
+        foreach ($generated_text->questions as $question)
+        {
+            if (!is_array($question->answers))
+                return Response(['msg' => 'No Answers'], 422);
+
+            $new_question = new Question([
+                'type' => 'single',
+                'active' => 1,
+                'level' => $question->level,
+                'score' => $question->score,
+                'default_time' => $question->default_time,
+                'content' => $question->content,
+                'group_id' => $request->group,
+                'solution' => '',
+                'hint' => '',
+                'branch_id' => $request->branch_id,
+                'subject_id' => $request->subject_id,
+                'seller_id' => $request->seller_id,
+                'year' => $request->year,
+            ]);
+
+            $correct_exists = 0;
+            foreach ($new_question->answers as $answer) {
+                if ($answer['correct'] && $correct_exists)
+                    return Response(['msg' => 'Choose just one correct answer'], 422);
+                if ($answer['correct'] == 1)
+                    $correct_exists = 1;
+            }
+
+            $new_question->save();
+
+
+            foreach ($question->answers as $answer) {
+                $answer = new Answer([
+                    'question_id' => $new_question->id,
+                    'active' => 1,
+                    'correct' => $answer->correct,
+                    'content' => $answer->content
+                ]);
+                $answer->save();
+            }
+        }
+        return response(['data' => ($generated_text), 'message' => 'success']);
+
+    }
+
 
     /**
      * Store a newly created resource in storage.

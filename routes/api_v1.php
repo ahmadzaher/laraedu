@@ -107,6 +107,8 @@ Route::middleware('auth:api')->group(function () {
             Route::get('subjects', [\App\Http\Controllers\api\v1\SubjectController::class, 'all']);
             // Seller Transactions
             Route::get('transactions/seller/{seller}', [\App\Http\Controllers\api\v1\TransactionController::class, 'seller']);
+            // Generate Questions
+            Route::post('questions/generate', [\App\Http\Controllers\api\v1\QuestionController::class, 'generate']);
         });
 
         Route::get('class/list', [ClassController::class, 'getclasses'])->middleware('can:view-class');
