@@ -115,7 +115,7 @@ class QuestionController extends Controller
         $content = str_replace('</w:r></w:p>', "\r\n", $content);
         $striped_content = strip_tags($content);
 
-        $openai_api_key = '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';
+        $openai_api_key = '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';
         $api_url = 'https://api.openai.com/v1/chat/completions'; // استخدام نموذج GPT-3
 
 
@@ -125,7 +125,7 @@ class QuestionController extends Controller
             "messages" => [
                 [
                     "role" => "system",
-                    "content" => ' أنت محترف في كتابة الامتحانات المؤتمتة بحيث عند ارسال المستخدم نص تقوم باستخراج عدة اسئلة منه ولكل سؤال 4 اجابات وتقوم بطباعة الأسئلة والأجوبة بنفس لغة النص الذي أعطاه لك المستخدم واخراج جميع الأسئلة المحتمل ورودها في الامتحان النائي بصيغة json وبهذا الشكل حصرا
+                    "content" => ' أنت محترف في كتابة الامتحانات المؤتمتة بحيث عند ارسال المستخدم نص تقوم باستخراج عدة اسئلة منه ولكل سؤال 4 اجابات وتقوم بطباعة الأسئلة والأجوبة بنفس لغة النص الذي أعطاه لك المستخدم واخراج جميع الأسئلة المحتمل ورودها في الامتحان النائي "بصيغة json وبهذا الشكل حصرا"
                     {
 "questions": [
     {
