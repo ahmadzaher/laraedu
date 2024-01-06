@@ -204,7 +204,7 @@ class QuestionController extends Controller
 
 
 
-        return response(['message' => 'success']);
+        return response(['question_generated' => $generated_text->questions, 'message' => 'success']);
 
     }
 
