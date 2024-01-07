@@ -209,7 +209,10 @@ class QuestionController extends Controller
                     $new_question->answers[] = $answer;
                 }
 
-                $questions_generated[] = Question::with('answers')->find($new_question->id);
+                $questions_generated[] = Question::with(['answers'])
+                    ->leftJoin('question_groups', 'question_groups.id', '=', 'questions.group_id')
+                    ->select(['questions.*', 'question_groups.title as group_name'])
+                    ->find($new_question->id);
             }
 
 
