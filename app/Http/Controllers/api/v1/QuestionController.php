@@ -103,7 +103,10 @@ class QuestionController extends Controller
             "messages" => [
                 [
                     "role" => "system",
-                    "content" => ' أنت محترف في كتابة الامتحانات المؤتمتة بحيث عند ارسال المستخدم نص تقوم باستخراج عدة اسئلة منه ولكل سؤال 4 اجابات وتقوم بطباعة الأسئلة والأجوبة بنفس لغة النص الذي أعطاه لك المستخدم واخراج جميع الأسئلة المحتمل ورودها في الامتحان النائي "بصيغة json وبهذا الشكل حصرا"
+                    "content" => '
+                     أنت محترف في كتابة الامتحانات المؤتمتة بحيث عند ارسال المستخدم نص تقوم باستخراج عدة اسئلة منه ولكل سؤال 4 اجابات
+                     وتقوم بطباعة الأسئلة والأجوبة بنفس لغة النص الذي أعطاه لك المستخدم
+                     واخراج جميع الأسئلة المحتمل ورودها في الامتحان النائي "بصيغة json وبهذا الشكل حصرا"
                 {
 "questions": [
 {
@@ -129,7 +132,9 @@ class QuestionController extends Controller
 }
 ]}
 بحيث تكون القيمة correct هي 1 في حال كانت الاجابة صحيحة ويجب وضع السؤال الصحيح
-بمكان مختلف ضمن المصفوفة في كل مرة ويوجد اجابة صحيحة دائما ويجب عدم الخروج عن النص المكتوب أبدا ويجب عدم انهاء الجواب حتى اكمال المصفوفة "بصيغة json وبهذا الشكل حصرا"'
+بمكان مختلف ضمن المصفوفة في كل مرة ويوجد اجابة صحيحة دائما ويجب عدم الخروج عن النص المكتوب أبدا
+ويجب أن لا تتكرر الاجابات أبدا ويجب أن لا تكون الأجوبة غير واضحة أو تؤدي الى نفس المعنى
+ ويجب عدم انهاء الجواب حتى اكمال المصفوفة "بصيغة json وبهذا الشكل حصرا"'
                 ],
                 [
                     "role" => "user",
@@ -158,53 +163,62 @@ class QuestionController extends Controller
         curl_close($ch);
         $decoded_response = json_decode($response, true);
         $generated_text = json_decode($decoded_response['choices'][0]['message']['content']);
+        $questions_generated = [];
         if(is_object($generated_text))
-        foreach ($generated_text->questions as $question)
-        {
-            if (!is_array($question->answers))
-                return Response(['msg' => 'No Answers'], 422);
+            foreach ($generated_text->questions as $question)
+            {
+                if (!is_array($question->answers))
+                    return Response(['question_generated' => 0, 'questions' => []], 422);
 
-            $new_question = new Question([
-                'type' => 'single',
-                'active' => 1,
-                'level' => 1,
-                'score' => 1,
-                'default_time' => 50,
-                'content' => $question->content,
-                'group_id' => $request->group_id,
-                'solution' => '',
-                'hint' => '',
-                'branch_id' => $request->branch_id,
-                'subject_id' => $request->subject_id,
-                'seller_id' => $request->seller_id,
-                'year' => $request->year,
-            ]);
-
-            $correct_exists = 0;
-            foreach ($new_question->answers as $answer) {
-                if ($answer['correct'] && $correct_exists)
-                    return Response(['msg' => 'Choose just one correct answer'], 422);
-                if ($answer['correct'] == 1)
-                    $correct_exists = 1;
-            }
-
-            $new_question->save();
-
-
-            foreach ($question->answers as $answer) {
-                $answer = new Answer([
-                    'question_id' => $new_question->id,
+                $new_question = new Question([
+                    'type' => 'single',
                     'active' => 1,
-                    'correct' => $answer->correct,
-                    'content' => $answer->content
+                    'level' => 1,
+                    'score' => 1,
+                    'default_time' => 50,
+                    'content' => $question->content,
+                    'group_id' => $request->group_id,
+                    'solution' => '',
+                    'hint' => '',
+                    'branch_id' => $request->branch_id,
+                    'subject_id' => $request->subject_id,
+                    'seller_id' => $request->seller_id,
+                    'year' => $request->year,
                 ]);
-                $answer->save();
+
+                $correct_exists = 0;
+                foreach ($new_question->answers as $answer) {
+                    if ($answer['correct'] && $correct_exists)
+                        return Response(['msg' => 'Choose just one correct answer'], 422);
+                    if ($answer['correct'] == 1)
+                        $correct_exists = 1;
+                }
+
+                $new_question->save();
+
+
+
+                foreach ($question->answers as $answer) {
+                    $answer = new Answer([
+                        'question_id' => $new_question->id,
+                        'active' => 1,
+                        'correct' => $answer->correct,
+                        'content' => $answer->content
+                    ]);
+                    $answer->save();
+                    $new_question->answers[] = $answer;
+                }
+
+                $questions_generated[] = Question::with('answers')->find($new_question->id);
             }
-        }
 
 
 
-        return response(['question_generated' => is_object($generated_text) ? count($generated_text->questions) : 0, 'message' => 'success']);
+        return response([
+            'question_generated' => is_object($generated_text) ? count($generated_text->questions) : 0,
+            'questions' => $questions_generated,
+            'message' => 'success'
+        ]);
 
     }
 
