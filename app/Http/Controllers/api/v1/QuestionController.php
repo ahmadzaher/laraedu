@@ -204,7 +204,7 @@ class QuestionController extends Controller
 
 
 
-        return response(['question_generated' => count($generated_text->questions), 'message' => 'success']);
+        return response(['question_generated' => is_object($generated_text) ? count($generated_text->questions) : 0, 'message' => 'success']);
 
     }
 
